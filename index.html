@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#16140f">
+  <title>Esposizione Universale — v0.3.3</title>
+  <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+  <div id="app">
+    <section id="menuScreen" class="screen active">
+      <div class="menu-card">
+        <p class="eyebrow">GENOVA · 1892</p>
+        <h1>Esposizione Universale</h1>
+        <p class="subtitle">Prototipo esplorativo v0.3.3</p>
+        <p class="intro">Nuova struttura a due mappe: Area Nord e Area Sud · varchi Area/Battello/Uscita.</p>
+        <div class="menu-actions">
+          <button id="newGameBtn" class="primary">Entra all'Esposizione</button>
+          <button id="continueBtn">Continua partita</button>
+          <button id="resetPositionBtn">Ripristina posizione</button>
+          <button id="guideBtn">Guida</button>
+        </div>
+        <p id="saveInfo" class="save-info"></p>
+        <small>WASD / Frecce · E per interagire · ESC per pausa</small>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <div id="gameFrame" class="game-frame">
+        <canvas id="gameCanvas" width="1280" height="720"></canvas>
+        <div class="hud">
+          <div><b id="areaLabel">AREA NORD</b><span id="areaSubtitle">Esposizione · 1892</span></div>
+          <div class="hud-actions">
+            <button id="testBtn" title="Modalità Test">TEST</button>
+            <button id="debugBtn" title="Mostra collisioni">DBG</button>
+            <button id="saveBtn" title="Salva">SALVA</button>
+            <button id="pauseBtn" title="Pausa">Ⅱ</button>
+          </div>
+        </div>
+        <div id="prompt" class="prompt" hidden></div>
+        <div id="toast" class="toast"></div>
+        <div id="fade" class="fade"></div>
+
+        <aside id="testPanel" class="test-panel" hidden>
+          <div id="testDragHandle" class="test-head" title="Trascina per spostare il pannello">
+            <div class="test-title-wrap">
+              <b>MODALITÀ TEST</b>
+              <span id="testArea">AREA —</span>
+            </div>
+            <div class="test-head-actions">
+              <button id="testResetPanel" title="Ripristina posizione pannello">□</button>
+              <button id="testLockPanel" title="Blocca/sblocca trascinamento">🔓</button>
+              <button id="testClose" title="Chiudi">×</button>
+            </div>
+          </div>
+
+          <div class="test-fixed-tools">
+            <button id="toolSelect" class="active">Seleziona</button>
+            <button id="toolUndoHistory" title="Annulla ultima modifica">↶ Annulla</button>
+            <button id="toolRedoHistory" title="Ripeti modifica">↷ Ripeti</button>
+            <button id="toolSaveCurrent" class="save-current">Salva JSON attuale</button>
+          </div>
+
+          <div class="test-meta">
+            <span id="testCoords">x — · y — · zoom 100%</span>
+            <span id="testSelected">Elemento: nessuno</span>
+            <span id="testSaveState" class="save-state clean">✓ Nessuna modifica</span>
+            <span id="testFileState">JSON: non collegato</span>
+          </div>
+          <p id="testStatus">Seleziona uno strumento.</p>
+
+          <details class="test-section" open>
+            <summary>Collisioni</summary>
+            <div class="test-tools">
+              <button id="toolObstacle">+ Ostacolo</button>
+              <button id="toolWalkable">+ Percorribile</button>
+              <button id="toolPoint">+ Punto</button>
+              <button id="toolRemovePoint">− Punto</button>
+              <button id="toolFinish">Chiudi poligono</button>
+              <button id="toolDelete">Elimina selezionato</button>
+            </div>
+          </details>
+
+          <details class="test-section">
+            <summary>Varchi</summary>
+            <div class="test-tools">
+              <button id="toolGateArea">+ Varco Area</button>
+              <button id="toolGateBoat">+ Battello</button>
+              <button id="toolGateExit">+ Uscita</button>
+              <button id="toolGateEdit">Modifica varco</button>
+              <button id="toolGateWDown">Larghezza −</button>
+              <button id="toolGateWUp">Larghezza +</button>
+              <button id="toolGateHDown">Altezza −</button>
+              <button id="toolGateHUp">Altezza +</button>
+            </div>
+          </details>
+
+          <details class="test-section">
+            <summary>Hotspot</summary>
+            <div class="test-tools">
+              <button id="toolHotspot">+ Hotspot</button>
+              <button id="toolHotspotEdit">Modifica testo</button>
+              <button id="toolHotspotRadiusDown">Raggio −</button>
+              <button id="toolHotspotRadiusUp">Raggio +</button>
+            </div>
+          </details>
+
+          <details class="test-section">
+            <summary>Decorazioni</summary>
+            <div class="test-tools">
+              <button id="toolDecor">+ Lampione</button>
+              <button id="toolPalm">+ Palma</button>
+              <button id="toolScaleDown">Scala −</button>
+              <button id="toolScaleUp">Scala +</button>
+              <button id="toolAnchorDown">Anchor ↑</button>
+              <button id="toolAnchorUp">Anchor ↓</button>
+              <button id="toolRotateLeft">Ruota ↶</button>
+              <button id="toolRotateRight">Ruota ↷</button>
+              <button id="toolDuplicateDecor">Duplica</button>
+            </div>
+          </details>
+
+          <details class="test-section">
+            <summary>Visualizzazione</summary>
+            <div class="test-tools">
+              <button id="toolZoomOut">Zoom −</button>
+              <button id="toolZoomIn">Zoom +</button>
+              <button id="toolZoomReset">Zoom 100%</button>
+              <button id="toolCenterPlayer">Centra giocatore</button>
+              <button id="toolToggleCollisions" class="active">Collisioni ON</button>
+              <button id="toolToggleGates" class="active">Varchi ON</button>
+              <button id="toolToggleHotspots" class="active">Hotspot ON</button>
+              <button id="toolToggleDecor" class="active">Decor ON</button>
+            </div>
+          </details>
+
+          <details class="test-section">
+            <summary>Giocatore / Spawn</summary>
+            <div class="test-tools">
+              <button id="toolSetSpawn">Imposta Spawn qui</button>
+              <button id="toolTeleport">Teletrasporta qui</button>
+              <button id="toolCenterPlayer2">Centra giocatore</button>
+              <button id="toolSpeed1" class="active">Velocità 1×</button>
+              <button id="toolSpeed2">Velocità 2×</button>
+              <button id="toolSpeed4">Velocità 4×</button>
+            </div>
+          </details>
+
+          <details class="test-section">
+            <summary>Import / Export</summary>
+            <div class="test-tools">
+              <button id="toolLinkJSON">Collega JSON</button>
+              <button id="toolExport">Esporta JSON</button>
+              <button id="toolImport">Importa JSON</button>
+              <input id="toolImportInput" type="file" accept="application/json,.json" hidden>
+              <button id="toolCopyJSON">Copia JSON</button>
+              <button id="toolDecorExport">Esporta Decor</button>
+              <button id="toolDecorImport">Importa Decor</button>
+              <input id="toolDecorImportInput" type="file" accept="application/json,.json" hidden>
+            </div>
+          </details>
+
+          <details class="test-section">
+            <summary>Pannello</summary>
+            <div class="test-tools">
+              <button id="toolPanelReset">Ripristina posizione</button>
+              <button id="toolPanelCompact">Compatto / Esteso</button>
+              <button id="toolPanelLock">Blocca pannello</button>
+            </div>
+          </details>
+
+          <small class="test-help">Rosso: ostacoli · Verde: percorribile · Viola: varchi. La barra superiore del pannello è trascinabile. Con “Salva JSON attuale” puoi scrivere direttamente nel file collegato dell’Area Nord/Sud; Importa/Esporta resta disponibile come backup.</small>
+        </aside>
+
+        <div id="touchControls" class="touch-controls" aria-hidden="true">
+          <div id="joystick" class="joystick"><div id="joystickKnob" class="joystick-knob"></div></div>
+          <button id="touchInteract" class="touch-e">E</button>
+        </div>
+
+        <div id="pauseOverlay" class="overlay" hidden>
+          <div class="panel">
+            <h2>Pausa</h2>
+            <button id="resumeBtn" class="primary">Riprendi</button>
+            <button id="saveMenuBtn">Salva e torna al menu</button>
+            <button id="menuBtn">Torna al menu</button>
+          </div>
+        </div>
+
+        <div id="interactionOverlay" class="overlay" hidden>
+          <div class="panel interaction-panel">
+            <p class="eyebrow">PADIGLIONE / ATTRAZIONE</p>
+            <h2 id="interactionTitle"></h2>
+            <p id="interactionText"></p>
+            <button id="interactionClose" class="primary">Torna alla Fiera</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <dialog id="guideDialog">
+    <div class="dialog-card">
+      <h2>Come si gioca</h2>
+      <p><b>PC:</b> WASD o Frecce per muoverti, <b>E</b> per interagire, <b>ESC</b> per la pausa. La <b>rotellina</b> regola uno zoom di gioco limitato.</p>
+      <p><b>Mobile:</b> usa il joystick e il pulsante <b>E</b>. Usa <b>due dita</b> sulla mappa per regolare lo zoom.</p>
+      <p>I varchi possono collegare Area Nord e Area Sud, il Battello oppure l’uscita dall’Esposizione. L’Area Sud verrà collegata quando saranno inseriti la sua mappa e il suo JSON. Se un vecchio salvataggio crea problemi usa <b>Ripristina posizione</b> dal menu.</p>
+      <p><b>TEST:</b> blocca temporaneamente il personaggio e permette di disegnare/spostare collisioni, aree percorribili, varchi e hotspot. Usa la <b>rotellina</b> per lo zoom e, in <b>Seleziona</b>, trascina lo sfondo con il tasto sinistro per spostarti sulla mappa. Puoi creare nuovi poligoni rossi/verdi e usare <b>+ Punto</b> sul loro perimetro per aggiungere vertici; <b>− Punto</b> rimuove il vertice selezionato. Con <b>+ Lampione</b> e <b>+ Palma</b> puoi piazzare e trascinare decorazioni con Y-sort; Scala e Anchor regolano dimensione e linea di profondità. Il pannello TEST è trascinabile e organizzato per categorie. Usa <b>Salva JSON attuale</b> per aggiornare direttamente il JSON collegato dell’area corrente; Importa/Esporta resta disponibile come backup.</p>
+      <p>I tre punti interattivi restano prototipi: Campo sportivo, Palazzo delle Belle Arti e Montagne russe.</p>
+      <button id="guideClose" class="primary">Chiudi</button>
+    </div>
+  </dialog>
+
+  <script src="js/save.js"></script>
+  <script src="js/areas.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

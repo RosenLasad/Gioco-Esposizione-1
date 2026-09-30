@@ -1,0 +1,271 @@
+{
+  "areaId": "centrale",
+  "objects": [
+    {
+      "id": "lampione_01_a",
+      "kind": "lamp",
+      "type": "ysort",
+      "asset": "images/decor/centrale/lamps/lampione_01.png",
+      "x": 460,
+      "y": 1308,
+      "width": 53,
+      "height": 144,
+      "anchorX": 0.5,
+      "anchorY": 0.93,
+      "scale": 1.0,
+      "collisionRadius": 7,
+      "animation": null
+    },
+    {
+      "id": "lampione_01_b",
+      "kind": "lamp",
+      "type": "ysort",
+      "asset": "images/decor/centrale/lamps/lampione_01.png",
+      "x": 715,
+      "y": 1308,
+      "width": 53,
+      "height": 144,
+      "anchorX": 0.5,
+      "anchorY": 0.93,
+      "scale": 1.0,
+      "collisionRadius": 7,
+      "animation": null
+    },
+    {
+      "id": "lampione_02_a",
+      "kind": "lamp",
+      "type": "ysort",
+      "asset": "images/decor/centrale/lamps/lampione_01.png",
+      "x": 450,
+      "y": 1860,
+      "width": 53,
+      "height": 144,
+      "anchorX": 0.5,
+      "anchorY": 0.93,
+      "scale": 1.0,
+      "collisionRadius": 7,
+      "animation": null
+    },
+    {
+      "id": "lampione_02_b",
+      "kind": "lamp",
+      "type": "ysort",
+      "asset": "images/decor/centrale/lamps/lampione_01.png",
+      "x": 735,
+      "y": 1860,
+      "width": 53,
+      "height": 144,
+      "anchorX": 0.5,
+      "anchorY": 0.93,
+      "scale": 1.0,
+      "collisionRadius": 7,
+      "animation": null
+    },
+    {
+      "id": "lampione_03_a",
+      "kind": "lamp",
+      "type": "ysort",
+      "asset": "images/decor/centrale/lamps/lampione_01.png",
+      "x": 444,
+      "y": 2850,
+      "width": 53,
+      "height": 144,
+      "anchorX": 0.5,
+      "anchorY": 0.93,
+      "scale": 1.0,
+      "collisionRadius": 7,
+      "animation": null
+    },
+    {
+      "id": "lampione_03_b",
+      "kind": "lamp",
+      "type": "ysort",
+      "asset": "images/decor/centrale/lamps/lampione_01.png",
+      "x": 755,
+      "y": 2850,
+      "width": 53,
+      "height": 144,
+      "anchorX": 0.5,
+      "anchorY": 0.93,
+      "scale": 1.0,
+      "collisionRadius": 7,
+      "animation": null
+    },
+    {
+      "id": "palma_01_a",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 195,
+      "y": 705,
+      "width": 160,
+      "height": 218,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 13,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    },
+    {
+      "id": "palma_01_b",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 1002,
+      "y": 705,
+      "width": 160,
+      "height": 218,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 13,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    },
+    {
+      "id": "palma_02_a",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 222,
+      "y": 1182,
+      "width": 160,
+      "height": 218,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 13,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    },
+    {
+      "id": "palma_02_b",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 978,
+      "y": 1182,
+      "width": 160,
+      "height": 218,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 13,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    },
+    {
+      "id": "palma_03_a",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 230,
+      "y": 1832,
+      "width": 160,
+      "height": 218,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 13,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    },
+    {
+      "id": "palma_03_b",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 970,
+      "y": 1832,
+      "width": 160,
+      "height": 218,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 13,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    },
+    {
+      "id": "palma_04_a",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 192,
+      "y": 2608,
+      "width": 142,
+      "height": 194,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 12,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    },
+    {
+      "id": "palma_04_b",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 1008,
+      "y": 2608,
+      "width": 142,
+      "height": 194,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1.0,
+      "collisionRadius": 12,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2.0
+      }
+    }
+  ]
+}
