@@ -34,3 +34,78 @@ dialog{border:0;padding:0;background:transparent;color:#f5ead8}dialog::backdrop{
 .test-section{border:1px solid #4c3d28;border-radius:4px;margin-top:7px;background:#100e0baa}.test-section>summary{list-style:none;cursor:pointer;padding:8px 9px;font-size:.74rem;font-weight:700;letter-spacing:.04em;color:#ecd7b0;user-select:none}.test-section>summary::-webkit-details-marker{display:none}.test-section>summary:before{content:'▸';display:inline-block;margin-right:7px;transition:.15s}.test-section[open]>summary:before{transform:rotate(90deg)}.test-section[open]>summary{border-bottom:1px solid #3e3222}.test-section .test-tools{padding:7px;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.test-panel.compact .test-section .test-tools{grid-template-columns:1fr}.test-help{display:block;color:#bbaa89;line-height:1.35;margin-top:9px;font-size:.66rem}.game-frame.editor-on canvas{cursor:crosshair}.game-frame.editor-panning canvas{cursor:grabbing!important}.game-frame.editor-on .touch-controls{display:none!important}
 @media(max-width:850px){.test-panel{top:70px;max-height:66vh;width:min(360px,calc(100vw - 16px));left:8px}.test-head{cursor:default}.hud-actions #debugBtn{display:none}}
 @media(max-width:560px){.test-fixed-tools,.test-section .test-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.test-panel{max-height:64vh}}
+
+/* v0.3.4 - Player/Admin mode, fullscreen and responsive mobile HUD */
+.menu-actions .player-entry{font-size:1.02rem;font-weight:800;letter-spacing:.02em}
+
+/* Admin HUD is the existing technical HUD. Player HUD is separate and minimal. */
+.game-frame.player-mode .admin-hud{display:none}
+.game-frame.admin-mode .player-hud{display:none}
+.player-hud{position:absolute;inset:0;pointer-events:none;z-index:12}
+.player-area-badge{position:absolute;top:max(14px,calc(env(safe-area-inset-top) + 8px));left:50%;transform:translate(-50%,-8px);padding:8px 13px;border:1px solid #c9a465;background:#17130dcc;color:#fff;letter-spacing:.12em;font-size:.74rem;border-radius:5px;box-shadow:0 5px 18px #0008;opacity:0;transition:.22s;white-space:nowrap;text-shadow:0 1px 2px #000}
+.player-area-badge.show{opacity:1;transform:translate(-50%,0)}
+.player-hud-actions{position:absolute;top:max(12px,calc(env(safe-area-inset-top) + 6px));right:max(12px,calc(env(safe-area-inset-right) + 8px));display:flex;gap:8px;pointer-events:auto}
+.hud-icon{width:42px;height:42px;border-radius:50%;border:1px solid #c3a06a;background:#18140edb;color:#fff;font-size:1.1rem;display:grid;place-items:center;box-shadow:0 5px 18px #0008}
+.hud-icon:active{transform:scale(.96)}
+
+/* Player prompts sit above the touch controls rather than colliding with them. */
+.game-frame.player-mode .prompt{bottom:calc(max(22px,env(safe-area-inset-bottom)) + 128px);font-size:.84rem;max-width:min(80vw,520px);overflow:hidden;text-overflow:ellipsis}
+.game-frame.player-mode .toast{top:max(76px,calc(env(safe-area-inset-top) + 70px))}
+
+/* Touch controls: safe-area aware and deliberately inset from device edges. */
+.touch-controls{z-index:11}
+.game-frame.player-mode .touch-controls{left:0;right:0;bottom:max(18px,calc(env(safe-area-inset-bottom) + 10px));padding-left:max(20px,calc(env(safe-area-inset-left) + 14px));padding-right:max(20px,calc(env(safe-area-inset-right) + 14px))}
+.game-frame.player-mode .joystick{width:116px;height:116px;background:#0807065e;border-color:#f7eadb78;box-shadow:0 4px 18px #0006}
+.game-frame.player-mode .joystick-knob{width:48px;height:48px;left:32px;top:32px;background:#f7eadbaa}
+.game-frame.player-mode .touch-e{width:72px;height:72px;background:#614722d9;border-color:#dcb66f;color:#fff;box-shadow:0 4px 18px #0008;opacity:.72;transition:.15s}
+.game-frame.player-mode .touch-e.ready{opacity:1;transform:scale(1.06);box-shadow:0 0 0 5px #d9b36d24,0 5px 20px #0009}
+
+/* Chosen portrait layout: slightly smaller controls and more vertical clearance. */
+.game-frame.player-mode.layout-portrait .touch-controls{bottom:max(26px,calc(env(safe-area-inset-bottom) + 18px));padding-left:max(16px,calc(env(safe-area-inset-left) + 12px));padding-right:max(16px,calc(env(safe-area-inset-right) + 12px))}
+.game-frame.player-mode.layout-portrait .joystick{width:104px;height:104px}
+.game-frame.player-mode.layout-portrait .joystick-knob{width:44px;height:44px;left:28px;top:28px}
+.game-frame.player-mode.layout-portrait .touch-e{width:66px;height:66px}
+.game-frame.player-mode.layout-portrait .prompt{bottom:calc(max(26px,env(safe-area-inset-bottom)) + 118px)}
+
+/* Chosen landscape layout: controls stay farther apart from the playfield center. */
+.game-frame.player-mode.layout-landscape .touch-controls{bottom:max(15px,calc(env(safe-area-inset-bottom) + 8px));padding-left:max(26px,calc(env(safe-area-inset-left) + 18px));padding-right:max(26px,calc(env(safe-area-inset-right) + 18px))}
+.game-frame.player-mode.layout-landscape .joystick{width:112px;height:112px}
+.game-frame.player-mode.layout-landscape .joystick-knob{left:31px;top:31px}
+
+/* Mobile orientation picker */
+.orientation-dialog{border:0;padding:0;background:transparent;color:#fff;max-width:none;max-height:none}
+.orientation-dialog::backdrop{background:#000c}
+.orientation-card{width:min(620px,92vw);text-align:center;background:#211d15;border:1px solid #ad8c55;padding:26px;box-shadow:0 25px 90px #000e}
+.orientation-card h2{margin:.2em 0 .35em}.orientation-intro{color:#ddcfb8;line-height:1.45;margin:0 auto 20px;max-width:480px}
+.orientation-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.orientation-choice{display:grid!important;justify-items:center;gap:6px;min-height:126px}
+.orientation-choice small{font-size:.72rem;color:#dfd1b8;font-weight:400}.orientation-icon{display:block;border:2px solid currentColor;border-radius:4px;width:52px;height:32px;opacity:.95}.portrait-icon{width:30px;height:52px}
+.remember-layout{display:flex;align-items:center;justify-content:center;gap:7px;color:#d7c7aa;font-size:.82rem;margin:8px 0 13px}.remember-layout input{accent-color:#a77a3d}
+
+/* Fullscreen works on the whole application, menu included. */
+:fullscreen body,:fullscreen #app,:fullscreen .screen,:fullscreen .game-frame{width:100%;height:100%}
+:-webkit-full-screen body,:-webkit-full-screen #app,:-webkit-full-screen .screen,:-webkit-full-screen .game-frame{width:100%;height:100%}
+
+/* Common Netlify preview badges: hide only explicit Netlify-labelled chrome if injected in-page. */
+iframe[src*="netlify" i][title*="netlify" i],
+[aria-label*="Powered by Netlify" i],
+[title*="Powered by Netlify" i]{display:none!important}
+
+@media(pointer:fine) and (min-width:851px){
+  .game-frame.player-mode .touch-controls{display:none!important}
+}
+@media(max-width:850px),(pointer:coarse){
+  .player-hud-actions{top:max(9px,calc(env(safe-area-inset-top) + 5px));right:max(9px,calc(env(safe-area-inset-right) + 7px))}
+  .hud-icon{width:40px;height:40px}
+  .game-frame.player-mode .touch-controls{display:flex}
+}
+@media(max-width:560px){
+  .orientation-actions{grid-template-columns:1fr 1fr}.orientation-card{padding:22px 16px}
+  .player-area-badge{font-size:.68rem;padding:7px 10px}
+  .game-frame.player-mode .prompt{font-size:.76rem;padding:8px 11px}
+}
+@media(max-width:390px){
+  .orientation-actions{grid-template-columns:1fr}.orientation-choice{min-height:92px;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;text-align:left;padding:12px 16px!important}.orientation-choice .orientation-icon{grid-row:1/3}.orientation-choice b,.orientation-choice small{justify-self:start}
+}
+#pauseLayoutBtn{display:none}
+@media(max-width:850px),(pointer:coarse){#pauseLayoutBtn{display:block}}
