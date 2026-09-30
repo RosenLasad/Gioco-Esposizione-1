@@ -109,3 +109,61 @@ iframe[src*="netlify" i][title*="netlify" i],
 }
 #pauseLayoutBtn{display:none}
 @media(max-width:850px),(pointer:coarse){#pauseLayoutBtn{display:block}}
+
+/* v0.3.5 - viewport mobile reale + comandi touch impilati in basso a destra */
+:root{--app-height:100dvh;--app-width:100vw}
+html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-height,100dvh)}
+.game-frame{width:var(--app-width,100vw);height:var(--app-height,100dvh);max-height:var(--app-height,100dvh)}
+
+/* Su touch E e joystick formano un unico blocco verticale ancorato alla viewport visibile. */
+.game-frame.player-mode .touch-controls{
+  left:auto;
+  right:max(16px,calc(env(safe-area-inset-right) + 10px));
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));
+  width:auto;
+  padding:0;
+  display:none;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  gap:10px;
+}
+.game-frame.player-mode .touch-e{order:1;width:50px;height:50px;min-width:50px;min-height:50px;font-size:1rem}
+.game-frame.player-mode .joystick{order:2;width:112px;height:112px;flex:0 0 auto}
+.game-frame.player-mode .joystick-knob{width:46px;height:46px;left:31px;top:31px}
+
+.game-frame.player-mode.layout-portrait .touch-controls{
+  right:max(14px,calc(env(safe-area-inset-right) + 9px));
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));
+  padding:0;
+}
+.game-frame.player-mode.layout-portrait .joystick{width:102px;height:102px}
+.game-frame.player-mode.layout-portrait .joystick-knob{width:42px;height:42px;left:28px;top:28px}
+.game-frame.player-mode.layout-portrait .touch-e{width:46px;height:46px;min-width:46px;min-height:46px;font-size:.92rem}
+
+.game-frame.player-mode.layout-landscape .touch-controls{
+  right:max(18px,calc(env(safe-area-inset-right) + 11px));
+  bottom:max(14px,calc(env(safe-area-inset-bottom) + 8px));
+  padding:0;
+}
+.game-frame.player-mode.layout-landscape .joystick{width:108px;height:108px}
+.game-frame.player-mode.layout-landscape .joystick-knob{width:44px;height:44px;left:30px;top:30px}
+.game-frame.player-mode.layout-landscape .touch-e{width:48px;height:48px;min-width:48px;min-height:48px}
+
+/* Prompt sopra l'intero blocco E + joystick. */
+.game-frame.player-mode .prompt{bottom:calc(max(16px,env(safe-area-inset-bottom)) + 178px)}
+.game-frame.player-mode.layout-portrait .prompt{bottom:calc(max(16px,env(safe-area-inset-bottom)) + 166px)}
+.game-frame.player-mode.layout-landscape .prompt{bottom:calc(max(14px,env(safe-area-inset-bottom)) + 172px)}
+
+@media(max-width:850px),(pointer:coarse){
+  .game-frame.player-mode .touch-controls{display:flex}
+}
+
+/* Su telefoni molto bassi (browser chrome visibile / landscape) riduce appena i controlli. */
+@media(max-height:520px) and (pointer:coarse){
+  .game-frame.player-mode .joystick{width:94px;height:94px}
+  .game-frame.player-mode .joystick-knob{width:40px;height:40px;left:25px;top:25px}
+  .game-frame.player-mode .touch-e{width:42px;height:42px;min-width:42px;min-height:42px;font-size:.88rem}
+  .game-frame.player-mode .touch-controls{gap:8px;bottom:max(10px,calc(env(safe-area-inset-bottom) + 6px))}
+  .game-frame.player-mode .prompt{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 150px)}
+}
