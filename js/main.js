@@ -7,8 +7,27 @@
   const orientationDialog=$('#orientationDialog');
   let toastTimer=null,areaBadgeTimer=null,gameMode='player',pendingPlayerStart=null;
 
-  function fitCanvas(){canvas.width=innerWidth;canvas.height=innerHeight}
-  fitCanvas();addEventListener('resize',fitCanvas);
+  function updateViewportMetrics(){
+    const vv=window.visualViewport;
+    const w=Math.max(1,Math.round(vv?.width||window.innerWidth));
+    const h=Math.max(1,Math.round(vv?.height||window.innerHeight));
+    document.documentElement.style.setProperty('--app-width',`${w}px`);
+    document.documentElement.style.setProperty('--app-height',`${h}px`);
+    return {w,h};
+  }
+  function fitCanvas(){
+    updateViewportMetrics();
+    const r=frame.getBoundingClientRect();
+    canvas.width=Math.max(1,Math.round(r.width||window.innerWidth));
+    canvas.height=Math.max(1,Math.round(r.height||window.visualViewport?.height||window.innerHeight));
+  }
+  fitCanvas();
+  addEventListener('resize',fitCanvas);
+  addEventListener('orientationchange',()=>setTimeout(fitCanvas,80));
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize',fitCanvas);
+    visualViewport.addEventListener('scroll',fitCanvas);
+  }
 
   function isMobileLike(){return matchMedia('(pointer: coarse)').matches||innerWidth<=850}
   function currentFullscreenElement(){return document.fullscreenElement||document.webkitFullscreenElement}
