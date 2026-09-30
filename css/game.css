@@ -167,3 +167,21 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
   .game-frame.player-mode .touch-controls{gap:8px;bottom:max(10px,calc(env(safe-area-inset-bottom) + 6px))}
   .game-frame.player-mode .prompt{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 150px)}
 }
+
+/* v0.3.6 - comandi touch centrati sul bordo inferiore */
+.game-frame.player-mode .touch-controls,
+.game-frame.player-mode.layout-portrait .touch-controls,
+.game-frame.player-mode.layout-landscape .touch-controls{
+  left:50%;
+  right:auto;
+  transform:translateX(-50%);
+  padding-left:0;
+  padding-right:0;
+}
+
+/* Mantiene libero lo spazio negli angoli inferiori per il futuro HUD. */
+@media(max-width:850px),(pointer:coarse){
+  .game-frame.player-mode .touch-controls{
+    max-width:max-content;
+  }
+}
