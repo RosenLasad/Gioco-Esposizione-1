@@ -23,6 +23,62 @@
         ],
         "fps": 2
       }
+    },
+    {
+      "id": "fontana-2-1791490647636",
+      "kind": "fountain",
+      "variant": "fontana_02",
+      "type": "fountain",
+      "asset": "images/decor/centrale/fountains/fontana_02_01.png",
+      "x": 2423,
+      "y": 1591,
+      "width": 190,
+      "height": 170,
+      "anchorX": 0.5,
+      "anchorY": 1,
+      "scale": 1,
+      "rotation": 0,
+      "collisionRadius": 0,
+      "basinRadius": 80,
+      "depthCut": 0.3,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/fountains/fontana_02_01.png",
+          "images/decor/centrale/fountains/fontana_02_02.png",
+          "images/decor/centrale/fountains/fontana_02_03.png"
+        ],
+        "fps": 3
+      },
+      "basinRadiusY": 49,
+      "basinOffsetY": -65
+    },
+    {
+      "id": "fontana-2-1791492134337",
+      "kind": "fountain",
+      "variant": "fontana_02",
+      "type": "fountain",
+      "asset": "images/decor/centrale/fountains/fontana_02_01.png",
+      "x": 2416,
+      "y": 1138,
+      "width": 190,
+      "height": 170,
+      "anchorX": 0.5,
+      "anchorY": 1,
+      "scale": 1,
+      "rotation": 0,
+      "collisionRadius": 0,
+      "basinRadius": 78,
+      "basinRadiusY": 57,
+      "basinOffsetY": -65,
+      "depthCut": 0.25,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/fountains/fontana_02_01.png",
+          "images/decor/centrale/fountains/fontana_02_02.png",
+          "images/decor/centrale/fountains/fontana_02_03.png"
+        ],
+        "fps": 3
+      }
     }
   ]
 }

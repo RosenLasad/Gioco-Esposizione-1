@@ -185,3 +185,10 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
     max-width:max-content;
   }
 }
+
+/* Regolazioni proporzioni e zoom - Modalita TEST */
+.test-visual-settings{display:grid;gap:9px;padding:10px 11px 12px}
+.test-visual-settings label{font-size:.75rem;color:#ecd7b0;display:flex;justify-content:space-between;gap:8px}
+.test-visual-settings output{color:#a5dfae;font-weight:700}
+.test-visual-settings input[type=range]{width:100%;accent-color:#b69156;cursor:pointer}
+.test-visual-settings small{font-size:.69rem;color:#bbaa89;line-height:1.4}
