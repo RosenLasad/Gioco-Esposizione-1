@@ -1,4 +1,4 @@
-(function(){
+(async function(){
   'use strict';
   const $=s=>document.querySelector(s);
   const menu=$('#menuScreen'),screen=$('#gameScreen'),canvas=$('#gameCanvas'),frame=$('#gameFrame');
@@ -99,8 +99,26 @@
     onPause(){if(!screen.classList.contains('active')||game.editorActive)return;if(!interactionOverlay.hidden){closeInteraction();return}pauseOverlay.hidden=!pauseOverlay.hidden;game.setPaused(!pauseOverlay.hidden)}
   };
 
-  // Applica l'ultima versione salvata dal pannello TEST come override di sviluppo.
-  for(const id of ['nord','sud']){try{const raw=localStorage.getItem(`esposizione-editor-area-${id}`);if(!raw)continue;const d=JSON.parse(raw),a=window.EsposizioneAreas?.[id];if(!a)continue;if(d.spawn)a.spawn=d.spawn;if(d.walkable)a.walkable=d.walkable;if(d.obstacles)a.obstacles=d.obstacles;if(d.hotspots)a.hotspots=d.hotspots;if(d.gates)a.gates=d.gates}catch(_){}}
+  // Online: i JSON pubblicati sono la sola fonte per collisioni e percorsi.
+  // Offline (file://): il browser puo impedire fetch(); si usa la copia generata
+  // dallo script AGGIORNA_MAPPE_OFFLINE.bat, mai un override nascosto del browser.
+  if(location.protocol!=='file:'){
+    for(const id of ['nord','sud']){
+      try{
+        const response=await fetch(`data/area_${id}_collisions.json`,{cache:'no-store'});
+        if(!response.ok)throw new Error(`HTTP ${response.status}`);
+        const d=await response.json();
+        if(d.areaId!==id||!Array.isArray(d.walkable)||!Array.isArray(d.obstacles)||!Array.isArray(d.gates)||!Array.isArray(d.hotspots))throw new Error('Struttura JSON non valida');
+        const a=window.EsposizioneAreas[id];
+        for(const field of ['spawn','walkable','obstacles','hotspots','gates'])a[field]=d[field];
+        console.info(`[Esposizione] Area ${id}: JSON pubblicato caricato`);
+      }catch(err){
+        console.error(`[Esposizione] Impossibile caricare il JSON dell'Area ${id}:`,err);
+        alert(`Attenzione: impossibile caricare il JSON pubblicato dell'Area ${id}.\nVerifica data/area_${id}_collisions.json sul server. La mappa di riserva potrebbe non essere aggiornata.`);
+      }
+    }
+  }
+  // Nessuna collisione viene piu caricata da localStorage.
 
   const game=new window.EsposizioneGame(canvas,ui);
   const editor=new window.EsposizioneEditor(game,{
