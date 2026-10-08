@@ -37,6 +37,7 @@
             <button id="testBtn" title="Modalità Test">TEST</button>
             <button id="debugBtn" title="Mostra collisioni">DBG</button>
             <button id="saveBtn" title="Salva">SALVA</button>
+            <button id="inventoryAdminBtn" title="Inventario">▣</button>
             <button id="pauseBtn" title="Pausa">Ⅱ</button>
           </div>
         </div>
@@ -45,6 +46,7 @@
           <div id="playerAreaBadge" class="player-area-badge">AREA NORD</div>
           <div class="player-hud-actions">
             <button id="playerFullscreenBtn" class="hud-icon" title="Schermo intero" aria-label="Schermo intero">⛶</button>
+            <button id="inventoryPlayerBtn" class="hud-icon" title="Inventario" aria-label="Apri inventario">▣</button>
             <button id="playerMenuBtn" class="hud-icon" title="Menu" aria-label="Menu di pausa">☰</button>
           </div>
         </div>
@@ -228,6 +230,23 @@
           <button id="touchInteract" class="touch-e">E</button>
         </div>
 
+        <div id="inventoryOverlay" class="inventory-overlay" hidden role="dialog" aria-modal="true" aria-label="Inventario">
+          <section class="inventory-case">
+            <header class="inventory-header"><h2>Inventario</h2><div class="inventory-wallet"><span>✦ Punti <b id="inventoryPoints">100</b></span><span>◉ Lire <b id="inventoryLire">100</b></span></div><button id="inventoryClose" title="Chiudi inventario" aria-label="Chiudi inventario">×</button></header>
+            <nav id="inventoryCategories" class="inventory-categories" aria-label="Categorie dell'inventario"></nav>
+            <div id="inventoryGrid" class="inventory-grid" aria-label="Oggetti posseduti"></div>
+            <footer class="inventory-footer">Valigetta del viaggiatore · Genova 1892</footer>
+          </section>
+          <div id="inventoryDetail" class="inventory-detail-layer" hidden>
+            <article class="inventory-detail" role="dialog" aria-modal="true" aria-label="Dettaglio oggetto">
+              <button id="inventoryDetailClose" class="inventory-detail-x" aria-label="Chiudi dettaglio">×</button>
+              <div id="inventoryDetailImage" class="inventory-detail-illustration"></div>
+              <h3 id="inventoryDetailName"></h3><small id="inventoryDetailCategory"></small>
+              <p id="inventoryDetailDescription"></p><p id="inventoryDetailStatus"></p>
+              <div class="inventory-detail-actions"><button id="inventoryAction">Esamina</button><button id="inventoryBack">Indietro</button></div>
+            </article>
+          </div>
+        </div>
         <div id="pauseOverlay" class="overlay" hidden>
           <div class="panel">
             <h2>Pausa</h2>
@@ -282,5 +301,6 @@
   <script src="js/game.js"></script>
   <script src="js/editor.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/inventory.js"></script>
 </body>
 </html>

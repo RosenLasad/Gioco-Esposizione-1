@@ -96,7 +96,7 @@
     onFade(v){fade.classList.toggle('on',v)},
     onBoatGate(g,accept,cancel){confirm('Vuoi salire sul battello e raggiungere l’altra area dell’Esposizione?')?accept():cancel()},
     onExitGate(g,accept,cancel){if(!confirm('Vuoi lasciare l’Esposizione e tornare ai Giochi di Genova mApp?')){cancel();return}accept();game.requestSave();if(window.parent!==window){window.parent.postMessage({type:'genova-mapp:game-exit',game:'esposizione'},location.origin)}returnMenu(false)},
-    onPause(){if(!screen.classList.contains('active')||game.editorActive)return;if(!interactionOverlay.hidden){closeInteraction();return}pauseOverlay.hidden=!pauseOverlay.hidden;game.setPaused(!pauseOverlay.hidden)}
+    onPause(){if(window.EsposizioneInventory?.isOpen()){window.EsposizioneInventory.close();return}if(!screen.classList.contains('active')||game.editorActive)return;if(!interactionOverlay.hidden){closeInteraction();return}pauseOverlay.hidden=!pauseOverlay.hidden;game.setPaused(!pauseOverlay.hidden)}
   };
 
   // Online: i JSON pubblicati sono la sola fonte per collisioni e percorsi.
@@ -159,9 +159,10 @@
   function updateMenu(){const s=window.EsposizioneSave.load();$('#continueBtn').disabled=!s;const areaName=s?.area==='sud'?'Area Sud':'Area Nord';$('#saveInfo').textContent=s?`Salvataggio: ${areaName} · ${new Date(s.updatedAt).toLocaleString('it-IT')}`:'Nessuna partita salvata.'}
   function closeInteraction(){interactionOverlay.hidden=true;game.setPaused(false)}
   function showGame(save,mode='player'){
+    window.dispatchEvent(new CustomEvent('esposizione:inventory-start',{detail:{newGame:!save}}));
     setMode(mode);menu.classList.remove('active');screen.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;editor.toggle(false);fitCanvas();game.start(save);
   }
-  function returnMenu(save){if(save)game.requestSave();editor.toggle(false);game.stop();screen.classList.remove('active');menu.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;frame.classList.remove('admin-mode','player-mode','layout-portrait','layout-landscape');updateMenu()}
+  function returnMenu(save){window.EsposizioneInventory?.close();if(save)game.requestSave();editor.toggle(false);game.stop();screen.classList.remove('active');menu.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;frame.classList.remove('admin-mode','player-mode','layout-portrait','layout-landscape');updateMenu()}
 
   $('#playerGameBtn').onclick=()=>showOrientationPicker(()=>{window.EsposizioneSave.clear();showGame(null,'player')});
   $('#newGameBtn').onclick=()=>{window.EsposizioneSave.clear();showGame(null,'admin')};
@@ -170,6 +171,7 @@
   $('#guideBtn').onclick=()=>$('#guideDialog').showModal();$('#guideClose').onclick=()=>$('#guideDialog').close();
   $('#menuFullscreenBtn').onclick=toggleFullscreen;$('#playerFullscreenBtn').onclick=toggleFullscreen;$('#pauseFullscreenBtn').onclick=toggleFullscreen;
   $('#playerMenuBtn').onclick=ui.onPause;
+  window.EsposizioneInventoryGame=()=>game;window.EsposizioneInventoryCanOpen=()=>screen.classList.contains('active')&&!game.editorActive&&pauseOverlay.hidden&&interactionOverlay.hidden;
   $('#pauseLayoutBtn').onclick=()=>{if(gameMode!=='player'||!isMobileLike()){ui.onToast('Layout smartphone disponibile su schermi piccoli');return}pauseOverlay.hidden=true;game.setPaused(true);showOrientationPicker(()=>{game.setPaused(false)},true)};
   $('#chooseLandscape').onclick=()=>chooseLayout('landscape');$('#choosePortrait').onclick=()=>chooseLayout('portrait');
   $('#orientationCancel').onclick=()=>{pendingPlayerStart=null;orientationDialog.close();if(screen.classList.contains('active'))game.setPaused(false)};
