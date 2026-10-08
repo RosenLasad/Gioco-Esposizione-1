@@ -118,12 +118,24 @@
       }
     }
   }
+  // Online: le decorazioni pubblicate sono caricate dai file separati.
+  if(location.protocol!=='file:'){
+    for(const id of ['nord','sud']){
+      try{
+        const response=await fetch(`data/area_${id}_decor.json`,{cache:'no-store'});
+        if(!response.ok)throw new Error(`HTTP ${response.status}`);
+        const data=await response.json();
+        if(data.areaId!==id||!Array.isArray(data.objects))throw new Error('JSON Decor non valido');
+        window.EsposizioneAreas[id].decor=data.objects;
+      }catch(err){console.error(`[Esposizione] Decor ${id}:`,err);}
+    }
+  }
   // Nessuna collisione viene piu caricata da localStorage.
 
   const game=new window.EsposizioneGame(canvas,ui);
   const editor=new window.EsposizioneEditor(game,{
     panel:$('#testPanel'),dragHandle:$('#testDragHandle'),close:$('#testClose'),resetPanel:$('#testResetPanel'),lockPanel:$('#testLockPanel'),
-    select:$('#toolSelect'),undoHistory:$('#toolUndoHistory'),redoHistory:$('#toolRedoHistory'),saveCurrent:$('#toolSaveCurrent'),
+    select:$('#toolSelect'),undoHistory:$('#toolUndoHistory'),redoHistory:$('#toolRedoHistory'),saveCurrent:$('#toolSaveCurrent'),saveDecor:$('#toolSaveDecor'),
     obstacle:$('#toolObstacle'),walkable:$('#toolWalkable'),point:$('#toolPoint'),removePoint:$('#toolRemovePoint'),finish:$('#toolFinish'),remove:$('#toolDelete'),
     gateArea:$('#toolGateArea'),gateBoat:$('#toolGateBoat'),gateExit:$('#toolGateExit'),gateEdit:$('#toolGateEdit'),gateWDown:$('#toolGateWDown'),gateWUp:$('#toolGateWUp'),gateHDown:$('#toolGateHDown'),gateHUp:$('#toolGateHUp'),
     hotspot:$('#toolHotspot'),hotspotEdit:$('#toolHotspotEdit'),hotspotRadiusDown:$('#toolHotspotRadiusDown'),hotspotRadiusUp:$('#toolHotspotRadiusUp'),

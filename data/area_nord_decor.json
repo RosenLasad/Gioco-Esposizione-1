@@ -1,4 +1,28 @@
 {
   "areaId": "nord",
-  "objects": []
+  "objects": [
+    {
+      "id": "palma-1791484505655",
+      "kind": "palm",
+      "type": "ysort",
+      "asset": "images/decor/centrale/palms/palma_01_01.png",
+      "x": 2565,
+      "y": 1376,
+      "width": 160,
+      "height": 218,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "scale": 1,
+      "rotation": 0,
+      "collisionRadius": 13,
+      "animation": {
+        "frames": [
+          "images/decor/centrale/palms/palma_01_01.png",
+          "images/decor/centrale/palms/palma_01_02.png",
+          "images/decor/centrale/palms/palma_01_03.png"
+        ],
+        "fps": 2
+      }
+    }
+  ]
 }
