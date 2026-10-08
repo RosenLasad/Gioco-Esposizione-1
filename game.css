@@ -1,0 +1,196 @@
+:root{--ink:#2f2618;--paper:#f5ead2;--gold:#a57a3d;--green:#4f6748;--dark:#17150f}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Georgia,'Times New Roman',serif;background:#111;color:#f8f1e3}button{font:inherit;cursor:pointer}
+.screen{display:none;width:100%;height:100%}.screen.active{display:flex}
+#menuScreen{align-items:center;justify-content:center;background:radial-gradient(circle at 50% 25%,#4c4430 0,#211d15 45%,#0f0e0a 100%);padding:20px}.menu-card{width:min(680px,94vw);padding:42px;border:1px solid #a9854d;background:linear-gradient(180deg,rgba(28,24,17,.96),rgba(17,15,11,.96));box-shadow:0 28px 80px #000a;text-align:center}.eyebrow{letter-spacing:.2em;font-size:.78rem;color:#d1ae70;text-transform:uppercase}.menu-card h1{font-size:clamp(2.2rem,7vw,4.5rem);margin:.2em 0 .05em;line-height:.95}.subtitle{font-style:italic;color:#dfceb0;margin:0 0 24px}.intro{max-width:520px;margin:0 auto 28px;color:#e7decf}.menu-actions{display:grid;gap:10px}.menu-actions button,.panel button,.dialog-card button{border:1px solid #927447;background:#2b261c;color:#fff;padding:14px 18px;border-radius:4px}.menu-actions button.primary,.panel button.primary,.dialog-card button.primary{background:#855f2f;border-color:#c99d62}.menu-actions button:disabled{opacity:.4;cursor:not-allowed}.save-info{min-height:1.3em;color:#cbb894;margin:18px 0 8px}
+#gameScreen{background:#0a0a09;align-items:center;justify-content:center}.game-frame{position:relative;width:100vw;height:100vh;overflow:hidden;background:#000}.game-frame canvas{display:block;width:100%;height:100%;image-rendering:auto}.hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;padding:max(10px,env(safe-area-inset-top)) 14px 12px;background:linear-gradient(#000b,transparent);pointer-events:none}.hud>div:first-child{display:flex;flex-direction:column;text-shadow:0 2px 3px #000}.hud b{letter-spacing:.12em}.hud span{font-size:.78rem;color:#e0d2b7}.hud-actions{display:flex;gap:6px;pointer-events:auto}.hud-actions button{background:#191711cc;color:#fff;border:1px solid #9b7b4a;border-radius:4px;padding:7px 10px;font-size:.72rem}.prompt{position:absolute;left:50%;bottom:11%;transform:translateX(-50%);background:#18140eea;border:1px solid #d3ad6c;color:#fff;padding:10px 15px;border-radius:4px;white-space:nowrap;box-shadow:0 6px 20px #0008}.toast{position:absolute;top:16%;left:50%;transform:translate(-50%,-8px);padding:10px 14px;background:#17140ddd;border:1px solid #80683d;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.fade{position:absolute;inset:0;background:#0b0905;opacity:0;pointer-events:none;transition:opacity .18s}.fade.on{opacity:1}
+.overlay{position:absolute;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:20px}.overlay[hidden],.prompt[hidden]{display:none!important}.panel{width:min(520px,92vw);background:#211d15;border:1px solid #ad8c55;padding:28px;display:grid;gap:10px;box-shadow:0 25px 80px #000c}.panel h2{margin:0}.interaction-panel p{line-height:1.5;color:#e9dfce}
+dialog{border:0;padding:0;background:transparent;color:#f5ead8}dialog::backdrop{background:#000b}.dialog-card{width:min(560px,92vw);background:#211d15;border:1px solid #ad8c55;padding:28px;box-shadow:0 25px 80px #000c}.dialog-card p{line-height:1.5}
+.touch-controls{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:none;justify-content:space-between;align-items:flex-end;padding:0 22px;pointer-events:none}.joystick{width:112px;height:112px;border:2px solid #fff6;border-radius:50%;background:#0004;position:relative;pointer-events:auto;touch-action:none}.joystick-knob{position:absolute;width:46px;height:46px;left:31px;top:31px;border-radius:50%;background:#fff8;border:1px solid #fff}.touch-e{width:68px;height:68px;border-radius:50%;background:#856132dd;border:2px solid #e2bd7b;color:#fff;font-weight:bold;font-size:1.25rem;pointer-events:auto;touch-action:none}
+@media(pointer:coarse),(max-width:850px){.touch-controls{display:flex}.hud-actions #debugBtn{display:none}.menu-card{padding:28px 20px}}
+
+.test-panel{position:absolute;left:14px;top:82px;width:min(360px,calc(100vw - 28px));max-height:calc(100vh - 100px);overflow:auto;background:#15130ff2;border:1px solid #b08b52;box-shadow:0 18px 55px #000b;padding:13px;z-index:20;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.test-panel[hidden]{display:none!important}.test-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.test-head>div{display:flex;flex-direction:column;gap:2px}.test-head b{letter-spacing:.12em;font-size:.82rem}.test-head small{color:#d2bd95}.test-head button{border:1px solid #876b42;background:#29231a;color:#fff;width:32px;height:32px}.test-panel p{font-size:.79rem;line-height:1.35;color:#e6dac4;margin:9px 0}.test-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:7px}.test-tools.secondary{grid-template-columns:repeat(3,minmax(0,1fr))}.test-tools button{font-size:.72rem;padding:8px 6px;border:1px solid #725d3d;background:#29241b;color:#eee;border-radius:3px}.test-tools button.active{background:#7a5c2e;border-color:#e1b76d;color:#fff}.test-help{display:block;color:#bbaa89;line-height:1.35;margin-top:9px;font-size:.68rem}.game-frame.editor-on canvas{cursor:crosshair}.game-frame.editor-on:not(.editor-panning) canvas{cursor:crosshair}.game-frame.editor-panning canvas{cursor:grabbing!important}.game-frame.editor-on .touch-controls{display:none!important}
+@media(max-width:850px){.test-panel{top:70px;max-height:60vh}.hud-actions #debugBtn{display:none}}
+/* v0.2.7: zoom gioco e strumenti TEST */
+.game-frame canvas{touch-action:none}
+.test-tools{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:560px){.test-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* v0.3.3 - pannello TEST riorganizzato, trascinabile e a categorie */
+.test-panel{
+  position:absolute;left:14px;top:82px;width:min(390px,calc(100vw - 28px));
+  max-height:calc(100vh - 96px);overflow:auto;background:#15130ff2;border:1px solid #b08b52;
+  box-shadow:0 18px 55px #000b;padding:0 12px 12px;z-index:20;
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif;border-radius:6px
+}
+.test-panel.compact{width:min(330px,calc(100vw - 28px))}
+.test-panel[hidden]{display:none!important}
+.test-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 -12px;padding:10px 10px;background:#1c1812f7;border-bottom:1px solid #6f5837;cursor:grab;user-select:none;touch-action:none}
+.test-head.dragging{cursor:grabbing}
+.test-title-wrap{display:flex;flex-direction:column;gap:2px;min-width:0}.test-title-wrap b{letter-spacing:.12em;font-size:.82rem}.test-title-wrap span{color:#d2bd95;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.test-head-actions{display:flex;gap:5px}.test-head-actions button{border:1px solid #876b42;background:#29231a;color:#fff;width:30px;height:30px;padding:0;border-radius:3px;font-size:.78rem}
+.test-fixed-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}.test-fixed-tools button,.test-tools button{font-size:.72rem;padding:8px 6px;border:1px solid #725d3d;background:#29241b;color:#eee;border-radius:3px}.test-fixed-tools button.active,.test-tools button.active{background:#7a5c2e;border-color:#e1b76d;color:#fff}.test-fixed-tools .save-current{grid-column:span 2;background:#315735;border-color:#6fa973;font-weight:700}
+.test-meta{display:grid;gap:3px;margin-top:8px;padding:7px 8px;background:#0f0d0a99;border:1px solid #403522;border-radius:4px}.test-meta span{font-size:.68rem;color:#cfbea0;overflow-wrap:anywhere}.test-meta .save-state.dirty{color:#ffd66b}.test-meta .save-state.clean{color:#8fd69b}.test-meta .save-state.error{color:#ff8c82}
+.test-panel p{font-size:.76rem;line-height:1.35;color:#e6dac4;margin:8px 0}
+.test-section{border:1px solid #4c3d28;border-radius:4px;margin-top:7px;background:#100e0baa}.test-section>summary{list-style:none;cursor:pointer;padding:8px 9px;font-size:.74rem;font-weight:700;letter-spacing:.04em;color:#ecd7b0;user-select:none}.test-section>summary::-webkit-details-marker{display:none}.test-section>summary:before{content:'▸';display:inline-block;margin-right:7px;transition:.15s}.test-section[open]>summary:before{transform:rotate(90deg)}.test-section[open]>summary{border-bottom:1px solid #3e3222}.test-section .test-tools{padding:7px;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.test-panel.compact .test-section .test-tools{grid-template-columns:1fr}.test-help{display:block;color:#bbaa89;line-height:1.35;margin-top:9px;font-size:.66rem}.game-frame.editor-on canvas{cursor:crosshair}.game-frame.editor-panning canvas{cursor:grabbing!important}.game-frame.editor-on .touch-controls{display:none!important}
+@media(max-width:850px){.test-panel{top:70px;max-height:66vh;width:min(360px,calc(100vw - 16px));left:8px}.test-head{cursor:default}.hud-actions #debugBtn{display:none}}
+@media(max-width:560px){.test-fixed-tools,.test-section .test-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.test-panel{max-height:64vh}}
+
+/* v0.3.4 - Player/Admin mode, fullscreen and responsive mobile HUD */
+.menu-actions .player-entry{font-size:1.02rem;font-weight:800;letter-spacing:.02em}
+
+/* Admin HUD is the existing technical HUD. Player HUD is separate and minimal. */
+.game-frame.player-mode .admin-hud{display:none}
+.game-frame.admin-mode .player-hud{display:none}
+.player-hud{position:absolute;inset:0;pointer-events:none;z-index:12}
+.player-area-badge{position:absolute;top:max(14px,calc(env(safe-area-inset-top) + 8px));left:50%;transform:translate(-50%,-8px);padding:8px 13px;border:1px solid #c9a465;background:#17130dcc;color:#fff;letter-spacing:.12em;font-size:.74rem;border-radius:5px;box-shadow:0 5px 18px #0008;opacity:0;transition:.22s;white-space:nowrap;text-shadow:0 1px 2px #000}
+.player-area-badge.show{opacity:1;transform:translate(-50%,0)}
+.player-hud-actions{position:absolute;top:max(12px,calc(env(safe-area-inset-top) + 6px));right:max(12px,calc(env(safe-area-inset-right) + 8px));display:flex;gap:8px;pointer-events:auto}
+.hud-icon{width:42px;height:42px;border-radius:50%;border:1px solid #c3a06a;background:#18140edb;color:#fff;font-size:1.1rem;display:grid;place-items:center;box-shadow:0 5px 18px #0008}
+.hud-icon:active{transform:scale(.96)}
+
+/* Player prompts sit above the touch controls rather than colliding with them. */
+.game-frame.player-mode .prompt{bottom:calc(max(22px,env(safe-area-inset-bottom)) + 128px);font-size:.84rem;max-width:min(80vw,520px);overflow:hidden;text-overflow:ellipsis}
+.game-frame.player-mode .toast{top:max(76px,calc(env(safe-area-inset-top) + 70px))}
+
+/* Touch controls: safe-area aware and deliberately inset from device edges. */
+.touch-controls{z-index:11}
+.game-frame.player-mode .touch-controls{left:0;right:0;bottom:max(18px,calc(env(safe-area-inset-bottom) + 10px));padding-left:max(20px,calc(env(safe-area-inset-left) + 14px));padding-right:max(20px,calc(env(safe-area-inset-right) + 14px))}
+.game-frame.player-mode .joystick{width:116px;height:116px;background:#0807065e;border-color:#f7eadb78;box-shadow:0 4px 18px #0006}
+.game-frame.player-mode .joystick-knob{width:48px;height:48px;left:32px;top:32px;background:#f7eadbaa}
+.game-frame.player-mode .touch-e{width:72px;height:72px;background:#614722d9;border-color:#dcb66f;color:#fff;box-shadow:0 4px 18px #0008;opacity:.72;transition:.15s}
+.game-frame.player-mode .touch-e.ready{opacity:1;transform:scale(1.06);box-shadow:0 0 0 5px #d9b36d24,0 5px 20px #0009}
+
+/* Chosen portrait layout: slightly smaller controls and more vertical clearance. */
+.game-frame.player-mode.layout-portrait .touch-controls{bottom:max(26px,calc(env(safe-area-inset-bottom) + 18px));padding-left:max(16px,calc(env(safe-area-inset-left) + 12px));padding-right:max(16px,calc(env(safe-area-inset-right) + 12px))}
+.game-frame.player-mode.layout-portrait .joystick{width:104px;height:104px}
+.game-frame.player-mode.layout-portrait .joystick-knob{width:44px;height:44px;left:28px;top:28px}
+.game-frame.player-mode.layout-portrait .touch-e{width:66px;height:66px}
+.game-frame.player-mode.layout-portrait .prompt{bottom:calc(max(26px,env(safe-area-inset-bottom)) + 118px)}
+
+/* Chosen landscape layout: controls stay farther apart from the playfield center. */
+.game-frame.player-mode.layout-landscape .touch-controls{bottom:max(15px,calc(env(safe-area-inset-bottom) + 8px));padding-left:max(26px,calc(env(safe-area-inset-left) + 18px));padding-right:max(26px,calc(env(safe-area-inset-right) + 18px))}
+.game-frame.player-mode.layout-landscape .joystick{width:112px;height:112px}
+.game-frame.player-mode.layout-landscape .joystick-knob{left:31px;top:31px}
+
+/* Mobile orientation picker */
+.orientation-dialog{border:0;padding:0;background:transparent;color:#fff;max-width:none;max-height:none}
+.orientation-dialog::backdrop{background:#000c}
+.orientation-card{width:min(620px,92vw);text-align:center;background:#211d15;border:1px solid #ad8c55;padding:26px;box-shadow:0 25px 90px #000e}
+.orientation-card h2{margin:.2em 0 .35em}.orientation-intro{color:#ddcfb8;line-height:1.45;margin:0 auto 20px;max-width:480px}
+.orientation-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.orientation-choice{display:grid!important;justify-items:center;gap:6px;min-height:126px}
+.orientation-choice small{font-size:.72rem;color:#dfd1b8;font-weight:400}.orientation-icon{display:block;border:2px solid currentColor;border-radius:4px;width:52px;height:32px;opacity:.95}.portrait-icon{width:30px;height:52px}
+.remember-layout{display:flex;align-items:center;justify-content:center;gap:7px;color:#d7c7aa;font-size:.82rem;margin:8px 0 13px}.remember-layout input{accent-color:#a77a3d}
+
+/* Fullscreen works on the whole application, menu included. */
+:fullscreen body,:fullscreen #app,:fullscreen .screen,:fullscreen .game-frame{width:100%;height:100%}
+:-webkit-full-screen body,:-webkit-full-screen #app,:-webkit-full-screen .screen,:-webkit-full-screen .game-frame{width:100%;height:100%}
+
+/* Common Netlify preview badges: hide only explicit Netlify-labelled chrome if injected in-page. */
+iframe[src*="netlify" i][title*="netlify" i],
+[aria-label*="Powered by Netlify" i],
+[title*="Powered by Netlify" i]{display:none!important}
+
+@media(pointer:fine) and (min-width:851px){
+  .game-frame.player-mode .touch-controls{display:none!important}
+}
+@media(max-width:850px),(pointer:coarse){
+  .player-hud-actions{top:max(9px,calc(env(safe-area-inset-top) + 5px));right:max(9px,calc(env(safe-area-inset-right) + 7px))}
+  .hud-icon{width:40px;height:40px}
+  .game-frame.player-mode .touch-controls{display:flex}
+}
+@media(max-width:560px){
+  .orientation-actions{grid-template-columns:1fr 1fr}.orientation-card{padding:22px 16px}
+  .player-area-badge{font-size:.68rem;padding:7px 10px}
+  .game-frame.player-mode .prompt{font-size:.76rem;padding:8px 11px}
+}
+@media(max-width:390px){
+  .orientation-actions{grid-template-columns:1fr}.orientation-choice{min-height:92px;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;text-align:left;padding:12px 16px!important}.orientation-choice .orientation-icon{grid-row:1/3}.orientation-choice b,.orientation-choice small{justify-self:start}
+}
+#pauseLayoutBtn{display:none}
+@media(max-width:850px),(pointer:coarse){#pauseLayoutBtn{display:block}}
+
+/* v0.3.5 - viewport mobile reale + comandi touch impilati in basso a destra */
+:root{--app-height:100dvh;--app-width:100vw}
+html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-height,100dvh)}
+.game-frame{width:var(--app-width,100vw);height:var(--app-height,100dvh);max-height:var(--app-height,100dvh)}
+
+/* Su touch E e joystick formano un unico blocco verticale ancorato alla viewport visibile. */
+.game-frame.player-mode .touch-controls{
+  left:auto;
+  right:max(16px,calc(env(safe-area-inset-right) + 10px));
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));
+  width:auto;
+  padding:0;
+  display:none;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  gap:10px;
+}
+.game-frame.player-mode .touch-e{order:1;width:50px;height:50px;min-width:50px;min-height:50px;font-size:1rem}
+.game-frame.player-mode .joystick{order:2;width:112px;height:112px;flex:0 0 auto}
+.game-frame.player-mode .joystick-knob{width:46px;height:46px;left:31px;top:31px}
+
+.game-frame.player-mode.layout-portrait .touch-controls{
+  right:max(14px,calc(env(safe-area-inset-right) + 9px));
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));
+  padding:0;
+}
+.game-frame.player-mode.layout-portrait .joystick{width:102px;height:102px}
+.game-frame.player-mode.layout-portrait .joystick-knob{width:42px;height:42px;left:28px;top:28px}
+.game-frame.player-mode.layout-portrait .touch-e{width:46px;height:46px;min-width:46px;min-height:46px;font-size:.92rem}
+
+.game-frame.player-mode.layout-landscape .touch-controls{
+  right:max(18px,calc(env(safe-area-inset-right) + 11px));
+  bottom:max(14px,calc(env(safe-area-inset-bottom) + 8px));
+  padding:0;
+}
+.game-frame.player-mode.layout-landscape .joystick{width:108px;height:108px}
+.game-frame.player-mode.layout-landscape .joystick-knob{width:44px;height:44px;left:30px;top:30px}
+.game-frame.player-mode.layout-landscape .touch-e{width:48px;height:48px;min-width:48px;min-height:48px}
+
+/* Prompt sopra l'intero blocco E + joystick. */
+.game-frame.player-mode .prompt{bottom:calc(max(16px,env(safe-area-inset-bottom)) + 178px)}
+.game-frame.player-mode.layout-portrait .prompt{bottom:calc(max(16px,env(safe-area-inset-bottom)) + 166px)}
+.game-frame.player-mode.layout-landscape .prompt{bottom:calc(max(14px,env(safe-area-inset-bottom)) + 172px)}
+
+@media(max-width:850px),(pointer:coarse){
+  .game-frame.player-mode .touch-controls{display:flex}
+}
+
+/* Su telefoni molto bassi (browser chrome visibile / landscape) riduce appena i controlli. */
+@media(max-height:520px) and (pointer:coarse){
+  .game-frame.player-mode .joystick{width:94px;height:94px}
+  .game-frame.player-mode .joystick-knob{width:40px;height:40px;left:25px;top:25px}
+  .game-frame.player-mode .touch-e{width:42px;height:42px;min-width:42px;min-height:42px;font-size:.88rem}
+  .game-frame.player-mode .touch-controls{gap:8px;bottom:max(10px,calc(env(safe-area-inset-bottom) + 6px))}
+  .game-frame.player-mode .prompt{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 150px)}
+}
+
+/* v0.3.6 - comandi touch centrati sul bordo inferiore */
+.game-frame.player-mode .touch-controls,
+.game-frame.player-mode.layout-portrait .touch-controls,
+.game-frame.player-mode.layout-landscape .touch-controls{
+  left:50%;
+  right:auto;
+  transform:translateX(-50%);
+  padding-left:0;
+  padding-right:0;
+}
+
+/* Mantiene libero lo spazio negli angoli inferiori per il futuro HUD. */
+@media(max-width:850px),(pointer:coarse){
+  .game-frame.player-mode .touch-controls{
+    max-width:max-content;
+  }
+}
+
+/* Regolazioni proporzioni e zoom - Modalita TEST */
+.test-visual-settings{display:grid;gap:9px;padding:10px 11px 12px}
+.test-visual-settings label{font-size:.75rem;color:#ecd7b0;display:flex;justify-content:space-between;gap:8px}
+.test-visual-settings output{color:#a5dfae;font-weight:700}
+.test-visual-settings input[type=range]{width:100%;accent-color:#b69156;cursor:pointer}
+.test-visual-settings small{font-size:.69rem;color:#bbaa89;line-height:1.4}
+
+.decor-tools{overflow:visible}.tool-menu{position:relative}.tool-menu>button{width:100%}.tool-menu-list{position:absolute;left:0;top:calc(100% + 4px);z-index:40;display:grid;gap:4px;min-width:100%;padding:6px;background:#18130de8;border:1px solid #8a6c42;border-radius:4px;box-shadow:0 10px 24px #0009}.tool-menu-list[hidden]{display:none!important}.tool-menu-item{white-space:nowrap}.tool-menu.open>button,.tool-menu-item.active{background:#7a5c2e;border-color:#e1b76d;color:#fff}

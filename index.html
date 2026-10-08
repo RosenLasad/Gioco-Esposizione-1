@@ -119,9 +119,37 @@
 
           <details class="test-section">
             <summary>Decorazioni</summary>
-            <div class="test-tools">
-              <button id="toolDecor">+ Lampione</button>
-              <button id="toolPalm">+ Palma</button>
+            <div class="test-tools decor-tools">
+              <div class="tool-menu">
+                <button id="toolDecor" type="button">+ Lampione (1) ▾</button>
+                <div class="tool-menu-list" id="toolDecorMenu" hidden>
+                  <button type="button" class="tool-menu-item" data-decor-kind="lamp" data-decor-variant="1">Lampione 1</button>
+                  <button type="button" class="tool-menu-item" data-decor-kind="lamp" data-decor-variant="2">Lampione 2</button>
+                  <button type="button" class="tool-menu-item" data-decor-kind="lamp" data-decor-variant="3">Lampione 3</button>
+                </div>
+              </div>
+              <div class="tool-menu">
+                <button id="toolPalm" type="button">+ Palma (1) ▾</button>
+                <div class="tool-menu-list" id="toolPalmMenu" hidden>
+                  <button type="button" class="tool-menu-item" data-decor-kind="palm" data-decor-variant="1">Palma 1</button>
+                  <button type="button" class="tool-menu-item" data-decor-kind="palm" data-decor-variant="2">Palma 2</button>
+                  <button type="button" class="tool-menu-item" data-decor-kind="palm" data-decor-variant="3">Palma 3</button>
+                </div>
+              </div>
+              <div class="tool-menu">
+                <button id="toolFountain" type="button">+ Fontana (1) ▾</button>
+                <div class="tool-menu-list" id="toolFountainMenu" hidden>
+                  <button type="button" class="tool-menu-item" data-decor-kind="fountain" data-decor-variant="1">Fontana 1</button>
+                  <button type="button" class="tool-menu-item" data-decor-kind="fountain" data-decor-variant="2">Fontana 2</button>
+                  <button type="button" class="tool-menu-item" data-decor-kind="fountain" data-decor-variant="3">Fontana 3</button>
+                </div>
+              </div>
+              <button id="toolFountainCollisionDown" type="button">Vasca −</button>
+              <button id="toolFountainCollisionUp" type="button">Vasca +</button>
+              <button id="toolFountainBasinUp" type="button">Vasca ↑</button>
+              <button id="toolFountainBasinDown" type="button">Vasca ↓</button>
+              <button id="toolFountainDepthDown" type="button">Taglio −</button>
+              <button id="toolFountainDepthUp" type="button">Taglio +</button>
               <button id="toolScaleDown">Scala −</button>
               <button id="toolScaleUp">Scala +</button>
               <button id="toolAnchorDown">Anchor ↑</button>
@@ -143,6 +171,17 @@
               <button id="toolToggleGates" class="active">Varchi ON</button>
               <button id="toolToggleHotspots" class="active">Hotspot ON</button>
               <button id="toolToggleDecor" class="active">Decor ON</button>
+            </div>
+          </details>
+
+          <details class="test-section" open>
+            <summary>Proporzioni personaggio e zoom</summary>
+            <div class="test-visual-settings">
+              <label for="testPlayerScale">Dimensione personaggio: <output id="testPlayerScaleValue">80%</output></label>
+              <input id="testPlayerScale" type="range" min="50" max="100" step="5" value="80">
+              <label for="testMaxZoom">Zoom massimo giocatore: <output id="testMaxZoomValue">200%</output></label>
+              <input id="testMaxZoom" type="range" min="135" max="250" step="5" value="200">
+              <small>Le impostazioni si applicano anche alla partita normale e sono memorizzate in questo browser. Per valutare le proporzioni in movimento, chiudi la Modalità TEST.</small>
             </div>
           </details>
 
@@ -232,7 +271,7 @@
       <p><b>PC:</b> WASD o Frecce per muoverti, <b>E</b> per interagire, <b>ESC</b> per la pausa. La <b>rotellina</b> regola uno zoom di gioco limitato.</p>
       <p><b>Mobile:</b> usa il joystick e il pulsante <b>E</b>. La modalità giocatore permette di scegliere un layout verticale oppure orizzontale; usa <b>due dita</b> sulla mappa per regolare lo zoom.</p>
       <p>I varchi collegano Area Nord e Area Sud, il Battello oppure l’uscita dall’Esposizione. Dal menu <b>Vai all'Esposizione</b> apre l'interfaccia per il giocatore; <b>TEST Esposizione</b> mantiene gli strumenti amministratore. Se un vecchio salvataggio crea problemi usa <b>Ripristina posizione</b> dal menu.</p>
-      <p><b>TEST:</b> blocca temporaneamente il personaggio e permette di disegnare/spostare collisioni, aree percorribili, varchi e hotspot. Usa la <b>rotellina</b> per lo zoom e, in <b>Seleziona</b>, trascina lo sfondo con il tasto sinistro per spostarti sulla mappa. Puoi creare nuovi poligoni rossi/verdi e usare <b>+ Punto</b> sul loro perimetro per aggiungere vertici; <b>− Punto</b> rimuove il vertice selezionato. Con <b>+ Lampione</b> e <b>+ Palma</b> puoi piazzare e trascinare decorazioni con Y-sort; Scala e Anchor regolano dimensione e linea di profondità. Il pannello TEST è trascinabile e organizzato per categorie. Usa <b>Collega JSON</b> per scegliere il file corretto in <b>data/</b>, poi <b>Salva JSON attuale</b>. Se il collegamento non e disponibile usa <b>Esporta JSON</b> e sostituisci il file in data/. Per aggiornare la copia offline, esegui <b>AGGIORNA_MAPPE_OFFLINE.bat</b>. Per pubblicare online, carica il JSON aggiornato sul server.</p>
+      <p><b>TEST:</b> blocca temporaneamente il personaggio e permette di disegnare/spostare collisioni, aree percorribili, varchi e hotspot. Usa la <b>rotellina</b> per lo zoom e, in <b>Seleziona</b>, trascina lo sfondo con il tasto sinistro per spostarti sulla mappa. Puoi creare nuovi poligoni rossi/verdi e usare <b>+ Punto</b> sul loro perimetro per aggiungere vertici; <b>− Punto</b> rimuove il vertice selezionato. Con <b>+ Lampione</b> e <b>+ Palma</b> scegli il tipo (1/2/3) e poi piazza e trascina decorazioni con Y-sort; Scala e Anchor regolano dimensione e linea di profondità. Il pannello TEST è trascinabile e organizzato per categorie. Usa <b>Collega JSON</b> per scegliere il file corretto in <b>data/</b>, poi <b>Salva JSON attuale</b>. Se il collegamento non e disponibile usa <b>Esporta JSON</b> e sostituisci il file in data/. Per aggiornare la copia offline, esegui <b>AGGIORNA_MAPPE_OFFLINE.bat</b>. Per pubblicare online, carica il JSON aggiornato sul server.</p>
       <p>I tre punti interattivi restano prototipi: Campo sportivo, Palazzo delle Belle Arti e Montagne russe.</p>
       <button id="guideClose" class="primary">Chiudi</button>
     </div>

@@ -15,7 +15,7 @@
   class Editor{
     constructor(game,els){
       this.game=game;this.els=els;this.enabled=false;this.prevDebug=false;this.mode='select';this.draft=[];this.drag=null;this.pan=null;this.selected=null;this.rectStart=null;
-      this.undoStack=[];this.redoStack=[];this.dirty=false;this.dragHistoryArmed=false;this.fileHandles={};this.panelLocked=false;this.panelDrag=null;this.lastPointer=null;this.speedFactor=1;this.selectedLampVariant=1;this.selectedPalmVariant=1;this.selectedFountainVariant=1;
+      this.undoStack=[];this.redoStack=[];this.dirty=false;this.dragHistoryArmed=false;this.fileHandles={};this.panelLocked=false;this.panelDrag=null;this.lastPointer=null;this.speedFactor=1;this.selectedLampVariant=1;this.selectedPalmVariant=1;
       this.visibility={collisions:true,gates:true,hotspots:true,decor:true};
       this.bind();this.restorePanelPosition();this.loadSavedHandles();
     }
@@ -29,7 +29,7 @@
       this.els.select.onclick=()=>this.setMode('select');
       this.els.obstacle.onclick=()=>this.setMode('obstacle');this.els.walkable.onclick=()=>this.setMode('walkable');this.els.point.onclick=()=>this.setMode('point');
       this.els.gateArea.onclick=()=>this.setMode('gate-area');this.els.gateBoat.onclick=()=>this.setMode('gate-boat');this.els.gateExit.onclick=()=>this.setMode('gate-exit');
-      this.els.hotspot.onclick=()=>this.setMode('hotspot');this.els.decor.onclick=(e)=>{e.preventDefault();this.toggleDecorMenu('lamp')};this.els.palm.onclick=(e)=>{e.preventDefault();this.toggleDecorMenu('palm')};this.els.fountain.onclick=e=>{e.preventDefault();this.toggleDecorMenu('fountain')};this.els.fountainCollisionDown.onclick=()=>this.adjustFountainCollision(-.05);this.els.fountainCollisionUp.onclick=()=>this.adjustFountainCollision(.05);this.els.fountainBasinUp.onclick=()=>this.shiftFountainBasin(-5);this.els.fountainBasinDown.onclick=()=>this.shiftFountainBasin(5);this.els.fountainDepthDown.onclick=()=>this.adjustFountainDepth(-.05);this.els.fountainDepthUp.onclick=()=>this.adjustFountainDepth(.05);this.bindDecorMenus();this.updateDecorButtonLabels();this.els.setSpawn.onclick=()=>this.setMode('spawn');this.els.teleport.onclick=()=>this.setMode('teleport');
+      this.els.hotspot.onclick=()=>this.setMode('hotspot');this.els.decor.onclick=(e)=>{e.preventDefault();this.toggleDecorMenu('lamp')};this.els.palm.onclick=(e)=>{e.preventDefault();this.toggleDecorMenu('palm')};this.bindDecorMenus();this.updateDecorButtonLabels();this.els.setSpawn.onclick=()=>this.setMode('spawn');this.els.teleport.onclick=()=>this.setMode('teleport');
       this.els.finish.onclick=()=>this.finishDraft();this.els.removePoint.onclick=()=>this.removeSelectedPoint();this.els.remove.onclick=()=>this.deleteSelected();
       this.els.undoHistory.onclick=()=>this.undo();this.els.redoHistory.onclick=()=>this.redo();
       this.els.scaleDown.onclick=()=>this.scaleSelected(1/1.08);this.els.scaleUp.onclick=()=>this.scaleSelected(1.08);this.els.anchorDown.onclick=()=>this.adjustAnchor(-.02);this.els.anchorUp.onclick=()=>this.adjustAnchor(.02);
@@ -62,36 +62,25 @@
     }
     async loadSavedHandles(){for(const id of ['nord','sud']){for(const kind of ['collisions','decor']){const key=kind==='collisions'?`json-${id}`:`json-decor-${id}`;const h=await HandleStore.get(key);if(h)this.fileHandles[kind==='collisions'?id:`decor-${id}`]=h}}this.refreshFileState()}
     bindDecorMenus(){
-      const bindItem=(el)=>{if(!el)return;el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const kind=el.dataset.decorKind,variant=Number(el.dataset.decorVariant||1);if(kind==='lamp')this.selectDecorVariant('lamp',variant);else if(kind==='palm')this.selectDecorVariant('palm',variant);else this.selectDecorVariant('fountain',variant)})};
-      (this.els.decorItems||[]).forEach(bindItem);(this.els.palmItems||[]).forEach(bindItem);(this.els.fountainItems||[]).forEach(bindItem);
+      const bindItem=(el)=>{if(!el)return;el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const kind=el.dataset.decorKind,variant=Number(el.dataset.decorVariant||1);if(kind==='lamp')this.selectDecorVariant('lamp',variant);else this.selectDecorVariant('palm',variant)})};
+      (this.els.decorItems||[]).forEach(bindItem);(this.els.palmItems||[]).forEach(bindItem);
       document.addEventListener('click',e=>{if(e.target.closest('.tool-menu'))return;this.closeDecorMenus()});
     }
     toggleDecorMenu(kind){
-      const menu=kind==='lamp'?this.els.decorMenu:kind==='palm'?this.els.palmMenu:this.els.fountainMenu;
-      if(!menu)return;const open=menu.hidden;this.closeDecorMenus();if(open){menu.hidden=false;menu.parentElement?.classList.add('open')}
-    }
-    closeDecorMenus(){for(const menu of [this.els.decorMenu,this.els.palmMenu,this.els.fountainMenu]){if(menu){menu.hidden=true;menu.parentElement?.classList.remove('open')}}}
+      const lamp=kind==='lamp',menu=lamp?this.els.decorMenu:this.els.palmMenu,other=lamp?this.els.palmMenu:this.els.decorMenu,wrap=menu?.parentElement,otherWrap=other?.parentElement;
+      if(!menu)return;const willOpen=menu.hidden;this.closeDecorMenus();if(willOpen){menu.hidden=false;wrap?.classList.add('open');if(otherWrap)otherWrap.classList.remove('open')}}
+    closeDecorMenus(){for(const [menu,btn] of [[this.els.decorMenu,this.els.decor],[this.els.palmMenu,this.els.palm]]){if(menu)menu.hidden=true;btn?.parentElement?.classList.remove('open')}}
     selectDecorVariant(kind,variant){
-      if(kind==='lamp')this.selectedLampVariant=variant;else if(kind==='palm')this.selectedPalmVariant=variant;else this.selectedFountainVariant=variant;
-      this.updateDecorButtonLabels();this.closeDecorMenus();this.setMode(kind==='lamp'?'decor':kind==='palm'?'palm':'fountain');
-      this.updateStatus(`${kind==='lamp'?'Lampione':kind==='palm'?'Palma':'Fontana'} ${variant} selezionata · clic sulla mappa per aggiungerla`);
+      if(kind==='lamp')this.selectedLampVariant=variant;else this.selectedPalmVariant=variant;
+      this.updateDecorButtonLabels();this.closeDecorMenus();this.setMode(kind==='lamp'?'decor':'palm');
+      this.updateStatus(`${kind==='lamp'?'Lampione':'Palma'} ${variant} selezionato · clic sulla mappa per aggiungerlo`)
     }
     updateDecorButtonLabels(){
-      for(const [btn,label,n,items] of [[this.els.decor,'Lampione',this.selectedLampVariant,this.els.decorItems],[this.els.palm,'Palma',this.selectedPalmVariant,this.els.palmItems],[this.els.fountain,'Fontana',this.selectedFountainVariant,this.els.fountainItems]]){
-        if(btn)btn.textContent=`+ ${label} (${n}) ▾`;
-        for(const el of items||[])el.classList.toggle('active',Number(el.dataset.decorVariant||1)===n);
-      }
+      if(this.els.decor)this.els.decor.textContent=`+ Lampione (${this.selectedLampVariant}) ▾`;
+      if(this.els.palm)this.els.palm.textContent=`+ Palma (${this.selectedPalmVariant}) ▾`;
+      for(const el of (this.els.decorItems||[]))el.classList.toggle('active',Number(el.dataset.decorVariant||1)===this.selectedLampVariant);
+      for(const el of (this.els.palmItems||[]))el.classList.toggle('active',Number(el.dataset.decorVariant||1)===this.selectedPalmVariant);
     }
-    fountainPreset(variant=this.selectedFountainVariant){
-      const prefix=`fontana_${String(variant).padStart(2,'0')}`;
-      const frames=[1,2,3].map(i=>`images/decor/centrale/fountains/${prefix}_${String(i).padStart(2,'0')}.png`);
-      return {id:`fontana-${variant}-${Date.now()}`,kind:'fountain',variant:prefix,type:'fountain',asset:frames[0],x:0,y:0,width:190,height:170,anchorX:.5,anchorY:1,scale:1,rotation:0,collisionRadius:0,basinRadius:64,basinRadiusY:42,basinOffsetY:-65,depthCut:.30,animation:{frames,fps:3}};
-    }
-    fountainEllipse(o){const sc=o.scale||1;return {x:o.x,y:o.y+(o.basinOffsetY??-65)*sc,rx:(o.basinRadius??64)*sc,ry:(o.basinRadiusY??(o.basinRadius??64))*sc}}
-    shiftFountainBasin(d){const o=this.selectedFountain();if(!o){this.updateStatus('Seleziona prima una fontana');return}this.beginChange();o.basinOffsetY=clamp((o.basinOffsetY??-65)+d,-350,350);this.setDirty(true);this.updateStatus(`Vasca: offset verticale ${Math.round(o.basinOffsetY)} px`)}
-    selectedFountain(){return this.selected?.group==='decor'&&this.selected.obj?.kind==='fountain'?this.selected.obj:null}
-    adjustFountainCollision(delta){const o=this.selectedFountain();if(!o){this.updateStatus('Seleziona prima una fontana');return}this.beginChange();o.basinRadius=clamp((o.basinRadius||64)+delta*(o.width||190),15,200);this.setDirty(true);this.updateStatus(`Vasca: raggio ${Math.round(o.basinRadius)} px`)}
-    adjustFountainDepth(delta){const o=this.selectedFountain();if(!o){this.updateStatus('Seleziona prima una fontana');return}this.beginChange();o.depthCut=clamp((o.depthCut??.30)+delta,.1,.65);this.setDirty(true);this.updateStatus(`Spruzzo posteriore: ${Math.round(o.depthCut*100)}% dall'alto`)}
     lampPreset(variant=this.selectedLampVariant){
       return {id:`lampione-${variant}-${Date.now()}`,kind:'lamp',variant:`lampione_${String(variant).padStart(2,'0')}`,type:'ysort',asset:`images/decor/centrale/lamps/lampione_${String(variant).padStart(2,'0')}.png`,x:0,y:0,width:43,height:101,anchorX:.5,anchorY:.94,scale:1,rotation:0,collisionRadius:7,animation:null}
     }
@@ -109,13 +98,13 @@
 
     toggle(v=!this.enabled){if(v){this.prevDebug=this.game.debug;this.game.debug=true;this.game.viewZoom=1}else{this.game.debug=this.prevDebug}this.enabled=v;this.els.panel.hidden=!v;document.querySelector('#gameFrame')?.classList.toggle('editor-on',v);this.game.setEditorActive(v);this.draft=[];this.drag=null;this.pan=null;this.selected=null;this.rectStart=null;if(v){this.game.clampCamera();this.refreshMeta();this.refreshFileState();this.updateStatus('TEST attiva · pannello trascinabile · strumenti raccolti per categoria');this.updateCoords(null)}else this.refreshSelected()}
     setMode(m){this.mode=m;this.draft=[];this.drag=null;this.pan=null;this.rectStart=null;this.highlightButtons();this.updateStatus(this.modeLabel())}
-    modeLabel(){return {select:'Seleziona/sposta elementi · trascina lo sfondo per spostare la mappa',obstacle:'Nuovo ostacolo ROSSO · clic sui vertici · doppio clic/INVIO per chiudere',walkable:'Nuova area VERDE percorribile · clic sui vertici · doppio clic/INVIO per chiudere',point:'Aggiungi punto · clic sul bordo rosso/verde','gate-area':'Varco Area · due clic sugli angoli opposti','gate-boat':'Varco Battello · due clic sugli angoli opposti','gate-exit':'Varco Uscita · due clic sugli angoli opposti',hotspot:'Aggiungi hotspot · un clic',decor:`Lampione ${this.selectedLampVariant} · clic sulla mappa`,palm:`Palma ${this.selectedPalmVariant} · clic sulla mappa`,fountain:`Fontana ${this.selectedFountainVariant} · clic sulla mappa`,spawn:'Imposta Spawn · clic sulla mappa',teleport:'Teletrasporta giocatore · clic sulla mappa'}[this.mode]||this.mode}
-    highlightButtons(){for(const [m,el] of [['fountain',this.els.fountain],['select',this.els.select],['obstacle',this.els.obstacle],['walkable',this.els.walkable],['point',this.els.point],['gate-area',this.els.gateArea],['gate-boat',this.els.gateBoat],['gate-exit',this.els.gateExit],['hotspot',this.els.hotspot],['decor',this.els.decor],['palm',this.els.palm],['spawn',this.els.setSpawn],['teleport',this.els.teleport]])if(el)el.classList.toggle('active',m===this.mode)}
+    modeLabel(){return {select:'Seleziona/sposta elementi · trascina lo sfondo per spostare la mappa',obstacle:'Nuovo ostacolo ROSSO · clic sui vertici · doppio clic/INVIO per chiudere',walkable:'Nuova area VERDE percorribile · clic sui vertici · doppio clic/INVIO per chiudere',point:'Aggiungi punto · clic sul bordo rosso/verde','gate-area':'Varco Area · due clic sugli angoli opposti','gate-boat':'Varco Battello · due clic sugli angoli opposti','gate-exit':'Varco Uscita · due clic sugli angoli opposti',hotspot:'Aggiungi hotspot · un clic',decor:`Lampione ${this.selectedLampVariant} · clic sulla mappa`,palm:`Palma ${this.selectedPalmVariant} · clic sulla mappa`,spawn:'Imposta Spawn · clic sulla mappa',teleport:'Teletrasporta giocatore · clic sulla mappa'}[this.mode]||this.mode}
+    highlightButtons(){for(const [m,el] of [['select',this.els.select],['obstacle',this.els.obstacle],['walkable',this.els.walkable],['point',this.els.point],['gate-area',this.els.gateArea],['gate-boat',this.els.gateBoat],['gate-exit',this.els.gateExit],['hotspot',this.els.hotspot],['decor',this.els.decor],['palm',this.els.palm],['spawn',this.els.setSpawn],['teleport',this.els.teleport]])if(el)el.classList.toggle('active',m===this.mode)}
     screen(e){const r=this.game.canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*(this.game.canvas.width/r.width),y:(e.clientY-r.top)*(this.game.canvas.height/r.height)}}
     world(e){const s=this.screen(e),z=this.game.viewZoom||1;return {x:Math.round(this.game.camera.x+s.x/z),y:Math.round(this.game.camera.y+s.y/z)}}
     updateCoords(p){if(p)this.lastPointer=p;const z=Math.round((this.game.viewZoom||1)*100),q=p||this.lastPointer;this.els.coords.textContent=q?`x ${q.x} · y ${q.y} · zoom ${z}%`:`x — · y — · zoom ${z}%`;this.refreshMeta()}
     refreshMeta(){if(this.els.area)this.els.area.textContent=`${this.game.area?.title||'AREA'} · ${this.game.areaId?.toUpperCase()||''}`;this.refreshSelected()}
-    refreshSelected(){if(!this.els.selected)return;let text='Elemento: nessuno';if(this.selected){const s=this.selected;if(s.group==='obstacle')text=`Elemento: Ostacolo #${s.index+1}${Number.isInteger(s.vertex)?` · punto ${s.vertex+1}`:''}`;else if(s.group==='walkable')text=`Elemento: Percorribile #${s.index+1}${Number.isInteger(s.vertex)?` · punto ${s.vertex+1}`:''}`;else if(s.group==='gate')text=`Elemento: Varco ${s.obj.type||'area'} · ${s.obj.id||s.index+1}`;else if(s.group==='hotspot')text=`Elemento: Hotspot · ${s.obj.title||s.obj.id}`;else if(s.group==='decor')text=`Elemento: Decor · ${s.obj.kind==='lamp'?'Lampione':s.obj.kind==='fountain'?'Fontana':'Palma'}${s.obj.variant?` (${s.obj.variant})`:''} · ${s.obj.id}`;}this.els.selected.textContent=text}
+    refreshSelected(){if(!this.els.selected)return;let text='Elemento: nessuno';if(this.selected){const s=this.selected;if(s.group==='obstacle')text=`Elemento: Ostacolo #${s.index+1}${Number.isInteger(s.vertex)?` · punto ${s.vertex+1}`:''}`;else if(s.group==='walkable')text=`Elemento: Percorribile #${s.index+1}${Number.isInteger(s.vertex)?` · punto ${s.vertex+1}`:''}`;else if(s.group==='gate')text=`Elemento: Varco ${s.obj.type||'area'} · ${s.obj.id||s.index+1}`;else if(s.group==='hotspot')text=`Elemento: Hotspot · ${s.obj.title||s.obj.id}`;else if(s.group==='decor')text=`Elemento: Decor · ${s.obj.kind==='lamp'?'Lampione':'Palma'}${s.obj.variant?` (${s.obj.variant})`:''} · ${s.obj.id}`;}this.els.selected.textContent=text}
     setDirty(v=true){this.dirty=v;this.els.saveState.className=`save-state ${v?'dirty':'clean'}`;this.els.saveState.textContent=v?'● Modifiche non salvate':'✓ Salvato';}
     areaState(){const a=this.game.area;return deep({spawn:a.spawn,walkable:a.walkable,obstacles:a.obstacles,hotspots:a.hotspots,gates:a.gates,decor:a.decor||[]})}
     applyState(st){const a=this.game.area;a.spawn=deep(st.spawn);a.walkable=deep(st.walkable);a.obstacles=deep(st.obstacles);a.hotspots=deep(st.hotspots);a.gates=deep(st.gates);a.decor=deep(st.decor||[]);this.selected=null;this.refreshSelected();this.setDirty(true)}
@@ -130,20 +119,13 @@
       if(this.mode==='hotspot'){this.addHotspot(p);this.setMode('select');return}
       if(this.mode==='decor'){this.addDecor(p);return}
       if(this.mode==='palm'){this.addPalm(p);return}
-      if(this.mode==='fountain'){this.addFountain(p);return}
       if(this.mode==='spawn'){this.beginChange();this.game.area.spawn={x:p.x,y:p.y};this.setDirty(true);this.updateStatus(`Spawn ${this.game.area.title}: ${p.x}, ${p.y}`);this.setMode('select');return}
       if(this.mode==='teleport'){this.game.player.x=p.x;this.game.player.y=p.y;this.game.clampCamera();this.updateStatus(`Giocatore spostato: ${p.x}, ${p.y}`);this.setMode('select');return}
-      if(this.mode==='select'&&this.selectedFountain()){
-        const o=this.selectedFountain(),ell=this.fountainEllipse(o),near=15/(this.game.viewZoom||1);
-        for(const [kind,hx,hy] of [['basin-x',ell.x+ell.rx,ell.y],['basin-y',ell.x,ell.y+ell.ry]]){
-          if(dist(p.x,p.y,hx,hy)<=near){this.drag={kind,obj:o};this.dragHistoryArmed=true;this.game.canvas.setPointerCapture?.(e.pointerId);return}
-        }
-      }
       if(this.pick(p)){this.dragHistoryArmed=true;return}
       const s=this.screen(e);this.pan={pointerId:e.pointerId,lastX:s.x,lastY:s.y};this.game.canvas.setPointerCapture?.(e.pointerId);document.querySelector('#gameFrame')?.classList.add('editor-panning');this.updateStatus('Spostamento mappa · rilascia il mouse per fermarti')
     }
-    pointerMove(e){if(!this.enabled)return;const p=this.world(e);this.updateCoords(p);if(this.pan&&this.pan.pointerId===e.pointerId){const s=this.screen(e),z=this.game.viewZoom||1,dx=s.x-this.pan.lastX,dy=s.y-this.pan.lastY;this.game.camera.x-=dx/z;this.game.camera.y-=dy/z;this.pan.lastX=s.x;this.pan.lastY=s.y;this.game.clampCamera();return}if(this.drag){if(this.dragHistoryArmed){this.beginChange();this.dragHistoryArmed=false}const obj=this.drag.obj;if(this.drag.kind==='basin-x'){obj.basinRadius=clamp(Math.abs(p.x-obj.x)/(obj.scale||1),10,400)}else if(this.drag.kind==='basin-y'){obj.basinRadiusY=clamp(Math.abs(p.y-(obj.y+(obj.basinOffsetY??-65)*(obj.scale||1)))/(obj.scale||1),10,400)}else if(this.drag.kind==='vertex'){obj.points[this.drag.vertex]=[p.x,p.y]}else if(this.drag.kind==='circle'){obj.x=p.x;obj.y=p.y}else if(this.drag.kind==='gate'){obj.x=Math.round(p.x-this.drag.dx);obj.y=Math.round(p.y-this.drag.dy)}else if(this.drag.kind==='hotspot'||this.drag.kind==='decor'){obj.x=p.x;obj.y=p.y}this.setDirty(true);this.refreshSelected()}}
-    pointerUp(e){if(this.drag?.kind?.startsWith('basin-')){try{this.game.canvas.releasePointerCapture?.(e.pointerId)}catch(_){}}this.drag=null;this.dragHistoryArmed=false;if(this.pan&&(!e||this.pan.pointerId===e.pointerId)){try{this.game.canvas.releasePointerCapture?.(this.pan.pointerId)}catch(_){}this.pan=null;document.querySelector('#gameFrame')?.classList.remove('editor-panning');if(this.mode==='select')this.updateStatus(this.modeLabel())}}
+    pointerMove(e){if(!this.enabled)return;const p=this.world(e);this.updateCoords(p);if(this.pan&&this.pan.pointerId===e.pointerId){const s=this.screen(e),z=this.game.viewZoom||1,dx=s.x-this.pan.lastX,dy=s.y-this.pan.lastY;this.game.camera.x-=dx/z;this.game.camera.y-=dy/z;this.pan.lastX=s.x;this.pan.lastY=s.y;this.game.clampCamera();return}if(this.drag){if(this.dragHistoryArmed){this.beginChange();this.dragHistoryArmed=false}const obj=this.drag.obj;if(this.drag.kind==='vertex'){obj.points[this.drag.vertex]=[p.x,p.y]}else if(this.drag.kind==='circle'){obj.x=p.x;obj.y=p.y}else if(this.drag.kind==='gate'){obj.x=Math.round(p.x-this.drag.dx);obj.y=Math.round(p.y-this.drag.dy)}else if(this.drag.kind==='hotspot'||this.drag.kind==='decor'){obj.x=p.x;obj.y=p.y}this.setDirty(true);this.refreshSelected()}}
+    pointerUp(e){this.drag=null;this.dragHistoryArmed=false;if(this.pan&&(!e||this.pan.pointerId===e.pointerId)){try{this.game.canvas.releasePointerCapture?.(this.pan.pointerId)}catch(_){}this.pan=null;document.querySelector('#gameFrame')?.classList.remove('editor-panning');if(this.mode==='select')this.updateStatus(this.modeLabel())}}
     wheel(e){if(!this.enabled)return;e.preventDefault();const s=this.screen(e),old=this.game.viewZoom||1,factor=e.deltaY<0?1.12:1/1.12,next=clamp(old*factor,.35,3.2);if(Math.abs(next-old)<.0001)return;const worldX=this.game.camera.x+s.x/old,worldY=this.game.camera.y+s.y/old;this.game.viewZoom=next;this.game.camera.x=worldX-s.x/next;this.game.camera.y=worldY-s.y/next;this.game.clampCamera();this.updateCoords(this.world(e));this.updateStatus(`Zoom ${Math.round(next*100)}%`)}
     setZoom(v){this.game.viewZoom=clamp(v,.35,3.2);this.game.clampCamera();this.updateCoords(null)}changeZoom(f){this.setZoom((this.game.viewZoom||1)*f)}centerPlayer(){this.game.cameraToPlayer();this.updateStatus('Vista centrata sul giocatore')}
     toggleLayer(key,btn,label){this.visibility[key]=!this.visibility[key];btn.classList.toggle('active',this.visibility[key]);btn.textContent=`${label} ${this.visibility[key]?'ON':'OFF'}`}
@@ -168,7 +150,6 @@
     resizeHotspot(f){const s=this.selected;if(!s||s.group!=='hotspot'){this.updateStatus('Seleziona prima un hotspot');return}this.beginChange();s.obj.r=clamp(Math.round((s.obj.r||110)*f),20,600);this.setDirty(true);this.updateStatus(`Raggio hotspot: ${s.obj.r}`)}
     addDecor(p){this.beginChange();const o=this.lampPreset();o.x=p.x;o.y=p.y;this.game.area.decor=this.game.area.decor||[];this.game.area.decor.push(o);this.selected={group:'decor',index:this.game.area.decor.length-1,obj:o};this.setDirty(true);this.refreshSelected();this.updateStatus(`Lampione ${this.selectedLampVariant} aggiunto`)}
     addPalm(p){this.beginChange();const o=this.palmPreset();o.x=p.x;o.y=p.y;this.game.area.decor=this.game.area.decor||[];this.game.area.decor.push(o);this.selected={group:'decor',index:this.game.area.decor.length-1,obj:o};this.setDirty(true);this.refreshSelected();this.updateStatus(`Palma ${this.selectedPalmVariant} aggiunta`)}
-    addFountain(p){this.beginChange();const o=this.fountainPreset();o.x=p.x;o.y=p.y;this.game.area.decor=this.game.area.decor||[];this.game.area.decor.push(o);this.selected={group:'decor',index:this.game.area.decor.length-1,obj:o};this.setDirty(true);this.refreshSelected();this.updateStatus(`Fontana ${this.selectedFountainVariant} aggiunta`)}
     scaleSelected(factor){const s=this.selected;if(!s||s.group!=='decor'){this.updateStatus('Seleziona prima un elemento Decor');return}this.beginChange();s.obj.scale=clamp((s.obj.scale||1)*factor,.35,3);this.setDirty(true);this.updateStatus(`Decor · scala ${Math.round(s.obj.scale*100)}%`)}
     adjustAnchor(delta){const s=this.selected;if(!s||s.group!=='decor'){this.updateStatus('Seleziona prima un elemento Decor');return}this.beginChange();s.obj.anchorY=clamp((s.obj.anchorY??1)+delta,.05,1);this.setDirty(true);this.updateStatus(`Decor · anchor ${Math.round(s.obj.anchorY*100)}%`)}
     rotateSelected(delta){const s=this.selected;if(!s||s.group!=='decor'){this.updateStatus('Seleziona prima un elemento Decor');return}this.beginChange();s.obj.rotation=((s.obj.rotation||0)+delta+360)%360;this.setDirty(true);this.updateStatus(`Decor · rotazione ${s.obj.rotation}°`)}
