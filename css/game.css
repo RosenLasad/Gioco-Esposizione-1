@@ -719,3 +719,41 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
   .inventory-detail h3{font-size:21px}
   .inventory-detail p{font-size:14px}
 }
+
+
+/* HUD giocatore: valigetta inventario in basso a sinistra. */
+.game-frame.player-mode .inventory-corner-btn{
+  position:absolute;
+  left:max(20px,calc(env(safe-area-inset-left) + 12px));
+  bottom:max(20px,calc(env(safe-area-inset-bottom) + 12px));
+  top:auto;
+  right:auto;
+  z-index:1;
+  width:52px;
+  height:52px;
+  border-radius:13px;
+  border:2px solid #c9a365;
+  color:#f6e3ba;
+  background:linear-gradient(145deg,#68452a,#302014);
+  box-shadow:inset 0 0 0 2px rgba(234,194,116,.16),0 5px 15px #0009;
+  pointer-events:auto;
+  cursor:pointer;
+  transition:transform .14s ease,filter .14s ease;
+}
+.game-frame.player-mode .inventory-corner-btn:hover{filter:brightness(1.16);transform:translateY(-2px)}
+.game-frame.player-mode .inventory-corner-btn:active{transform:scale(.95)}
+.game-frame.player-mode .inventory-corner-btn:focus-visible{outline:3px solid #f3d092;outline-offset:3px}
+@media (pointer:coarse), (max-width:850px){
+  .game-frame.player-mode .inventory-corner-btn{
+    left:max(12px,calc(env(safe-area-inset-left) + 8px));
+    bottom:max(146px,calc(env(safe-area-inset-bottom) + 136px));
+    width:46px;
+    height:46px;
+  }
+  .game-frame.player-mode .inventory-corner-btn svg{width:23px;height:23px}
+}
+@media (pointer:coarse) and (max-height:520px){
+  .game-frame.player-mode .inventory-corner-btn{
+    bottom:max(116px,calc(env(safe-area-inset-bottom) + 106px));
+  }
+}
