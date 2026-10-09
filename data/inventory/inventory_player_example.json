@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "points": 100,
+  "lire": 100,
+  "owned": [
+    "biglietto_area_nord",
+    "mappa_esposizione",
+    "ombrello_omaggio",
+    "moneta_benvenuto",
+    "chiave_area_sud"
+  ]
+}

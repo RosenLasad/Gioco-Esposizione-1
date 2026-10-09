@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "biglietto_area_nord",
+      "category": "documents",
+      "name": "Biglietto Area Nord",
+      "description": "Biglietto d'ingresso valido per l'Area Nord. Include un ombrello omaggio e 100 Lire dell'Esposizione.",
+      "status": "Valido",
+      "action": "Esamina",
+      "icon": "🎟",
+      "image": "images/ui/inventory/items/documents/biglietto_area_nord.png"
+    },
+    {
+      "id": "mappa_esposizione",
+      "category": "useful",
+      "name": "Mappa dell'Esposizione",
+      "description": "Pianta dell’Esposizione per orientarsi tra padiglioni, viali e attrazioni.",
+      "status": "Disponibile",
+      "action": "Consulta",
+      "icon": "🗺",
+      "image": "images/ui/inventory/items/useful/mappa_esposizione.png"
+    },
+    {
+      "id": "ombrello_omaggio",
+      "category": "gadgets",
+      "name": "Ombrello omaggio",
+      "description": "Un ombrello ricordo consegnato assieme al biglietto dell'Area Nord.",
+      "status": "In possesso",
+      "action": "Esamina",
+      "icon": "☂",
+      "image": "images/ui/inventory/items/gadgets/ombrello_omaggio.png"
+    },
+    {
+      "id": "moneta_benvenuto",
+      "category": "collectibles",
+      "name": "Moneta di benvenuto",
+      "description": "Moneta commemorativa della visita all'Esposizione, da conservare nella collezione.",
+      "status": "Raccolta",
+      "action": "Osserva",
+      "icon": "🪙",
+      "image": "images/ui/inventory/items/collectibles/moneta_benvenuto.png"
+    },
+    {
+      "id": "chiave_area_sud",
+      "category": "missions",
+      "name": "Chiave misteriosa",
+      "description": "Una chiave trovata per terra. Potrebbe aprire qualcosa nell'Area Sud.",
+      "status": "Da usare",
+      "action": "Esamina",
+      "icon": "🗝",
+      "image": "images/ui/inventory/items/missions/chiave_area_sud.png"
+    }
+  ]
+}
