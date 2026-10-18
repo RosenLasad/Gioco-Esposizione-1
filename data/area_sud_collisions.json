@@ -372,7 +372,11 @@
       "h": 1230,
       "target": "nord",
       "targetGate": "to-sud",
-      "message": "Area Nord"
+      "message": "Area Nord",
+      "targetSpawn": {
+        "x": 2614,
+        "y": 1220
+      }
     },
     {
       "id": "boat-sud",
