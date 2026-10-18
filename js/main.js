@@ -91,12 +91,12 @@
       prompt.hidden=!text;prompt.textContent=text;
       const touch=$('#touchInteract');touch?.classList.toggle('ready',!!text);touch?.setAttribute('aria-label',text?text.replace(/^E\s*·\s*/,''):'Interagisci');
     },
-    onInteract(h){$('#interactionTitle').textContent=h.title;$('#interactionText').textContent=h.text;interactionOverlay.hidden=false;game.setPaused(true)},
+    onInteract(h){const pavilion=window.EsposizionePavilions;const key=pavilion?.resolve(h,game?.area);if(key){game.setPaused(true);pavilion.open(key,()=>game.setPaused(false));return}$('#interactionTitle').textContent=h.title;$('#interactionText').textContent=h.text;interactionOverlay.hidden=false;game.setPaused(true)},
     onToast(text){clearTimeout(toastTimer);toast.textContent=text;toast.classList.add('show');toastTimer=setTimeout(()=>toast.classList.remove('show'),1800)},
     onFade(v){fade.classList.toggle('on',v)},
     onBoatGate(g,accept,cancel){confirm('Vuoi salire sul battello e raggiungere l’altra area dell’Esposizione?')?accept():cancel()},
     onExitGate(g,accept,cancel){if(!confirm('Vuoi lasciare l’Esposizione e tornare ai Giochi di Genova mApp?')){cancel();return}accept();game.requestSave();if(window.parent!==window){window.parent.postMessage({type:'genova-mapp:game-exit',game:'esposizione'},location.origin)}returnMenu(false)},
-    onPause(){if(window.EsposizioneInventory?.isOpen()){window.EsposizioneInventory.close();return}if(!screen.classList.contains('active')||game.editorActive)return;if(!interactionOverlay.hidden){closeInteraction();return}pauseOverlay.hidden=!pauseOverlay.hidden;game.setPaused(!pauseOverlay.hidden)}
+    onPause(){if(window.EsposizionePavilions?.isOpen()){window.EsposizionePavilions.close();return}if(window.EsposizioneInventory?.isOpen()){window.EsposizioneInventory.close();return}if(!screen.classList.contains('active')||game.editorActive)return;if(!interactionOverlay.hidden){closeInteraction();return}pauseOverlay.hidden=!pauseOverlay.hidden;game.setPaused(!pauseOverlay.hidden)}
   };
 
   // Online: i JSON pubblicati sono la sola fonte per collisioni e percorsi.
@@ -162,7 +162,7 @@
     window.dispatchEvent(new CustomEvent('esposizione:inventory-start',{detail:{newGame:!save}}));
     setMode(mode);menu.classList.remove('active');screen.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;editor.toggle(false);fitCanvas();game.start(save);
   }
-  function returnMenu(save){window.EsposizioneInventory?.close();if(save)game.requestSave();editor.toggle(false);game.stop();screen.classList.remove('active');menu.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;frame.classList.remove('admin-mode','player-mode','layout-portrait','layout-landscape');updateMenu()}
+  function returnMenu(save){window.EsposizionePavilions?.close();window.EsposizioneInventory?.close();if(save)game.requestSave();editor.toggle(false);game.stop();screen.classList.remove('active');menu.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;frame.classList.remove('admin-mode','player-mode','layout-portrait','layout-landscape');updateMenu()}
 
   $('#playerGameBtn').onclick=()=>showOrientationPicker(()=>{window.EsposizioneSave.clear();showGame(null,'player')});
   $('#newGameBtn').onclick=()=>{window.EsposizioneSave.clear();showGame(null,'admin')};
@@ -171,7 +171,7 @@
   $('#guideBtn').onclick=()=>$('#guideDialog').showModal();$('#guideClose').onclick=()=>$('#guideDialog').close();
   $('#menuFullscreenBtn').onclick=toggleFullscreen;$('#playerFullscreenBtn').onclick=toggleFullscreen;$('#pauseFullscreenBtn').onclick=toggleFullscreen;
   $('#playerMenuBtn').onclick=ui.onPause;
-  window.EsposizioneInventoryGame=()=>game;window.EsposizioneInventoryCanOpen=()=>screen.classList.contains('active')&&!game.editorActive&&pauseOverlay.hidden&&interactionOverlay.hidden;
+  window.EsposizioneInventoryGame=()=>game;window.EsposizioneInventoryCanOpen=()=>!window.EsposizionePavilions?.isOpen()&&screen.classList.contains('active')&&!game.editorActive&&pauseOverlay.hidden&&interactionOverlay.hidden;
   $('#pauseLayoutBtn').onclick=()=>{if(gameMode!=='player'||!isMobileLike()){ui.onToast('Layout smartphone disponibile su schermi piccoli');return}pauseOverlay.hidden=true;game.setPaused(true);showOrientationPicker(()=>{game.setPaused(false)},true)};
   $('#chooseLandscape').onclick=()=>chooseLayout('landscape');$('#choosePortrait').onclick=()=>chooseLayout('portrait');
   $('#orientationCancel').onclick=()=>{pendingPlayerStart=null;orientationDialog.close();if(screen.classList.contains('active'))game.setPaused(false)};

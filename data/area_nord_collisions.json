@@ -1201,19 +1201,19 @@
   "hotspots": [
     {
       "id": "sport",
-      "x": 1405,
-      "y": 1432,
+      "x": 1448,
+      "y": 1315,
       "r": 62,
-      "title": "Campo sportivo",
-      "text": "Qui entreranno i giochi dedicati agli sport d’epoca e ai giochi da tavolo. Per ora è un punto interattivo di prova."
+      "title": "5. Galleria della Fortuna",
+      "text": "5. Galleria della Fortuna"
     },
     {
       "id": "bellearti",
       "x": 1687,
       "y": 1394,
       "r": 72,
-      "title": "Palazzo delle Belle Arti",
-      "text": "Questo padiglione ospiterà quiz, curiosità artistiche ed Easter egg. Collegamento ai minigiochi in arrivo."
+      "title": "40. Palazzo delle Belle Arti",
+      "text": "40. Palazzo delle Belle Arti"
     },
     {
       "id": "hotspot-1790363340218",
@@ -1233,11 +1233,11 @@
     },
     {
       "id": "hotspot-1790363352923",
-      "x": 1802,
-      "y": 901,
+      "x": 1788,
+      "y": 924,
       "r": 80,
-      "title": "40. Palazzo delle Belle Arti",
-      "text": "Hotspot di prova creato in Modalità Test."
+      "title": "16. Padiglione delle Invenzioni",
+      "text": "16. Padiglione delle Invenzioni"
     },
     {
       "id": "hotspot-1790363358045",
@@ -1260,13 +1260,13 @@
       "x": 1507,
       "y": 1781,
       "r": 80,
-      "title": "1.1. Galleria dell'Industria Alimentare",
-      "text": "1.1 Galleria dell'Industria Alimentare"
+      "title": "1.1. Padiglione dei Sapori",
+      "text": "1.1 Padiglione dei Sapori"
     },
     {
       "id": "hotspot-1790363414169",
-      "x": 1213,
-      "y": 1893,
+      "x": 1212,
+      "y": 1895,
       "r": 59,
       "title": "36. Montagne Russe",
       "text": "Hotspot di prova creato in Modalità Test."
@@ -1276,15 +1276,15 @@
       "x": 1259,
       "y": 1221,
       "r": 80,
-      "title": "5. Padiglione degustazione",
+      "title": "5. Galleria della Fortuna",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
       "id": "hotspot-1790363463228",
-      "x": 1933,
-      "y": 722,
-      "r": 110,
-      "title": "16. Galleria macchinari idraulici",
+      "x": 1841,
+      "y": 712,
+      "r": 59,
+      "title": "16. Padiglione delle Invenzioni",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1292,7 +1292,7 @@
       "x": 1100,
       "y": 737,
       "r": 72,
-      "title": "14. Galleria dell'Agricoltura",
+      "title": "14. Giardino delle Curiosità",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1300,7 +1300,7 @@
       "x": 1177,
       "y": 993,
       "r": 65,
-      "title": "4. Galleria delle Colonie",
+      "title": "4. Teatro delle Battaglie",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1308,7 +1308,7 @@
       "x": 607,
       "y": 1704,
       "r": 65,
-      "title": "22. Padiglione del giornalismo",
+      "title": "22. Palazzo della Stampa",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1316,7 +1316,7 @@
       "x": 722,
       "y": 1786,
       "r": 72,
-      "title": "22. Padiglione del giornalismo",
+      "title": "22. Palazzo della Stampa",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1324,15 +1324,15 @@
       "x": 617,
       "y": 1929,
       "r": 65,
-      "title": "22. Padiglione del giornalismo",
+      "title": "22. Palazzo della Stampa",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
       "id": "hotspot-1790363573580",
-      "x": 286,
-      "y": 1761,
+      "x": 279,
+      "y": 1768,
       "r": 89,
-      "title": "8. Pallone aerostatico",
+      "title": "8. Pallone Colombo",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1340,15 +1340,15 @@
       "x": 1235,
       "y": 1599,
       "r": 59,
-      "title": "2. Padiglione di Chimica e Farmacia",
-      "text": "Hotspot di prova creato in Modalità Test."
+      "title": "3. Palazzo della Città di Genova",
+      "text": "3. Palazzo della Città di Genova"
     },
     {
       "id": "hotspot-1790363613146",
       "x": 1062,
       "y": 1850,
-      "r": 80,
-      "title": "2. Padiglione di Chimica e Farmacia",
+      "r": 59,
+      "title": "2. Laboratorio delle Meraviglie",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1356,7 +1356,7 @@
       "x": 514,
       "y": 539,
       "r": 65,
-      "title": "24. Area fumatori",
+      "title": "24. Padiglione dei Giochi e degli Enigmi",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1364,7 +1364,7 @@
       "x": 761,
       "y": 524,
       "r": 53,
-      "title": "24. Area fumatori",
+      "title": "24. Padiglione dei Giochi e degli Enigmi",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1372,7 +1372,7 @@
       "x": 659,
       "y": 705,
       "r": 53,
-      "title": "25. Campo sportivo",
+      "title": "25. Campo dei Campioni",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1380,7 +1380,7 @@
       "x": 280,
       "y": 1517,
       "r": 72,
-      "title": "25. Campo sportivo",
+      "title": "25. Campo dei Campioni",
       "text": "Hotspot di prova creato in Modalità Test."
     },
     {
@@ -1393,11 +1393,19 @@
     },
     {
       "id": "hotspot-1791749832873",
-      "x": 1930,
-      "y": 1800,
-      "r": 110,
-      "title": "1.2. Galleria dell'Industria Alimentare",
-      "text": "1.2 Galleria dell'Industria Alimentare"
+      "x": 1939,
+      "y": 1758,
+      "r": 80,
+      "title": "1.2. Padiglione dei Sapori - Ristorante",
+      "text": "1.2 Padiglione dei Sapori - Ristorante"
+    },
+    {
+      "id": "hotspot-1792365612259",
+      "x": 1950,
+      "y": 2057,
+      "r": 65,
+      "title": "1.2. Padiglione dei Sapori - Ristorante",
+      "text": "Hotspot di prova creato in Modalità Test."
     }
   ],
   "gates": [

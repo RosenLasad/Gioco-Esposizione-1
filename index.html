@@ -274,6 +274,30 @@
           </div>
         </div>
 
+        <!-- Fase 2: interno condiviso dei padiglioni, indipendente dalla mappa -->
+        <section id="pavilionView" class="pavilion-view" hidden aria-label="Interno del padiglione">
+          <div id="pavilionViewport" class="pavilion-viewport" aria-label="Panorama di prova: trascina per guardare a sinistra e a destra">
+            <img id="pavilionPanorama" class="pavilion-panorama" src="images/pavilions/panorama_test.svg" alt="Panorama di prova con zone sinistra, centro e destra" draggable="false">
+            <div class="pavilion-lens" aria-hidden="true"></div>
+          </div>
+          <header class="pavilion-header">
+            <button id="pavilionExit" type="button" class="pavilion-nav">⌂ &nbsp; Esposizione</button>
+            <button id="pavilionInventory" type="button" class="pavilion-nav">▣ &nbsp; Inventario</button>
+          </header>
+          <div class="pavilion-welcome">
+            <p>ESPOSIZIONE INTERNAZIONALE DI GENOVA · 1892</p>
+            <h2 id="pavilionTitle"></h2>
+            <p id="pavilionHint">Ambiente interno di prova · Fase 2</p>
+          </div>
+          <div class="pavilion-look-controls" aria-label="Comandi visuale panoramica">
+            <button id="pavilionLookLeft" type="button" aria-label="Guarda a sinistra">◀</button>
+            <div class="pavilion-look-readout"><span id="pavilionLookLabel">CENTRO</span><div class="pavilion-look-track"><div id="pavilionLookThumb"></div></div><small>Trascina lo sfondo o usa ← →</small></div>
+            <button id="pavilionLookRight" type="button" aria-label="Guarda a destra">▶</button>
+            <button id="pavilionLookCenter" type="button" aria-label="Centra la visuale">◎</button>
+          </div>
+          <footer class="pavilion-footer"><span id="pavilionStatus">L'ingresso è pronto. Nelle fasi successive saranno aggiunti panorama e attività.</span><button id="pavilionBack" type="button">Torna alla Fiera</button></footer>
+        </section>
+
         <div id="interactionOverlay" class="overlay" hidden>
           <div class="panel interaction-panel">
             <p class="eyebrow">PADIGLIONE / ATTRAZIONE</p>
@@ -307,7 +331,7 @@
       <p><b>Mobile:</b> usa il joystick e il pulsante <b>E</b>. La modalità giocatore permette di scegliere un layout verticale oppure orizzontale; usa <b>due dita</b> sulla mappa per regolare lo zoom.</p>
       <p>I varchi collegano Area Nord e Area Sud, il Battello oppure l’uscita dall’Esposizione. Dal menu <b>Vai all'Esposizione</b> apre l'interfaccia per il giocatore; <b>TEST Esposizione</b> mantiene gli strumenti amministratore. Se un vecchio salvataggio crea problemi usa <b>Ripristina posizione</b> dal menu.</p>
       <p><b>TEST:</b> blocca temporaneamente il personaggio e permette di disegnare/spostare collisioni, aree percorribili, varchi e hotspot. Usa la <b>rotellina</b> per lo zoom e, in <b>Seleziona</b>, trascina lo sfondo con il tasto sinistro per spostarti sulla mappa. Puoi creare nuovi poligoni rossi/verdi e usare <b>+ Punto</b> sul loro perimetro per aggiungere vertici; <b>− Punto</b> rimuove il vertice selezionato. Con <b>+ Lampione</b> e <b>+ Palma</b> scegli il tipo (1/2/3) e poi piazza e trascina decorazioni con Y-sort; Scala e Anchor regolano dimensione e linea di profondità. Il pannello TEST è trascinabile e organizzato per categorie. Usa <b>Collega JSON</b> per scegliere il file corretto in <b>data/</b>, poi <b>Salva JSON attuale</b>. Se il collegamento non e disponibile usa <b>Esporta JSON</b> e sostituisci il file in data/. Per aggiornare la copia offline, esegui <b>AGGIORNA_MAPPE_OFFLINE.bat</b>. Per pubblicare online, carica il JSON aggiornato sul server.</p>
-      <p>I tre punti interattivi restano prototipi: Campo sportivo, Palazzo delle Belle Arti e Montagne russe.</p>
+      <p>I tre punti interattivi restano prototipi: Campo dei Campioni, Palazzo delle Belle Arti e Montagne Russe.</p>
       <button id="guideClose" class="primary">Chiudi</button>
     </div>
   </dialog>
@@ -316,6 +340,7 @@
   <script src="js/areas.js"></script>
   <script src="js/game.js"></script>
   <script src="js/editor.js"></script>
+  <script src="js/pavilions.js"></script>
   <script src="js/main.js"></script>
   <script src="js/inventory.js"></script>
 </body>
