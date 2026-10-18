@@ -289,13 +289,16 @@
             <h2 id="pavilionTitle"></h2>
             <p id="pavilionHint">Ambiente interno di prova · Fase 2</p>
           </div>
-          <div class="pavilion-look-controls" aria-label="Comandi visuale panoramica">
-            <button id="pavilionLookLeft" type="button" aria-label="Guarda a sinistra">◀</button>
-            <div class="pavilion-look-readout"><span id="pavilionLookLabel">CENTRO</span><div class="pavilion-look-track"><div id="pavilionLookThumb"></div></div><small>Trascina lo sfondo o usa ← →</small></div>
-            <button id="pavilionLookRight" type="button" aria-label="Guarda a destra">▶</button>
-            <button id="pavilionLookCenter" type="button" aria-label="Centra la visuale">◎</button>
-          </div>
-          <footer class="pavilion-footer"><span id="pavilionStatus">L'ingresso è pronto. Nelle fasi successive saranno aggiunti panorama e attività.</span><button id="pavilionBack" type="button">Torna alla Fiera</button></footer>
+          <footer class="pavilion-footer">
+            <div class="pavilion-look-controls" aria-label="Comandi visuale panoramica">
+              <button id="pavilionLookLeft" type="button" aria-label="Guarda a sinistra">◀</button>
+              <div class="pavilion-look-readout"><span id="pavilionLookLabel">CENTRO</span><div class="pavilion-look-track"><div id="pavilionLookThumb"></div></div></div>
+              <button id="pavilionLookRight" type="button" aria-label="Guarda a destra">▶</button>
+              <button id="pavilionLookCenter" type="button" aria-label="Centra la visuale">◎</button>
+            </div>
+            <span id="pavilionStatus" class="pavilion-visually-hidden" role="status" aria-live="polite"></span>
+            <button id="pavilionBack" type="button">Torna alla Fiera</button>
+          </footer>
         </section>
 
         <div id="interactionOverlay" class="overlay" hidden>
