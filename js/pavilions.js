@@ -22,9 +22,9 @@
       name: 'Padiglione delle Invenzioni',
       number: '16',
       ids: ['hotspot-1790363352923','hotspot-1790363463228'],
-      image: 'images/pavilions/panorama_test.svg',
-      alt: 'Panorama di prova del Padiglione delle Invenzioni',
-      status: 'Padiglione delle Invenzioni: panorama di prova esplorabile.'
+      image: 'images/pavilions/invenzioni.jpg',
+      alt: 'Interno panoramico del Padiglione delle Invenzioni',
+      status: 'Padiglione delle Invenzioni: panorama esplorabile.'
     }
   });
 
@@ -45,7 +45,14 @@
       {id:'shopping',name:'Shopping',icon:'▣',color:'brown',x:83,y:70,desc:'Sfoglia i souvenir e gli oggetti da collezione della Galleria della Fortuna.'},
       {id:'guida',name:'Guida',icon:'ℹ',color:'blue',x:35,y:70,desc:'Scopri il funzionamento delle attrazioni e la storia della Galleria della Fortuna.'}
     ],
-    invenzioni: []
+    invenzioni: [
+      {id:'telegrafo',name:'Il Telegrafo Impazzito',icon:'◔',color:'red',x:8.5,y:46,desc:'Riproduci la sequenza di impulsi del telegrafo e rimetti in ordine il messaggio.',action:'telegrafo'},
+      {id:'macchina',name:'La Macchina Infernale',icon:'⚙',color:'green',x:49.5,y:34,desc:'Esplora il grande motore centrale e scopri i suoi ingranaggi, pistoni e ruote motrici.'},
+      {id:'automa',name:"L'Automa Meccanico",icon:'🎩',color:'red',x:87,y:44,desc:"Osserva l'automa in azione e sperimenta i suoi movimenti programmati."},
+      {id:'shopping',name:'Shopping',icon:'▣',color:'brown',x:86.5,y:66,desc:"Sfoglia gadget, invenzioni e souvenir del Padiglione delle Invenzioni."},
+      {id:'catena',name:'La Catena degli Inventori',icon:'⛓',color:'green',x:64,y:78,desc:'Collega idee, oggetti e inventori in una reazione a catena piena di intuizioni.'},
+      {id:'guida',name:'Guida',icon:'ℹ',color:'blue',x:13.5,y:76,desc:"Scopri la storia del padiglione e le meraviglie tecnologiche presentate all'Esposizione."}
+    ]
   });
 
   const view = document.getElementById('pavilionView');
@@ -63,6 +70,7 @@
 
   const battleship = document.getElementById('pavilionBattleship');
   const shellgame = document.getElementById('pavilionShellGame');
+  const telegraph = document.getElementById('pavilionTelegraph');
 
   let active = null;
   let restore = null;
@@ -149,6 +157,8 @@
       document.getElementById('battleshipClose').focus();
     } else if(action === 'shellgame'){
       openShellGame();
+    } else if(action === 'telegrafo'){
+      openTelegraph();
     }
   });
 
@@ -343,6 +353,122 @@
   document.getElementById('shellGameNew').addEventListener('click', newShellRound);
   document.getElementById('shellGameClose').addEventListener('click', hideShellGame);
 
+
+
+  // Il Telegrafo Impazzito
+  const telegraphButtons = [0,1,2,3].map(i => document.getElementById(`telegraphKey${i}`));
+  const telegraphLights = [0,1,2,3].map(i => document.getElementById(`telegraphLight${i}`));
+  const telegraphMessage = document.getElementById('telegraphMessage');
+  const telegraphStats = document.getElementById('telegraphStats');
+  let telegraphState = null;
+  let telegraphTimers = [];
+  let telegraphWins = 0;
+  let telegraphLosses = 0;
+
+  function clearTelegraphTimers(){
+    telegraphTimers.forEach(id => clearTimeout(id));
+    telegraphTimers = [];
+  }
+
+  function setTelegraphEnabled(enabled){
+    telegraphButtons.forEach(btn => btn.disabled = !enabled);
+  }
+
+  function setTelegraphHighlight(index, on){
+    const light = telegraphLights[index];
+    const key = telegraphButtons[index];
+    light.classList.toggle('is-on', !!on);
+    key.classList.toggle('is-active', !!on);
+  }
+
+  function clearTelegraphHighlights(){
+    telegraphLights.forEach(light => light.classList.remove('is-on'));
+    telegraphButtons.forEach(key => key.classList.remove('is-active'));
+  }
+
+  function updateTelegraphStats(){
+    telegraphStats.textContent = `Messaggi riusciti: ${telegraphWins} · Errori: ${telegraphLosses}`;
+  }
+
+  function flashTelegraph(index, duration=320){
+    setTelegraphHighlight(index, true);
+    telegraphTimers.push(setTimeout(()=>setTelegraphHighlight(index, false), duration));
+  }
+
+  function playTelegraphSequence(){
+    if(!telegraphState) return;
+    clearTelegraphTimers();
+    telegraphState.phase = 'playback';
+    telegraphState.input = [];
+    setTelegraphEnabled(false);
+    clearTelegraphHighlights();
+    telegraphMessage.textContent = 'Ascolta il messaggio del telegrafo e memorizza la sequenza.';
+    let t = 150;
+    telegraphState.sequence.forEach((step, idx) => {
+      telegraphTimers.push(setTimeout(()=>setTelegraphHighlight(step, true), t));
+      telegraphTimers.push(setTimeout(()=>setTelegraphHighlight(step, false), t + 280));
+      t += 440;
+    });
+    telegraphTimers.push(setTimeout(()=>{
+      clearTelegraphHighlights();
+      telegraphState.phase = 'input';
+      setTelegraphEnabled(true);
+      telegraphMessage.textContent = 'Ripeti la sequenza premendo i tasti A, B, C, D.';
+    }, t + 60));
+  }
+
+  function newTelegraphRound(){
+    clearTelegraphTimers();
+    const length = 3 + Math.floor(Math.random() * 3);
+    telegraphState = {
+      sequence: Array.from({length}, ()=>Math.floor(Math.random() * 4)),
+      input: [],
+      phase: 'playback'
+    };
+    updateTelegraphStats();
+    playTelegraphSequence();
+  }
+
+  function openTelegraph(){
+    telegraph.hidden = false;
+    newTelegraphRound();
+    document.getElementById('telegraphClose').focus();
+  }
+
+  function hideTelegraph(){
+    clearTelegraphTimers();
+    clearTelegraphHighlights();
+    telegraph.hidden = true;
+    telegraphState = null;
+  }
+
+  function pressTelegraph(index){
+    if(!telegraphState || telegraphState.phase !== 'input') return;
+    flashTelegraph(index, 180);
+    telegraphState.input.push(index);
+    const pos = telegraphState.input.length - 1;
+    if(telegraphState.sequence[pos] !== index){
+      telegraphLosses++;
+      updateTelegraphStats();
+      telegraphState.phase = 'failed';
+      setTelegraphEnabled(false);
+      const seqText = telegraphState.sequence.map(i => ['A','B','C','D'][i]).join(' - ');
+      telegraphMessage.textContent = `Messaggio errato! Sequenza corretta: ${seqText}. Premi “Nuova sequenza” per riprovare.`;
+      return;
+    }
+    if(telegraphState.input.length === telegraphState.sequence.length){
+      telegraphWins++;
+      updateTelegraphStats();
+      telegraphState.phase = 'won';
+      setTelegraphEnabled(false);
+      telegraphMessage.textContent = 'Messaggio ricostruito correttamente! Premi “Nuova sequenza” per un nuovo telegrafo.';
+    }
+  }
+
+  telegraphButtons.forEach((button, index) => button.addEventListener('click', ()=>pressTelegraph(index)));
+  document.getElementById('telegraphNew').addEventListener('click', newTelegraphRound);
+  document.getElementById('telegraphClose').addEventListener('click', hideTelegraph);
+
   function draw(){
     panorama.style.transform = `translate3d(${-offset}px,-50%,0)`;
     placeHotspots();
@@ -366,7 +492,7 @@
   }
 
   viewport.addEventListener('pointerdown', event => {
-    if(!active || !activity.hidden || !battleship.hidden || !shellgame.hidden || event.button !== 0 || event.target.closest?.('.pavilion-hotspot')) return;
+    if(!active || !activity.hidden || !battleship.hidden || !shellgame.hidden || !telegraph.hidden || event.button !== 0 || event.target.closest?.('.pavilion-hotspot')) return;
     drag = { id: event.pointerId, x: event.clientX, start: offset };
     viewport.setPointerCapture(event.pointerId);
     viewport.classList.add('is-dragging');
@@ -493,6 +619,7 @@
     pavilionHistoryToken = null;
     hideBattle();
     hideShellGame();
+    hideTelegraph();
     activity.hidden = true;
     selected = null;
     returnFocus = null;
@@ -521,13 +648,14 @@
     if(event.key === 'Escape'){
       event.preventDefault();
       event.stopImmediatePropagation();
-      if(!shellgame.hidden) hideShellGame();
+      if(!telegraph.hidden) hideTelegraph();
+      else if(!shellgame.hidden) hideShellGame();
       else if(!battleship.hidden) hideBattle();
       else if(!activity.hidden) hideActivity();
       else close();
       return;
     }
-    if(!battleship.hidden || !activity.hidden || !shellgame.hidden) return;
+    if(!battleship.hidden || !activity.hidden || !shellgame.hidden || !telegraph.hidden) return;
     if(event.key === 'ArrowLeft' || event.key === 'ArrowRight'){
       event.preventDefault();
       event.stopImmediatePropagation();

@@ -840,17 +840,17 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
 .hotspot-blue{background:radial-gradient(circle at 33% 25%,#498caf,#102d52 80%)}
 .hotspot-brown{background:radial-gradient(circle at 33% 25%,#b78b57,#553019 80%)}
 .hotspot-gold{background:radial-gradient(circle at 33% 25%,#e5bb51,#876018 80%)}
-.pavilion-activity[hidden],.pavilion-battleship[hidden],.pavilion-shellgame[hidden]{display:none!important}
-.pavilion-activity,.pavilion-battleship,.pavilion-shellgame{position:absolute;inset:0;z-index:8;background:#080e17b8;display:grid;place-items:center;padding:16px;box-sizing:border-box;overflow:auto;overscroll-behavior:contain}
-.pavilion-activity-card,.battleship-card,.shellgame-card{position:relative;box-sizing:border-box;width:min(94vw,475px);max-height:calc(100dvh - 32px);overflow:auto;border:3px double #ca9f5d;border-radius:14px;background:linear-gradient(150deg,#f9eccf,#e1c795);color:#37281d;box-shadow:0 16px 65px #000c;padding:28px 25px;text-align:center;font-family:Georgia,serif}
+.pavilion-activity[hidden],.pavilion-battleship[hidden],.pavilion-shellgame[hidden],.pavilion-telegraph[hidden]{display:none!important}
+.pavilion-activity,.pavilion-battleship,.pavilion-shellgame,.pavilion-telegraph{position:absolute;inset:0;z-index:8;background:#080e17b8;display:grid;place-items:center;padding:16px;box-sizing:border-box;overflow:auto;overscroll-behavior:contain}
+.pavilion-activity-card,.battleship-card,.shellgame-card,.telegraph-card{position:relative;box-sizing:border-box;width:min(94vw,475px);max-height:calc(100dvh - 32px);overflow:auto;border:3px double #ca9f5d;border-radius:14px;background:linear-gradient(150deg,#f9eccf,#e1c795);color:#37281d;box-shadow:0 16px 65px #000c;padding:28px 25px;text-align:center;font-family:Georgia,serif}
 .activity-x{position:absolute;right:9px;top:7px;background:transparent;border:0;color:#51361b;font-size:30px;cursor:pointer;padding:4px 11px}
 .activity-large-icon{margin:2px auto 12px;display:grid;place-items:center;width:60px;height:60px;border-radius:50%;border:3px double #f4db9c;color:#fff;font-size:31px}
 .pavilion-activity-card h2{font-size:clamp(23px,5vw,31px);margin:6px 0 14px}
 .pavilion-activity-card p{line-height:1.55;font-size:16px}
 .activity-message{font-weight:bold;color:#765029;padding:12px;border:1px solid #ad8f60;border-radius:7px;background:#fff8e4}
-.activity-primary,.battleship-card button:not(.battle-cell),.shellgame-card button:not(.shell-cup){border:1px solid #a97d37;border-radius:7px;background:#253f52;color:#f6e8c6;font-family:Georgia,serif;font-weight:bold;padding:10px 15px;cursor:pointer}
+.activity-primary,.battleship-card button:not(.battle-cell),.shellgame-card button:not(.shell-cup),.telegraph-card button:not(.telegraph-key){border:1px solid #a97d37;border-radius:7px;background:#253f52;color:#f6e8c6;font-family:Georgia,serif;font-weight:bold;padding:10px 15px;cursor:pointer}
 .activity-primary[hidden]{display:none}
-.pavilion-battleship,.pavilion-shellgame{z-index:9}
+.pavilion-battleship,.pavilion-shellgame,.pavilion-telegraph{z-index:9}
 .battleship-card{width:min(96vw,920px);padding:14px 18px;max-height:calc(100dvh - 20px)}
 .battleship-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .battleship-head h2{font-size:25px;margin:6px 0}
@@ -862,4 +862,26 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
 button.battle-cell{cursor:crosshair}.battle-cell.ship{background:#637d7a!important}.battle-cell.hit{background:#bd6260!important;color:#fff!important}.battle-cell.miss{background:#b7d6e2!important;color:#3d6e86!important}
 button.battle-cell:disabled{cursor:default}
 .battleship-actions{display:flex;justify-content:center;align-items:center;gap:18px;padding-top:13px;flex-wrap:wrap}
-@media(max-width:650px){.pavilion-hotspot{width:42px;height:42px;font-size:23px}.pavilion-activity-card{padding:23px 16px}.battleship-boards{gap:8px}.battleship-card{padding:10px 9px}.battleship-head h2{font-size:19px}.battleship-boards h3{font-size:13px}.battleship-grid{width:100%}.battleship-card #battleshipMessage{font-size:13px}.battleship-head button{padding:7px!important;font-size:12px}}
+
+
+
+.shellgame-head,.telegraph-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.shellgame-head h2,.telegraph-head h2{font-size:25px;margin:6px 0}
+.shellgame-message,.telegraph-message{margin:8px 0 12px;min-height:32px;font-weight:bold}
+.shellgame-stage{padding:6px 0 10px}
+.shell-table{position:relative; width:min(100%,520px); height:220px; margin:0 auto; border-radius:20px; background:linear-gradient(180deg,#1b6b57,#114434); box-shadow:inset 0 8px 18px #ffffff18, inset 0 -12px 20px #00000030; border:4px solid #a97d37}
+.shell-cup{position:absolute; top:64px; width:74px; height:94px; transform:translateX(-50%); border-radius:0 0 34px 34px / 0 0 24px 24px; border:3px solid #a77933; background:linear-gradient(180deg,#d7ad63,#9f6a27); box-shadow:inset 0 10px 12px #fff5, 0 12px 18px #0003; cursor:pointer}
+.shell-cup::before{content:''; position:absolute; left:18px; right:18px; top:-12px; height:16px; border-radius:50%; background:linear-gradient(180deg,#efcf8b,#bc8335); border:2px solid #a77933}
+.shell-cup.revealed{transform:translateX(-50%) translateY(-22px)}
+.shell-ball{position:absolute; bottom:42px; width:20px; height:20px; transform:translateX(-50%); border-radius:50%; background:radial-gradient(circle at 35% 35%,#fff8cf,#d6b44c 58%,#8d6721 100%); box-shadow:0 2px 6px #0007; opacity:0; transition:left .35s ease, opacity .2s ease}
+.shellgame-actions,.telegraph-actions{display:flex;justify-content:center;align-items:center;gap:18px;padding-top:13px;flex-wrap:wrap}
+.telegraph-card{width:min(94vw,560px)}
+.telegraph-panel{display:grid;gap:16px;align-items:center}
+.telegraph-lights{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:360px;margin:0 auto}
+.telegraph-light{width:100%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6d9,#7d6b42 42%,#49381b 78%,#24170b 100%);border:3px solid #8f6a31;box-shadow:inset 0 4px 9px #fff4,0 6px 14px #0003}
+.telegraph-light.is-on{background:radial-gradient(circle at 35% 35%,#fffef1,#ffe994 36%,#f1b332 60%,#925e12 100%);box-shadow:0 0 0 2px #f8d37244,0 0 18px #ffd966aa,inset 0 4px 9px #fff6}
+.telegraph-keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:360px;margin:0 auto}
+.telegraph-key{min-height:64px;border-radius:16px;border:2px solid #98713b;background:linear-gradient(180deg,#f3e4be,#d3b37a);color:#52371b;font:700 27px/1 Georgia,serif;cursor:pointer;box-shadow:0 6px 14px #0002, inset 0 3px 0 #fff7}
+.telegraph-key:active,.telegraph-key.is-active{transform:translateY(1px);background:linear-gradient(180deg,#f9edca,#ebcc91);box-shadow:0 2px 7px #0002, inset 0 2px 0 #fff8}
+@media(max-width:650px){.pavilion-hotspot{width:42px;height:42px;font-size:23px}.pavilion-activity-card{padding:23px 16px}.battleship-boards{gap:8px}.battleship-card{padding:10px 9px}.battleship-head h2,.shellgame-head h2,.telegraph-head h2{font-size:19px}.battleship-boards h3{font-size:13px}.battleship-grid{width:100%}.battleship-card #battleshipMessage,.shellgame-message,.telegraph-message{font-size:13px}.battleship-head button,.shellgame-head button,.telegraph-head button{padding:7px!important;font-size:12px}.shell-table{height:190px}.shell-cup{width:64px;height:82px;top:56px}.telegraph-key{min-height:56px;font-size:24px}}
+

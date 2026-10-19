@@ -326,6 +326,27 @@
               <footer class="shellgame-actions"><button type="button" id="shellGameNew">Nuovo giro</button><span id="shellGameStats"></span></footer>
             </div>
           </div>
+          <div id="pavilionTelegraph" class="pavilion-telegraph" hidden>
+            <div class="telegraph-card" role="dialog" aria-modal="true" aria-label="Il Telegrafo Impazzito">
+              <header class="telegraph-head"><h2>Il Telegrafo Impazzito</h2><button type="button" id="telegraphClose">✕ Esci</button></header>
+              <p id="telegraphMessage" class="telegraph-message" role="status" aria-live="polite">Premi “Nuova sequenza” per ascoltare il messaggio del telegrafo.</p>
+              <div class="telegraph-panel">
+                <div class="telegraph-lights" aria-hidden="true">
+                  <span class="telegraph-light" id="telegraphLight0"></span>
+                  <span class="telegraph-light" id="telegraphLight1"></span>
+                  <span class="telegraph-light" id="telegraphLight2"></span>
+                  <span class="telegraph-light" id="telegraphLight3"></span>
+                </div>
+                <div class="telegraph-keys" aria-label="Tasti del telegrafo">
+                  <button type="button" class="telegraph-key" id="telegraphKey0">A</button>
+                  <button type="button" class="telegraph-key" id="telegraphKey1">B</button>
+                  <button type="button" class="telegraph-key" id="telegraphKey2">C</button>
+                  <button type="button" class="telegraph-key" id="telegraphKey3">D</button>
+                </div>
+              </div>
+              <footer class="telegraph-actions"><button type="button" id="telegraphNew">Nuova sequenza</button><span id="telegraphStats"></span></footer>
+            </div>
+          </div>
           <footer class="pavilion-footer">
             <div class="pavilion-look-controls" aria-label="Comandi visuale panoramica">
               <div id="pavilionJoystick" class="pavilion-joystick" role="slider" tabindex="0" aria-label="Joystick per guardare a sinistra e a destra" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Fermo">
