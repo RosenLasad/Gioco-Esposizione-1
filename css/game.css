@@ -830,3 +830,36 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
   .pavilion-joystick-knob{width:34px;height:34px}
   .pavilion-footer .pavilion-look-controls #pavilionLookCenter{flex-basis:36px;width:36px;min-width:36px;max-width:36px;height:36px;min-height:36px;font-size:21px}
 }
+
+/* Fase 4.4: punti interattivi del Teatro delle Battaglie */
+.pavilion-hotspots{position:absolute;left:0;top:0;z-index:1;pointer-events:none;will-change:transform}
+.pavilion-hotspot{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;width:clamp(40px,4.2vw,56px);height:clamp(40px,4.2vw,56px);display:grid;place-items:center;border:3px double #ffe0a1;border-radius:50%;color:#fff4d7;font-size:clamp(22px,2.5vw,30px);font-family:Georgia,serif;text-shadow:0 1px 3px #000;box-shadow:0 0 0 2px #251c12,0 3px 13px #000b,inset 0 0 0 2px #ffffff29;cursor:pointer;touch-action:manipulation;z-index:1}
+.pavilion-hotspot:hover,.pavilion-hotspot:focus-visible{filter:brightness(1.25);outline:2px solid #fff5c9;outline-offset:4px}
+.hotspot-red{background:radial-gradient(circle at 33% 25%,#bc5c45,#642222 80%)}
+.hotspot-green{background:radial-gradient(circle at 33% 25%,#538f6a,#143b2e 80%)}
+.hotspot-blue{background:radial-gradient(circle at 33% 25%,#498caf,#102d52 80%)}
+.hotspot-brown{background:radial-gradient(circle at 33% 25%,#b78b57,#553019 80%)}
+.hotspot-gold{background:radial-gradient(circle at 33% 25%,#e5bb51,#876018 80%)}
+.pavilion-activity[hidden],.pavilion-battleship[hidden]{display:none!important}
+.pavilion-activity,.pavilion-battleship{position:absolute;inset:0;z-index:8;background:#080e17b8;display:grid;place-items:center;padding:16px;box-sizing:border-box;overflow:auto;overscroll-behavior:contain}
+.pavilion-activity-card,.battleship-card{position:relative;box-sizing:border-box;width:min(94vw,475px);max-height:calc(100dvh - 32px);overflow:auto;border:3px double #ca9f5d;border-radius:14px;background:linear-gradient(150deg,#f9eccf,#e1c795);color:#37281d;box-shadow:0 16px 65px #000c;padding:28px 25px;text-align:center;font-family:Georgia,serif}
+.activity-x{position:absolute;right:9px;top:7px;background:transparent;border:0;color:#51361b;font-size:30px;cursor:pointer;padding:4px 11px}
+.activity-large-icon{margin:2px auto 12px;display:grid;place-items:center;width:60px;height:60px;border-radius:50%;border:3px double #f4db9c;color:#fff;font-size:31px}
+.pavilion-activity-card h2{font-size:clamp(23px,5vw,31px);margin:6px 0 14px}
+.pavilion-activity-card p{line-height:1.55;font-size:16px}
+.activity-message{font-weight:bold;color:#765029;padding:12px;border:1px solid #ad8f60;border-radius:7px;background:#fff8e4}
+.activity-primary,.battleship-card button:not(.battle-cell){border:1px solid #a97d37;border-radius:7px;background:#253f52;color:#f6e8c6;font-family:Georgia,serif;font-weight:bold;padding:10px 15px;cursor:pointer}
+.activity-primary[hidden]{display:none}
+.pavilion-battleship{z-index:9}
+.battleship-card{width:min(96vw,920px);padding:14px 18px;max-height:calc(100dvh - 20px)}
+.battleship-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.battleship-head h2{font-size:25px;margin:6px 0}
+.battleship-card #battleshipMessage{margin:8px 0 12px;min-height:32px;font-weight:bold}
+.battleship-boards{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,3vw,25px)}
+.battleship-boards h3{margin:4px 0 8px;font-size:17px}
+.battleship-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));border:2px solid #665d4f;background:#b1cbd0;max-width:375px;margin:auto;aspect-ratio:1}
+.battle-cell{min-width:0!important;min-height:0!important;width:100%;height:100%;aspect-ratio:1;display:grid;place-items:center;border:1px solid #718d9b!important;background:#d2e6e5!important;color:#8b2524!important;padding:0!important;font-size:clamp(12px,2.3vw,24px)!important;font-family:sans-serif!important;border-radius:0!important;box-shadow:none!important}
+button.battle-cell{cursor:crosshair}.battle-cell.ship{background:#637d7a!important}.battle-cell.hit{background:#bd6260!important;color:#fff!important}.battle-cell.miss{background:#b7d6e2!important;color:#3d6e86!important}
+button.battle-cell:disabled{cursor:default}
+.battleship-actions{display:flex;justify-content:center;align-items:center;gap:18px;padding-top:13px;flex-wrap:wrap}
+@media(max-width:650px){.pavilion-hotspot{width:42px;height:42px;font-size:23px}.pavilion-activity-card{padding:23px 16px}.battleship-boards{gap:8px}.battleship-card{padding:10px 9px}.battleship-head h2{font-size:19px}.battleship-boards h3{font-size:13px}.battleship-grid{width:100%}.battleship-card #battleshipMessage{font-size:13px}.battleship-head button{padding:7px!important;font-size:12px}}

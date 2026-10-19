@@ -279,6 +279,7 @@
           <div id="pavilionViewport" class="pavilion-viewport" aria-label="Panorama di prova: trascina per guardare a sinistra e a destra">
             <img id="pavilionPanorama" class="pavilion-panorama" src="images/pavilions/panorama_test.svg" alt="Panorama di prova con zone sinistra, centro e destra" draggable="false">
             <div class="pavilion-lens" aria-hidden="true"></div>
+            <div id="pavilionHotspots" class="pavilion-hotspots" aria-label="Attivita del padiglione"></div>
           </div>
           <header class="pavilion-header">
             <button id="pavilionExit" type="button" class="pavilion-nav">⌂ &nbsp; Esposizione</button>
@@ -288,6 +289,27 @@
             <p>ESPOSIZIONE INTERNAZIONALE DI GENOVA · 1892</p>
             <h2 id="pavilionTitle"></h2>
             <p id="pavilionHint">Ambiente interno di prova · Fase 2</p>
+          </div>
+          <div id="pavilionActivity" class="pavilion-activity" hidden>
+            <div class="pavilion-activity-card" role="dialog" aria-modal="true" aria-labelledby="pavilionActivityTitle">
+              <button type="button" id="pavilionActivityClose" class="activity-x" aria-label="Chiudi">×</button>
+              <div id="pavilionActivityIcon" class="activity-large-icon"></div>
+              <h2 id="pavilionActivityTitle"></h2>
+              <p id="pavilionActivityDescription"></p>
+              <p id="pavilionActivityMessage" class="activity-message" hidden>Attività in preparazione</p>
+              <button id="pavilionActivityStart" type="button" class="activity-primary">Avvia attività</button>
+            </div>
+          </div>
+          <div id="pavilionBattleship" class="pavilion-battleship" hidden>
+            <div class="battleship-card" role="dialog" aria-modal="true" aria-label="Battaglia Navale">
+              <header class="battleship-head"><h2>Battaglia Navale</h2><button type="button" id="battleshipClose">✕ Esci</button></header>
+              <p id="battleshipMessage" role="status" aria-live="polite"></p>
+              <div class="battleship-boards">
+                <section><h3>Flotta avversaria</h3><div class="battleship-grid" id="battleshipEnemy"></div></section>
+                <section><h3>La tua flotta</h3><div class="battleship-grid" id="battleshipPlayer"></div></section>
+              </div>
+              <footer class="battleship-actions"><button type="button" id="battleshipNew">Nuova partita</button><span id="battleshipStats"></span></footer>
+            </div>
           </div>
           <footer class="pavilion-footer">
             <div class="pavilion-look-controls" aria-label="Comandi visuale panoramica">
