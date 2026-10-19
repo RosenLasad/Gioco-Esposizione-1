@@ -311,6 +311,21 @@
               <footer class="battleship-actions"><button type="button" id="battleshipNew">Nuova partita</button><span id="battleshipStats"></span></footer>
             </div>
           </div>
+          <div id="pavilionShellGame" class="pavilion-shellgame" hidden>
+            <div class="shellgame-card" role="dialog" aria-modal="true" aria-label="Il Gioco dei Bussolotti">
+              <header class="shellgame-head"><h2>Il Gioco dei Bussolotti</h2><button type="button" id="shellGameClose">✕ Esci</button></header>
+              <p id="shellGameMessage" class="shellgame-message" role="status" aria-live="polite"></p>
+              <div class="shellgame-stage">
+                <div class="shell-table" id="shellTable" aria-label="Tavolo del gioco dei bussolotti">
+                  <div id="shellBall" class="shell-ball" aria-hidden="true"></div>
+                  <button type="button" id="shellCup0" class="shell-cup" aria-label="Bussolotto sinistro"></button>
+                  <button type="button" id="shellCup1" class="shell-cup" aria-label="Bussolotto centrale"></button>
+                  <button type="button" id="shellCup2" class="shell-cup" aria-label="Bussolotto destro"></button>
+                </div>
+              </div>
+              <footer class="shellgame-actions"><button type="button" id="shellGameNew">Nuovo giro</button><span id="shellGameStats"></span></footer>
+            </div>
+          </div>
           <footer class="pavilion-footer">
             <div class="pavilion-look-controls" aria-label="Comandi visuale panoramica">
               <div id="pavilionJoystick" class="pavilion-joystick" role="slider" tabindex="0" aria-label="Joystick per guardare a sinistra e a destra" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Fermo">

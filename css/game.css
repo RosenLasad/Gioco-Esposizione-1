@@ -803,7 +803,7 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
 }
 
 /* Teatro delle Battaglie: il titolo e gia presente nel fondale. */
-.pavilion-view[data-pavilion="battaglie"] .pavilion-welcome{display:none!important}
+.pavilion-view[data-pavilion="battaglie"] .pavilion-welcome,.pavilion-view[data-pavilion="fortuna"] .pavilion-welcome{display:none!important}
 
 
 /* Fase 4.2 - Joystick analogico orizzontale compatto, senza pulsante Torna alla Fiera. */
@@ -840,17 +840,17 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
 .hotspot-blue{background:radial-gradient(circle at 33% 25%,#498caf,#102d52 80%)}
 .hotspot-brown{background:radial-gradient(circle at 33% 25%,#b78b57,#553019 80%)}
 .hotspot-gold{background:radial-gradient(circle at 33% 25%,#e5bb51,#876018 80%)}
-.pavilion-activity[hidden],.pavilion-battleship[hidden]{display:none!important}
-.pavilion-activity,.pavilion-battleship{position:absolute;inset:0;z-index:8;background:#080e17b8;display:grid;place-items:center;padding:16px;box-sizing:border-box;overflow:auto;overscroll-behavior:contain}
-.pavilion-activity-card,.battleship-card{position:relative;box-sizing:border-box;width:min(94vw,475px);max-height:calc(100dvh - 32px);overflow:auto;border:3px double #ca9f5d;border-radius:14px;background:linear-gradient(150deg,#f9eccf,#e1c795);color:#37281d;box-shadow:0 16px 65px #000c;padding:28px 25px;text-align:center;font-family:Georgia,serif}
+.pavilion-activity[hidden],.pavilion-battleship[hidden],.pavilion-shellgame[hidden]{display:none!important}
+.pavilion-activity,.pavilion-battleship,.pavilion-shellgame{position:absolute;inset:0;z-index:8;background:#080e17b8;display:grid;place-items:center;padding:16px;box-sizing:border-box;overflow:auto;overscroll-behavior:contain}
+.pavilion-activity-card,.battleship-card,.shellgame-card{position:relative;box-sizing:border-box;width:min(94vw,475px);max-height:calc(100dvh - 32px);overflow:auto;border:3px double #ca9f5d;border-radius:14px;background:linear-gradient(150deg,#f9eccf,#e1c795);color:#37281d;box-shadow:0 16px 65px #000c;padding:28px 25px;text-align:center;font-family:Georgia,serif}
 .activity-x{position:absolute;right:9px;top:7px;background:transparent;border:0;color:#51361b;font-size:30px;cursor:pointer;padding:4px 11px}
 .activity-large-icon{margin:2px auto 12px;display:grid;place-items:center;width:60px;height:60px;border-radius:50%;border:3px double #f4db9c;color:#fff;font-size:31px}
 .pavilion-activity-card h2{font-size:clamp(23px,5vw,31px);margin:6px 0 14px}
 .pavilion-activity-card p{line-height:1.55;font-size:16px}
 .activity-message{font-weight:bold;color:#765029;padding:12px;border:1px solid #ad8f60;border-radius:7px;background:#fff8e4}
-.activity-primary,.battleship-card button:not(.battle-cell){border:1px solid #a97d37;border-radius:7px;background:#253f52;color:#f6e8c6;font-family:Georgia,serif;font-weight:bold;padding:10px 15px;cursor:pointer}
+.activity-primary,.battleship-card button:not(.battle-cell),.shellgame-card button:not(.shell-cup){border:1px solid #a97d37;border-radius:7px;background:#253f52;color:#f6e8c6;font-family:Georgia,serif;font-weight:bold;padding:10px 15px;cursor:pointer}
 .activity-primary[hidden]{display:none}
-.pavilion-battleship{z-index:9}
+.pavilion-battleship,.pavilion-shellgame{z-index:9}
 .battleship-card{width:min(96vw,920px);padding:14px 18px;max-height:calc(100dvh - 20px)}
 .battleship-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .battleship-head h2{font-size:25px;margin:6px 0}
