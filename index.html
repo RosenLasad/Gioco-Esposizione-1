@@ -291,13 +291,12 @@
           </div>
           <footer class="pavilion-footer">
             <div class="pavilion-look-controls" aria-label="Comandi visuale panoramica">
-              <button id="pavilionLookLeft" type="button" aria-label="Guarda a sinistra">◀</button>
-              <div class="pavilion-look-readout"><span id="pavilionLookLabel">CENTRO</span><div class="pavilion-look-track"><div id="pavilionLookThumb"></div></div></div>
-              <button id="pavilionLookRight" type="button" aria-label="Guarda a destra">▶</button>
-              <button id="pavilionLookCenter" type="button" aria-label="Centra la visuale">◎</button>
+              <div id="pavilionJoystick" class="pavilion-joystick" role="slider" tabindex="0" aria-label="Joystick per guardare a sinistra e a destra" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Fermo">
+                <div class="pavilion-joystick-rail" aria-hidden="true"><span class="pavilion-joystick-mid"></span><span id="pavilionJoystickKnob" class="pavilion-joystick-knob"></span></div>
+              </div>
+              <button id="pavilionLookCenter" type="button" aria-label="Centra la visuale" title="Centra la visuale">◎</button>
             </div>
             <span id="pavilionStatus" class="pavilion-visually-hidden" role="status" aria-live="polite"></span>
-            <button id="pavilionBack" type="button">Torna alla Fiera</button>
           </footer>
         </section>
 

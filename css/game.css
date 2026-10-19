@@ -804,3 +804,29 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
 
 /* Teatro delle Battaglie: il titolo e gia presente nel fondale. */
 .pavilion-view[data-pavilion="battaglie"] .pavilion-welcome{display:none!important}
+
+
+/* Fase 4.2 - Joystick analogico orizzontale compatto, senza pulsante Torna alla Fiera. */
+.pavilion-footer{
+  display:flex;flex-direction:row;justify-content:center;align-items:center;
+  padding:7px max(9px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left));
+}
+.pavilion-footer .pavilion-look-controls{
+  position:static;display:flex;align-items:center;justify-content:center;
+  box-sizing:border-box;flex:0 1 auto;width:min(100%,258px);max-width:100%;
+  padding:5px 8px;gap:12px;margin:0;
+}
+.pavilion-joystick{box-sizing:border-box;position:relative;display:flex;align-items:center;justify-content:center;flex:1 1 175px;min-width:98px;height:42px;cursor:ew-resize;touch-action:none;user-select:none;-webkit-user-select:none;outline-offset:3px}
+.pavilion-joystick-rail{position:relative;width:100%;height:13px;border:1px solid #9e7848;border-radius:100px;background:linear-gradient(#162027,#394751 50%,#17262c);box-shadow:inset 0 2px 5px #000a,0 1px 0 #e8c18455}
+.pavilion-joystick-mid{position:absolute;left:50%;top:-5px;height:23px;width:2px;transform:translateX(-50%);background:#d5b77c77}
+.pavilion-joystick-knob{position:absolute;left:50%;top:50%;width:36px;height:36px;transform:translate(-50%,-50%);border:2px solid #e4c58d;border-radius:50%;background:radial-gradient(circle at 36% 30%,#f6ddb0,#937043 68%,#49371f);box-shadow:inset 0 0 0 3px #ffffff30,0 3px 9px #000b;pointer-events:none;transition:left .13s ease}
+.pavilion-joystick.is-active .pavilion-joystick-knob{transition:none}
+.pavilion-joystick:focus-visible{outline:2px solid #ffe4a8;border-radius:10px}
+.pavilion-footer .pavilion-look-controls #pavilionLookCenter{flex:0 0 38px;width:38px;min-width:38px;max-width:38px;height:38px;min-height:38px;padding:0;font-size:23px;line-height:1}
+@media(max-width:600px){
+  .pavilion-footer{flex-direction:row;justify-content:center;align-items:center;gap:0;padding:5px max(8px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+  .pavilion-footer .pavilion-look-controls{width:min(100%,240px);max-width:100%;gap:10px;padding:3px 8px}
+  .pavilion-joystick{height:40px;min-width:90px}
+  .pavilion-joystick-knob{width:34px;height:34px}
+  .pavilion-footer .pavilion-look-controls #pavilionLookCenter{flex-basis:36px;width:36px;min-width:36px;max-width:36px;height:36px;min-height:36px;font-size:21px}
+}
