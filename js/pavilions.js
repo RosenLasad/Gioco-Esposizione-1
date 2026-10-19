@@ -13,6 +13,8 @@
   const joystick=document.getElementById('pavilionJoystick');
   const knob=document.getElementById('pavilionJoystickKnob');
   let active=null,restore=null,offset=0,maxOffset=0,drag=null,joyPointer=null,joyValue=0,joyFrame=0,joyLast=0;
+  let pavilionHistoryToken=null;
+  let historySequence=0;
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
   function draw(){
     panorama.style.transform=`translate3d(${-offset}px,-50%,0)`;
@@ -102,6 +104,12 @@
   function open(key,onClose){
     const config=definitions[key];if(!config||active)return false;
     active=key;restore=typeof onClose==='function'?onClose:null;
+    // Una voce di cronologia permette al tasto Indietro Android di chiudere il padiglione.
+    const token=`esposizione-pavilion-${++historySequence}-${Date.now()}`;
+    try {
+      window.history.pushState({...window.history.state,esposizionePavilionToken:token},'',window.location.href);
+      pavilionHistoryToken=token;
+    } catch (_) { pavilionHistoryToken=null; }
     view.dataset.pavilion=key;
     document.getElementById('pavilionTitle').textContent=config.name;
     document.getElementById('pavilionHint').textContent=`Padiglione ${config.number} · Ingresso sperimentale`;
@@ -115,7 +123,17 @@
     document.getElementById('pavilionExit').focus();
     return true;
   }
-  function close(){if(!active)return false;releaseJoy();active=null;stopDrag();view.hidden=true;delete view.dataset.pavilion;const fn=restore;restore=null;fn?.();return true;}
+  function close(fromHistory=false){
+    if(!active)return false;
+    const ownedEntry=!!pavilionHistoryToken&&window.history.state?.esposizionePavilionToken===pavilionHistoryToken;
+    pavilionHistoryToken=null;
+    releaseJoy();active=null;stopDrag();view.hidden=true;delete view.dataset.pavilion;
+    const fn=restore;restore=null;fn?.();
+    // Se l'uscita avviene da un pulsante, rimuove anche la voce aggiunta all'ingresso.
+    if(!fromHistory&&ownedEntry)window.history.back();
+    return true;
+  }
+  window.addEventListener('popstate',()=>{if(active)close(true);});
   function isOpen(){return !!active;}
   document.getElementById('pavilionExit').addEventListener('click',close);
   document.getElementById('pavilionInventory').addEventListener('click',()=>{
