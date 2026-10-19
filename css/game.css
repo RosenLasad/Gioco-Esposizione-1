@@ -803,7 +803,7 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
 }
 
 /* Teatro delle Battaglie: il titolo e gia presente nel fondale. */
-.pavilion-view[data-pavilion="battaglie"] .pavilion-welcome,.pavilion-view[data-pavilion="fortuna"] .pavilion-welcome{display:none!important}
+.pavilion-view[data-pavilion="battaglie"] .pavilion-welcome,.pavilion-view[data-pavilion="fortuna"] .pavilion-welcome,.pavilion-view[data-pavilion="invenzioni"] .pavilion-welcome{display:none!important}
 
 
 /* Fase 4.2 - Joystick analogico orizzontale compatto, senza pulsante Torna alla Fiera. */
