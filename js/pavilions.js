@@ -25,7 +25,7 @@
     const old=maxOffset?offset/maxOffset:.5;
     const vw=viewport.clientWidth,vh=viewport.clientHeight;
     // Il panorama e largo 3000/1050: copre interamente l'altezza della visuale.
-    const imageWidth=vh*(3000/1050);
+    const imageWidth=vh*((panorama.naturalWidth && panorama.naturalHeight) ? panorama.naturalWidth / panorama.naturalHeight : 3000/1050);
     maxOffset=Math.max(0,imageWidth-vw);
     offset=maxOffset*(center?.5:old);
     draw();
@@ -49,6 +49,7 @@
   document.getElementById('pavilionLookRight').addEventListener('click',()=>step(1));
   document.getElementById('pavilionLookCenter').addEventListener('click',()=>{offset=maxOffset/2;draw();});
   window.addEventListener('resize',()=>measure(false));
+  panorama.addEventListener('load',()=>measure(true));
   function resolve(h,area){
     if(area?.id!=='nord'||!h)return null;
     return Object.entries(definitions).find(([,d])=>d.ids.includes(h.id))?.[0]||null;
@@ -59,11 +60,12 @@
     view.dataset.pavilion=key;
     document.getElementById('pavilionTitle').textContent=config.name;
     document.getElementById('pavilionHint').textContent=`Padiglione ${config.number} · Ingresso sperimentale`;
-    // Panorama di calibrazione condiviso fra i tre ingressi.
-    // Lo sfondo resta provvisorio finche non vengono fornite immagini pulite.
-    // La proprieta image e gia predisposta per le fasi grafiche successive.
+    // Teatro delle Battaglie: fondale panoramico pulito; altri ingressi in TEST.
+    const image = key==='battaglie' ? config.image : 'images/pavilions/panorama_test.svg';
+    panorama.alt = key==='battaglie' ? 'Interno panoramico del Teatro delle Battaglie' : 'Panorama TEST';
+    if (panorama.getAttribute('src') !== image) panorama.setAttribute('src',image);
     view.hidden=false;
-    document.getElementById('pavilionStatus').textContent='TEST PANORAMA · Trascina l’ambiente a destra e sinistra. Usa anche i pulsanti o i tasti freccia.';
+    document.getElementById('pavilionStatus').textContent=key==='battaglie' ? 'Teatro delle Battaglie: panorama esplorabile.' : 'Panorama di prova esplorabile.';
     measure(true);
     document.getElementById('pavilionExit').focus();
     return true;
