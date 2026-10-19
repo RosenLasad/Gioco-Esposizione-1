@@ -1,60 +1,8 @@
 (function(){
   'use strict';
 
-  const definitions = Object.freeze({
-    battaglie: {
-      name: 'Teatro delle Battaglie',
-      number: '4',
-      ids: ['hotspot-1790363509817'],
-      image: 'images/pavilions/battaglie.jpg',
-      alt: 'Interno panoramico del Teatro delle Battaglie',
-      status: 'Teatro delle Battaglie: panorama esplorabile.'
-    },
-    fortuna: {
-      name: 'Galleria della Fortuna',
-      number: '5',
-      ids: ['sport','hotspot-1790363448490'],
-      image: 'images/pavilions/fortuna.jpg',
-      alt: 'Interno panoramico della Galleria della Fortuna',
-      status: 'Galleria della Fortuna: panorama esplorabile.'
-    },
-    invenzioni: {
-      name: 'Padiglione delle Invenzioni',
-      number: '16',
-      ids: ['hotspot-1790363352923','hotspot-1790363463228'],
-      image: 'images/pavilions/invenzioni.jpg',
-      alt: 'Interno panoramico del Padiglione delle Invenzioni',
-      status: 'Padiglione delle Invenzioni: panorama esplorabile.'
-    }
-  });
-
-  const pavilionItems = Object.freeze({
-    battaglie: [
-      {id:'bombarda',name:'Bombarda!',icon:'☄',color:'red',x:11,y:62,desc:'Prendi la mira con il cannone e colpisci i bersagli della flotta nemica.'},
-      {id:'fortezza',name:'Difendi la Fortezza',icon:'♜',color:'green',x:29,y:43,desc:'Proteggi la fortezza dagli attacchi organizzando la sua difesa.'},
-      {id:'guida',name:'Guida',icon:'ℹ',color:'blue',x:52,y:51,desc:'Scopri le curiosità e la storia delle battaglie raccontate nel padiglione.'},
-      {id:'shopping',name:'Shopping',icon:'▣',color:'brown',x:77,y:42,desc:'Visita il banco dei souvenir e scopri modelli navali e oggetti da collezione.'},
-      {id:'navale',name:'Battaglia Navale',icon:'⛵',color:'blue',x:81,y:70,desc:'Sfida il computer su due griglie navali: scopri e affonda tutte le navi avversarie.',action:'battleship'},
-      {id:'extra',name:'Extra',icon:'★',color:'gold',x:94,y:46,desc:'Contenuti bonus, curiosità e ricompense speciali del Teatro delle Battaglie.'}
-    ],
-    fortuna: [
-      {id:'ruota',name:'La Ruota della Fortuna',icon:'☘',color:'green',x:56,y:31,desc:'Affida il tuo destino alla grande ruota centrale e tenta la sorte per vincere premi e gettoni.'},
-      {id:'bussolotti',name:'Il Gioco dei Bussolotti',icon:'◔',color:'red',x:12,y:69,desc:'Osserva i bussolotti, segui la pallina e prova a indovinare dov\'è finita.',action:'shellgame'},
-      {id:'prestigiatore',name:'Il Prestigiatore',icon:'🎩',color:'red',x:16,y:42,desc:'Assisti ai giochi di prestigio e scopri illusioni e meraviglie del padiglione.'},
-      {id:'pesca',name:'Il Pesca-Premi',icon:'🎁',color:'blue',x:84,y:43,desc:'Estrai un premio tra giocattoli, gadget e piccole sorprese dell\'Esposizione.'},
-      {id:'shopping',name:'Shopping',icon:'▣',color:'brown',x:83,y:70,desc:'Sfoglia i souvenir e gli oggetti da collezione della Galleria della Fortuna.'},
-      {id:'guida',name:'Guida',icon:'ℹ',color:'blue',x:35,y:70,desc:'Scopri il funzionamento delle attrazioni e la storia della Galleria della Fortuna.'}
-    ],
-    invenzioni: [
-      {id:'telegrafo',name:'Il Telegrafo Impazzito',icon:'◔',color:'red',x:8.5,y:46,desc:'Riproduci la sequenza di impulsi del telegrafo e rimetti in ordine il messaggio.',action:'telegrafo'},
-      {id:'macchina',name:'La Macchina Infernale',icon:'⚙',color:'green',x:49.5,y:34,desc:'Esplora il grande motore centrale e scopri i suoi ingranaggi, pistoni e ruote motrici.'},
-      {id:'automa',name:"L'Automa Meccanico",icon:'🎩',color:'red',x:87,y:44,desc:"Osserva l'automa in azione e sperimenta i suoi movimenti programmati."},
-      {id:'shopping',name:'Shopping',icon:'▣',color:'brown',x:86.5,y:66,desc:"Sfoglia gadget, invenzioni e souvenir del Padiglione delle Invenzioni."},
-      {id:'catena',name:'La Catena degli Inventori',icon:'⛓',color:'green',x:64,y:78,desc:'Collega idee, oggetti e inventori in una reazione a catena piena di intuizioni.'},
-      {id:'guida',name:'Guida',icon:'ℹ',color:'blue',x:13.5,y:76,desc:"Scopri la storia del padiglione e le meraviglie tecnologiche presentate all'Esposizione."}
-    ]
-  });
-
+  const registry=window.EsposizionePavilionRegistry;
+  const minigames=window.EsposizioneMinigames;
   const view = document.getElementById('pavilionView');
   const viewport = document.getElementById('pavilionViewport');
   const panorama = document.getElementById('pavilionPanorama');
@@ -68,9 +16,6 @@
   const activityMessage = document.getElementById('pavilionActivityMessage');
   const activityStart = document.getElementById('pavilionActivityStart');
 
-  const battleship = document.getElementById('pavilionBattleship');
-  const shellgame = document.getElementById('pavilionShellGame');
-  const telegraph = document.getElementById('pavilionTelegraph');
 
   let active = null;
   let restore = null;
@@ -83,14 +28,13 @@
   let joyLast = 0;
   let selected = null;
   let returnFocus = null;
-  let board = null;
   let pavilionHistoryToken = null;
   let historySequence = 0;
 
   const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
 
   function currentItems(){
-    return pavilionItems[active] || [];
+    return registry.get(active)?.items || [];
   }
 
   function buildHotspots(){
@@ -151,323 +95,8 @@
     if(!selected?.action) return;
     const action = selected.action;
     hideActivity();
-    if(action === 'battleship'){
-      newBattle();
-      battleship.hidden = false;
-      document.getElementById('battleshipClose').focus();
-    } else if(action === 'shellgame'){
-      openShellGame();
-    } else if(action === 'telegrafo'){
-      openTelegraph();
-    }
+    minigames.get(action)?.start();
   });
-
-  const shipSizes = [5,4,3,3,2];
-  function makeFleet(){
-    const ships = Array.from({length:100},()=>false);
-    for(const length of shipSizes){
-      let done = false;
-      for(let attempt=0; attempt<1000 && !done; attempt++){
-        const horizontal = Math.random() < .5;
-        const x = Math.floor(Math.random() * (horizontal ? 11 - length : 10));
-        const y = Math.floor(Math.random() * (horizontal ? 10 : 11 - length));
-        const cells = Array.from({length}, (_,i)=>(y + (horizontal ? 0 : i)) * 10 + x + (horizontal ? i : 0));
-        if(cells.some(pos => ships[pos])) continue;
-        cells.forEach(pos => { ships[pos] = true; });
-        done = true;
-      }
-    }
-    return ships;
-  }
-
-  function newBattle(){
-    board = {
-      enemy: makeFleet(),
-      player: makeFleet(),
-      enemyShots: new Set(),
-      playerShots: new Set(),
-      turn: true,
-      over: false,
-      token: (board?.token || 0) + 1
-    };
-    renderBattle('Scegli una casella della flotta avversaria per sparare.');
-  }
-
-  function won(fleet, shots){
-    return fleet.every((occupied, i) => !occupied || shots.has(i));
-  }
-
-  function renderBattle(message){
-    if(!board) return;
-    document.getElementById('battleshipMessage').textContent = message;
-    for(const side of ['enemy','player']){
-      const root = document.getElementById(side === 'enemy' ? 'battleshipEnemy' : 'battleshipPlayer');
-      root.replaceChildren();
-      for(let i=0;i<100;i++){
-        const shot = (side === 'enemy' ? board.playerShots : board.enemyShots).has(i);
-        const ship = board[side][i];
-        const cell = document.createElement(side === 'enemy' ? 'button' : 'span');
-        cell.className = 'battle-cell';
-        if(side === 'player' && ship) cell.classList.add('ship');
-        if(shot){
-          cell.classList.add(ship ? 'hit' : 'miss');
-          cell.textContent = ship ? '×' : '•';
-        }
-        if(side === 'enemy'){
-          cell.type = 'button';
-          cell.setAttribute('aria-label', `Colonna ${i%10+1}, riga ${Math.floor(i/10)+1}`);
-          cell.disabled = shot || !board.turn || board.over;
-          cell.addEventListener('click', ()=>fire(i));
-        }
-        root.appendChild(cell);
-      }
-    }
-    document.getElementById('battleshipStats').textContent = `Colpi: ${board.playerShots.size} · Navi colpite: ${[...board.playerShots].filter(i=>board.enemy[i]).length}/17`;
-  }
-
-  function fire(i){
-    if(!board || board.over || !board.turn || board.playerShots.has(i)) return;
-    board.playerShots.add(i);
-    board.turn = false;
-    if(won(board.enemy, board.playerShots)){
-      board.over = true;
-      renderBattle('Hai vinto! Hai affondato tutta la flotta nemica.');
-      return;
-    }
-    const candidates = Array.from({length:100}, (_,j)=>j).filter(j => !board.enemyShots.has(j));
-    const target = candidates[Math.floor(Math.random() * candidates.length)];
-    board.enemyShots.add(target);
-    if(won(board.player, board.enemyShots)){
-      board.over = true;
-      renderBattle('Hai perso: la tua flotta è stata affondata. Riprova!');
-      return;
-    }
-    board.turn = true;
-    renderBattle(`${board.enemy[i] ? 'Colpito!' : 'Acqua!'} Il computer ha sparato: ${board.player[target] ? 'ha colpito una tua nave.' : 'acqua.'} Tocca a te.`);
-  }
-
-  document.getElementById('battleshipNew').addEventListener('click', newBattle);
-  function hideBattle(){
-    battleship.hidden = true;
-    board = null;
-  }
-  document.getElementById('battleshipClose').addEventListener('click', hideBattle);
-
-  // Gioco dei bussolotti
-  const shellCupButtons = [0,1,2].map(i=>document.getElementById(`shellCup${i}`));
-  const shellBall = document.getElementById('shellBall');
-  const shellMessage = document.getElementById('shellGameMessage');
-  const shellStats = document.getElementById('shellGameStats');
-  const shellPositions = ['18%','50%','82%'];
-  let shellWins = 0;
-  let shellLosses = 0;
-  let shellState = null;
-  let shellTimers = [];
-
-  function clearShellTimers(){
-    shellTimers.forEach(id => clearTimeout(id));
-    shellTimers = [];
-  }
-
-  function updateShellStats(){
-    shellStats.textContent = `Vittorie: ${shellWins} · Sconfitte: ${shellLosses}`;
-  }
-
-  function renderShell(showBall=false, revealedIds=[]){
-    if(!shellState) return;
-    const revealSet = new Set(revealedIds);
-    for(const cup of shellState.cups){
-      const button = shellCupButtons[cup.id];
-      button.style.left = shellPositions[cup.slot];
-      button.classList.toggle('revealed', revealSet.has(cup.id));
-      button.disabled = !shellState.canGuess;
-    }
-    const ballCup = shellState.cups.find(c => c.id === shellState.ballCupId);
-    shellBall.style.left = shellPositions[ballCup.slot];
-    shellBall.style.opacity = showBall ? '1' : '0';
-  }
-
-  function openShellGame(){
-    shellgame.hidden = false;
-    newShellRound();
-    document.getElementById('shellGameClose').focus();
-  }
-
-  function hideShellGame(){
-    clearShellTimers();
-    shellgame.hidden = true;
-    shellState = null;
-  }
-
-  function swapCupSlots(aId, bId){
-    const a = shellState.cups.find(c => c.id === aId);
-    const b = shellState.cups.find(c => c.id === bId);
-    const temp = a.slot;
-    a.slot = b.slot;
-    b.slot = temp;
-  }
-
-  function shuffleShell(step=0, total=5){
-    if(!shellState) return;
-    if(step >= total){
-      shellState.canGuess = true;
-      shellMessage.textContent = 'Dov’è la pallina? Tocca un bussolotto per indovinare.';
-      renderShell(false, []);
-      return;
-    }
-    const picks = [0,1,2].sort(()=>Math.random()-.5).slice(0,2);
-    swapCupSlots(picks[0], picks[1]);
-    renderShell(false, []);
-    shellTimers.push(setTimeout(()=>shuffleShell(step+1, total), 420));
-  }
-
-  function newShellRound(){
-    clearShellTimers();
-    shellState = {
-      cups: [{id:0,slot:0},{id:1,slot:1},{id:2,slot:2}],
-      ballCupId: Math.floor(Math.random()*3),
-      canGuess: false
-    };
-    updateShellStats();
-    shellMessage.textContent = 'Osserva bene: la pallina ti viene mostrata per un istante.';
-    renderShell(true, [shellState.ballCupId]);
-    shellTimers.push(setTimeout(()=>{
-      shellMessage.textContent = 'I bussolotti si muovono... segui con attenzione la pallina.';
-      renderShell(false, []);
-      shuffleShell(0, 6);
-    }, 1100));
-  }
-
-  function guessCup(id){
-    if(!shellState || !shellState.canGuess) return;
-    shellState.canGuess = false;
-    const win = id === shellState.ballCupId;
-    if(win) shellWins++; else shellLosses++;
-    updateShellStats();
-    const revealed = win ? [id] : [id, shellState.ballCupId];
-    renderShell(true, revealed);
-    shellMessage.textContent = win ? 'Bravo! Hai seguito correttamente la pallina.' : 'Peccato! La pallina era sotto un altro bussolotto.';
-  }
-
-  shellCupButtons.forEach((button, id) => button.addEventListener('click', ()=>guessCup(id)));
-  document.getElementById('shellGameNew').addEventListener('click', newShellRound);
-  document.getElementById('shellGameClose').addEventListener('click', hideShellGame);
-
-
-
-  // Il Telegrafo Impazzito
-  const telegraphButtons = [0,1,2,3].map(i => document.getElementById(`telegraphKey${i}`));
-  const telegraphLights = [0,1,2,3].map(i => document.getElementById(`telegraphLight${i}`));
-  const telegraphMessage = document.getElementById('telegraphMessage');
-  const telegraphStats = document.getElementById('telegraphStats');
-  let telegraphState = null;
-  let telegraphTimers = [];
-  let telegraphWins = 0;
-  let telegraphLosses = 0;
-
-  function clearTelegraphTimers(){
-    telegraphTimers.forEach(id => clearTimeout(id));
-    telegraphTimers = [];
-  }
-
-  function setTelegraphEnabled(enabled){
-    telegraphButtons.forEach(btn => btn.disabled = !enabled);
-  }
-
-  function setTelegraphHighlight(index, on){
-    const light = telegraphLights[index];
-    const key = telegraphButtons[index];
-    light.classList.toggle('is-on', !!on);
-    key.classList.toggle('is-active', !!on);
-  }
-
-  function clearTelegraphHighlights(){
-    telegraphLights.forEach(light => light.classList.remove('is-on'));
-    telegraphButtons.forEach(key => key.classList.remove('is-active'));
-  }
-
-  function updateTelegraphStats(){
-    telegraphStats.textContent = `Messaggi riusciti: ${telegraphWins} · Errori: ${telegraphLosses}`;
-  }
-
-  function flashTelegraph(index, duration=320){
-    setTelegraphHighlight(index, true);
-    telegraphTimers.push(setTimeout(()=>setTelegraphHighlight(index, false), duration));
-  }
-
-  function playTelegraphSequence(){
-    if(!telegraphState) return;
-    clearTelegraphTimers();
-    telegraphState.phase = 'playback';
-    telegraphState.input = [];
-    setTelegraphEnabled(false);
-    clearTelegraphHighlights();
-    telegraphMessage.textContent = 'Ascolta il messaggio del telegrafo e memorizza la sequenza.';
-    let t = 150;
-    telegraphState.sequence.forEach((step, idx) => {
-      telegraphTimers.push(setTimeout(()=>setTelegraphHighlight(step, true), t));
-      telegraphTimers.push(setTimeout(()=>setTelegraphHighlight(step, false), t + 280));
-      t += 440;
-    });
-    telegraphTimers.push(setTimeout(()=>{
-      clearTelegraphHighlights();
-      telegraphState.phase = 'input';
-      setTelegraphEnabled(true);
-      telegraphMessage.textContent = 'Ripeti la sequenza premendo i tasti A, B, C, D.';
-    }, t + 60));
-  }
-
-  function newTelegraphRound(){
-    clearTelegraphTimers();
-    const length = 3 + Math.floor(Math.random() * 3);
-    telegraphState = {
-      sequence: Array.from({length}, ()=>Math.floor(Math.random() * 4)),
-      input: [],
-      phase: 'playback'
-    };
-    updateTelegraphStats();
-    playTelegraphSequence();
-  }
-
-  function openTelegraph(){
-    telegraph.hidden = false;
-    newTelegraphRound();
-    document.getElementById('telegraphClose').focus();
-  }
-
-  function hideTelegraph(){
-    clearTelegraphTimers();
-    clearTelegraphHighlights();
-    telegraph.hidden = true;
-    telegraphState = null;
-  }
-
-  function pressTelegraph(index){
-    if(!telegraphState || telegraphState.phase !== 'input') return;
-    flashTelegraph(index, 180);
-    telegraphState.input.push(index);
-    const pos = telegraphState.input.length - 1;
-    if(telegraphState.sequence[pos] !== index){
-      telegraphLosses++;
-      updateTelegraphStats();
-      telegraphState.phase = 'failed';
-      setTelegraphEnabled(false);
-      const seqText = telegraphState.sequence.map(i => ['A','B','C','D'][i]).join(' - ');
-      telegraphMessage.textContent = `Messaggio errato! Sequenza corretta: ${seqText}. Premi “Nuova sequenza” per riprovare.`;
-      return;
-    }
-    if(telegraphState.input.length === telegraphState.sequence.length){
-      telegraphWins++;
-      updateTelegraphStats();
-      telegraphState.phase = 'won';
-      setTelegraphEnabled(false);
-      telegraphMessage.textContent = 'Messaggio ricostruito correttamente! Premi “Nuova sequenza” per un nuovo telegrafo.';
-    }
-  }
-
-  telegraphButtons.forEach((button, index) => button.addEventListener('click', ()=>pressTelegraph(index)));
-  document.getElementById('telegraphNew').addEventListener('click', newTelegraphRound);
-  document.getElementById('telegraphClose').addEventListener('click', hideTelegraph);
 
   function draw(){
     panorama.style.transform = `translate3d(${-offset}px,-50%,0)`;
@@ -492,7 +121,7 @@
   }
 
   viewport.addEventListener('pointerdown', event => {
-    if(!active || !activity.hidden || !battleship.hidden || !shellgame.hidden || !telegraph.hidden || event.button !== 0 || event.target.closest?.('.pavilion-hotspot')) return;
+    if(!active || !activity.hidden || minigames.anyOpen() || event.button !== 0 || event.target.closest?.('.pavilion-hotspot')) return;
     drag = { id: event.pointerId, x: event.clientX, start: offset };
     viewport.setPointerCapture(event.pointerId);
     viewport.classList.add('is-dragging');
@@ -585,11 +214,11 @@
 
   function resolve(hotspot, area){
     if(area?.id !== 'nord' || !hotspot) return null;
-    return Object.entries(definitions).find(([,def]) => def.ids.includes(hotspot.id))?.[0] || null;
+    return registry.all().find(def => def.ids.includes(hotspot.id))?.key || null;
   }
 
   function open(key, onClose){
-    const config = definitions[key];
+    const config = registry.get(key);
     if(!config || active) return false;
     active = key;
     restore = typeof onClose === 'function' ? onClose : null;
@@ -617,9 +246,7 @@
     if(!active) return false;
     const ownedEntry = !!pavilionHistoryToken && window.history.state?.esposizionePavilionToken === pavilionHistoryToken;
     pavilionHistoryToken = null;
-    hideBattle();
-    hideShellGame();
-    hideTelegraph();
+    minigames.closeAll();
     activity.hidden = true;
     selected = null;
     returnFocus = null;
@@ -648,14 +275,12 @@
     if(event.key === 'Escape'){
       event.preventDefault();
       event.stopImmediatePropagation();
-      if(!telegraph.hidden) hideTelegraph();
-      else if(!shellgame.hidden) hideShellGame();
-      else if(!battleship.hidden) hideBattle();
+      if(minigames.anyOpen()) minigames.closeOpen();
       else if(!activity.hidden) hideActivity();
       else close();
       return;
     }
-    if(!battleship.hidden || !activity.hidden || !shellgame.hidden || !telegraph.hidden) return;
+    if(minigames.anyOpen() || !activity.hidden) return;
     if(event.key === 'ArrowLeft' || event.key === 'ArrowRight'){
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -663,5 +288,6 @@
     }
   }, true);
 
+  const definitions = Object.freeze(Object.fromEntries(registry.all().map(config=>[config.key,config])));
   window.EsposizionePavilions = Object.freeze({definitions, resolve, open, close, isOpen});
 })();
