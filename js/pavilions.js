@@ -77,7 +77,7 @@
     activityMessage.textContent = hasAction ? '' : 'Attività in preparazione';
     activityMessage.hidden = hasAction;
     activityStart.hidden = !hasAction;
-    activityStart.textContent = 'Avvia attività';
+    activityStart.textContent = item.action === 'telegrafo' ? 'Avvia gioco' : 'Avvia attività';
     activity.hidden = false;
     document.getElementById('pavilionActivityClose').focus();
   }
@@ -275,7 +275,7 @@
     if(event.key === 'Escape'){
       event.preventDefault();
       event.stopImmediatePropagation();
-      if(minigames.anyOpen()) minigames.closeOpen();
+      if(minigames.anyOpen()){const game=minigames.get('telegrafo');if(game?.isOpen()&&game.back)game.back();else minigames.closeOpen();}
       else if(!activity.hidden) hideActivity();
       else close();
       return;

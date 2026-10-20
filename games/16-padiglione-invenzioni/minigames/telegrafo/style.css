@@ -1,1 +1,249 @@
-/* Stili del minigioco telegrafo - attualmente consolidati nel CSS condiviso. */
+/* Telegrafo Impazzito V1 - esclusivo del padiglione 16 */
+#pavilionTelegraph[hidden],#pavilionTelegraph [hidden]{display:none!important}
+#pavilionTelegraph{position:absolute;inset:0;z-index:12;display:grid;place-items:center;background:#150e0bdd;overflow:auto;padding:12px;box-sizing:border-box;color:#f7e6bd;font-family:Georgia,serif}
+#pavilionTelegraph:fullscreen{padding:0;background:#1b120d}
+#pavilionTelegraph button,#pavilionTelegraph select{font:inherit;cursor:pointer}
+#pavilionTelegraph button:disabled{opacity:.5;cursor:not-allowed}
+.tele-menu{width:min(94vw,520px);box-sizing:border-box;max-height:94dvh;overflow:auto;background:linear-gradient(135deg,#f2e4c3,#d7bc85);color:#412b17;border:5px double #96632b;border-radius:12px;padding:20px;text-align:center;box-shadow:0 10px 40px #000b}
+.tele-menu h2{font-size:clamp(23px,4vw,32px);margin:3px 0 13px}
+.tele-menu p{line-height:1.45}
+.tele-session,.tele-rules{font-size:14px}
+.tele-menu label{display:block;font-weight:bold;margin:12px auto 6px}
+.tele-menu select{background:#fff6e1;color:#3f2816;padding:9px;min-width:170px;border:1px solid #8e6b40;border-radius:6px}
+.tele-menu-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.tele-menu-actions button,.tele-modal button{border:2px solid #c5a16a;border-radius:7px;background:#283941;color:#f9e4b1;padding:10px 14px;min-width:120px;font-weight:bold}
+.tele-play{position:absolute;inset:0;display:grid;place-items:center;background:repeating-linear-gradient(93deg,#3b2318 0 7px,#4a2c1b 8px 16px,#512f1e 17px 33px);overflow:hidden}
+.tele-game-frame{position:relative;width:min(100vw,490px);height:100%;min-height:0;overflow:hidden;background:linear-gradient(90deg,#58361f,#643e25 16%,#5a361f 40%,#714428 70%,#4b2a1b);box-shadow:0 0 30px #000c;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.tele-hud{position:relative;z-index:2;background:#e0bd5f;color:#362314;display:grid;grid-template-columns:1fr 1.3fr 1fr;align-items:center;gap:5px;padding:9px 7px;box-shadow:0 2px 10px #0005;font-size:12px}
+.tele-hud small{display:block;font-size:11px}
+.tele-hud-level{text-align:center;font-weight:bold}
+.tele-hud-buttons{display:flex;justify-content:flex-end;gap:4px;flex-wrap:wrap}
+.tele-hud-buttons button{font-size:10px!important;border:1px solid #96753d;border-radius:4px;background:#ffedbe;color:#302013;padding:7px 5px}
+.tele-content{position:relative;display:grid;grid-template-columns:48% 52%;min-height:0;overflow:hidden}
+.tele-tape{height:100%;position:relative;margin-left:15%;width:70%;overflow:hidden;background:linear-gradient(90deg,#cbb88f 0%,#f1e6c7 11%,#f2e9d1 85%,#c5ab77 100%);box-shadow:inset 8px 0 7px #0002,inset -7px 0 7px #0002,0 0 12px #0007;border-left:1px solid #b6a27c;border-right:1px solid #b6a27c}
+.tele-track{position:absolute;inset:0}
+.tele-symbol{position:absolute;left:50%;top:0;display:block;background:#1b1c1c;z-index:1;will-change:transform}
+.tele-symbol.dot{width:10px;height:10px;margin-left:-5px;border-radius:50%}
+.tele-symbol.dash{width:10px;height:27px;margin-left:-5px;border-radius:6px}
+.tele-symbol.target{background:#dc2f24;box-shadow:0 0 1px 1px #95140777}
+.tele-symbol.hit{background:#288e55!important}
+.tele-symbol.miss{background:#8c918d!important}
+.tele-contact{position:absolute;top:75%;left:0;right:0;height:16px;transform:translateY(-50%);background:#df5f2f99;border-top:3px solid #ffcf77;border-bottom:3px solid #7e2815;box-sizing:border-box;box-shadow:0 0 13px #ffb347b8,0 0 0 2px #27160d55;z-index:2;pointer-events:none}
+.tele-paper{align-self:start;background:#e5d4b0;color:#332519;margin:18px 8px 0 4px;padding:12px 9px 15px;min-height:135px;box-shadow:0 7px 16px #0007;border:1px solid #92744a;border-radius:3px;overflow-wrap:anywhere}
+.tele-paper strong{font-size:12px}
+.tele-paper p{font-size:14px;line-height:1.35;min-height:54px}
+.tele-paper small{font-size:12px}
+.tele-progress{height:7px;border:1px solid #876743;background:#ac936e;margin:10px 0}
+.tele-progress span{display:block;width:0;height:100%;background:#a33720}
+.tele-instrument{z-index:3;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 12px 16px}
+.tele-instrument-base{position:relative;width:165px;height:86px;background:linear-gradient(160deg,#333637,#131718);border:3px solid #161415;border-radius:22px 22px 9px 9px;box-shadow:0 8px 10px #0008,inset 0 4px 10px #ffffff35;display:grid;place-items:center}
+.tele-instrument-base:before{content:'';position:absolute;width:125px;height:9px;background:linear-gradient(#aeb5b1,#484e4e);transform:rotate(-14deg);border-radius:4px;pointer-events:none}
+#teleKey{position:relative;z-index:1;width:81px;height:55px;border:4px solid #171b1b;border-radius:50%;background:radial-gradient(circle at 35% 22%,#ff4e3c,#da201d 59%,#5f100e);box-shadow:0 7px 0 #510807,0 9px 8px #0008;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#teleKey:active,#teleKey.tele-pressed{transform:translateY(4px);box-shadow:0 2px 0 #510807,0 4px 8px #0008}
+.tele-instrument small{font-size:10px;text-align:center;padding-top:15px;color:#f4dbb1;letter-spacing:.08em}
+.tele-modal{position:absolute;inset:0;z-index:20;background:#150e0de9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.tele-modal h2{font-size:25px}
+.tele-paper-result{background:#f4e4c5;border:1px solid #b99864;border-radius:4px;padding:12px;font-weight:bold}
+@media(max-width:480px){.tele-hud{grid-template-columns:1fr 1.1fr 1fr;font-size:11px}.tele-hud-buttons button{font-size:9px!important;padding:6px 3px}.tele-paper{padding:8px 7px;margin-top:12px}.tele-paper p{font-size:12px}}
+
+/* Fase A: restyling storico, senza intervenire sulle misure della zona di impatto. */
+.tele-play{
+  background:radial-gradient(ellipse at center,#8a623d25 0%,#140c09a8 85%),
+    repeating-linear-gradient(92deg,#392114 0 4px,#4a2c1b 5px 14px,#533421 15px 30px,#3b2418 31px 40px);
+}
+.tele-game-frame{
+  border-left:5px ridge #906c40;border-right:5px ridge #906c40;
+  background:repeating-linear-gradient(91deg,#56321d 0 9px,#653e26 10px 23px,#4e2e1c 24px 34px);
+  box-shadow:0 0 0 2px #22120b,0 0 40px #000c,inset 0 0 20px #150a08;
+}
+.tele-hud{
+  background:linear-gradient(180deg,#d8bb84,#ae8650);
+  border-bottom:3px double #69451f;
+  box-shadow:inset 0 2px 0 #f9e6b5a0,0 5px 11px #0005;
+  color:#342213;
+}
+.tele-hud>div:first-child,.tele-hud-level{background:#f0dcb066;border:1px solid #8a693d77;border-radius:5px;padding:5px 4px}
+.tele-hud-buttons button{background:linear-gradient(#f4e5c6,#cbab70);border:2px ridge #92703f;border-radius:5px}
+.tele-content{background:repeating-linear-gradient(0deg,#ffffff03 0 2px,transparent 3px 7px)}
+.tele-tape{
+  background:
+    repeating-linear-gradient(180deg,transparent 0 43px,#75562a0b 44px 45px,transparent 46px 93px),
+    repeating-linear-gradient(95deg,#faf0d8 0px,#e9d7b1 3px,#f4e6c6 7px,#f2e1bb 11px),
+    linear-gradient(90deg,#b59666,#f7edd5 15%,#ede0bc 87%,#a7895c);
+  border-left:2px solid #b79c6e;border-right:2px solid #b79c6e;
+  box-shadow:inset 7px 0 9px #5134183d,inset -8px 0 9px #51341838,0 0 0 3px #5d4026a8,0 0 18px #0008;
+}
+.tele-tape::before,.tele-tape::after{content:"";position:absolute;top:0;bottom:0;width:3px;z-index:1;pointer-events:none;background:repeating-linear-gradient(180deg,#8e755023 0 6px,transparent 7px 15px)}
+.tele-tape::before{left:6px}.tele-tape::after{right:6px}
+.tele-symbol{background:#302219;box-shadow:0 0 1px #180c06c2}
+.tele-symbol.target{background:#a32226;box-shadow:0 0 0 1px #68151b72}
+.tele-symbol.hit{background:#34815b!important}.tele-symbol.miss{background:#77756e!important}
+/* L'indicatore cambia solo finitura, NON geometria: top 75%, height 16px. */
+.tele-contact{
+ background:linear-gradient(180deg,#f4d8a780 0%,#a7813c99 24%,#7a4b247a 64%,#dfad6890 100%);
+ border-top:3px solid #e8c57a;border-bottom:3px solid #67401f;
+ box-shadow:inset 0 1px 2px #fff5,0 0 0 2px #402514,0 1px 9px #f2bc5b72;
+}
+.tele-paper{
+ display:flex;flex-direction:column;gap:6px;
+ background:linear-gradient(115deg,#f2e4c7,#dcca9f 58%,#f1dbb3);
+ border:3px double #8e6e3f;border-radius:4px;
+ box-shadow:0 7px 15px #0008,inset 0 0 20px #aa844f33;
+ padding:10px 8px 12px;
+ min-height:165px;
+ max-height:min(59dvh,460px);
+}
+.tele-paper-heading{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;border-bottom:1px solid #a5895b;padding-bottom:6px}
+.tele-paper-heading strong{font-size:clamp(10px,1.5vw,12px);letter-spacing:.04em;color:#4d321a}
+.tele-paper-heading span{font-size:10px;color:#9b6f37}
+.tele-paper-content{flex:1;min-height:58px;max-height:300px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.tele-paper-content p{font-family:Georgia,serif;font-size:clamp(12px,1.7vw,16px);font-weight:600;line-height:1.6;letter-spacing:.055em;overflow-wrap:anywhere;margin:0;min-height:58px;white-space:pre-wrap}
+.tele-transcribed{color:#382819}.tele-current-letter{color:#9a2b27;background:#dcb4778a;border-radius:2px}.tele-unread{color:#8a795e5c}
+.tele-paper small{display:block;font-size:clamp(10px,1.45vw,12px);color:#62482a}
+.tele-progress{height:9px;margin:8px 0 2px;border:2px inset #987448;background:#bba67f;border-radius:5px;overflow:hidden}
+.tele-progress span{background:linear-gradient(90deg,#8a351f,#bd6a35)}
+.tele-instrument{background:linear-gradient(180deg,#442916,#623d24);border-top:3px ridge #aa854b}
+@media(max-width:480px){.tele-paper{max-height:60dvh;margin:12px 5px 0 2px;padding:8px 6px}.tele-paper-content p{font-size:12px}.tele-hud>div:first-child,.tele-hud-level{padding:3px 2px}}
+
+/* Fase B: sprite del telegrafo sopra il nastro; Start sotto il battitore sinistro.
+   La geometria della Start viene impostata da game.js leggendo la posizione dello sprite. */
+.tele-game-frame{grid-template-rows:auto minmax(0,1fr)}
+.tele-content{isolation:isolate;overflow:hidden}
+.tele-tape{z-index:3}
+.tele-paper{position:relative;z-index:6}
+.tele-contact{top:auto;height:40px;border-top:3px solid #e6cf8e;border-bottom:3px solid #6d4021;background:linear-gradient(180deg,#f0d48e9c,#b86a3499 48%,#e5bc7699 100%);box-shadow:0 0 0 2px #5a3620,0 0 14px #ffc86f80}
+.tele-instrument{position:absolute;bottom:26px;left:0;display:block;padding:0;width:min(94%,470px);aspect-ratio:887/530;height:auto;min-height:0;background:none;border:0;pointer-events:none;user-select:none;-webkit-user-select:none}
+.tele-instrument-sprite{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-drag:none}
+.tele-instrument-base-sprite{z-index:1;filter:drop-shadow(0 8px 10px rgba(0,0,0,.28))}
+.tele-instrument-top-sprite{z-index:5;clip-path:polygon(0 0,100% 0,100% 63%,90% 68%,83% 67%,75% 56%,60% 47%,48% 39%,38% 39%,25% 42%,15% 52%,11% 68%,0 68%);filter:drop-shadow(0 3px 4px rgba(0,0,0,.16))}
+#teleKey{position:absolute;left:72%;top:11%;width:23%;height:34%;border:0;border-radius:50%;background:transparent;box-shadow:none;transform:none;touch-action:manipulation;pointer-events:auto;cursor:pointer;outline-offset:2px;opacity:1;z-index:8}
+#teleKey:active,#teleKey.tele-pressed{transform:none;background:transparent;box-shadow:none}
+#teleKey:focus-visible{outline:3px solid #f9da86;background:#fff4}
+.tele-instrument.tele-actuated .tele-instrument-sprite{filter:brightness(1.05)}
+@media(max-width:480px){.tele-contact{height:38px}.tele-instrument{width:94%;bottom:20px}}
+
+/* B.1 corretta: la base vera resta sotto al nastro, la leva scontornata sopra. */
+.tele-content{isolation:isolate}
+.tele-instrument{bottom:clamp(32px,6vh,82px);z-index:auto}
+.tele-instrument-base-sprite{z-index:1;filter:none}
+.tele-tape{z-index:3}
+.tele-instrument-top-sprite{z-index:5;clip-path:none;filter:none}
+.tele-paper{z-index:6}
+#teleKey{z-index:8}
+.tele-contact{height:40px!important;box-sizing:border-box}
+.tele-instrument.tele-actuated .tele-instrument-sprite{filter:none}
+
+
+/* Fase C1.1: nastro più stretto e centrato, codici sempre visibili accanto al Timbro,
+   Start con finestra trasparente e battuta metallica a destra. */
+.tele-content{--paper-offset:0px;--paper-offset-fine:0px}
+.tele-tape{
+  margin-left:5.2%;
+  width:43.5%;
+  /* No scroll container: lo Start puo' sporgere, mentre tele-content taglia gli eccessi. */
+  overflow:visible;
+  --code-lane:52%;
+  background-position:
+    0 var(--paper-offset),
+    0 var(--paper-offset-fine),
+    0 0;
+}
+.tele-tape::before,.tele-tape::after{background-position:0 var(--paper-offset)}
+.tele-track{position:absolute;inset:0}
+.tele-symbol{left:var(--code-lane)}
+.tele-contact{
+  --window-left:13%;
+  --window-right:66%;
+  left:-2px;right:-30px;
+  height:52px!important;
+  border:0;
+  border-radius:10px 4px 4px 10px;
+  background:
+    linear-gradient(180deg,#e4e7ea 0%,#b8bec4 18%,#7d848c 45%,#c9ced3 72%,#9aa1a9 100%) left top / var(--window-left) 100% no-repeat,
+    linear-gradient(180deg,#eef1f4 0%,#c8cdd2 16%,#8a9098 38%,#d8dce0 62%,#a0a7ae 82%,#70767e 100%) calc(var(--window-right) + 1px) top / calc(100% - var(--window-right) - 10px) 100% no-repeat;
+  box-shadow:0 0 0 2px #494f56,0 0 10px rgba(220,225,230,.25),inset 0 2px 4px rgba(255,255,255,.72),inset 0 -2px 4px rgba(56,61,68,.42);
+  z-index:4;
+}
+.tele-contact::before,.tele-contact::after{content:"";position:absolute;pointer-events:none}
+.tele-contact::before{
+  left:var(--window-left);
+  width:calc(var(--window-right) - var(--window-left));
+  top:7px;
+  bottom:7px;
+  border-radius:5px;
+  background:transparent;
+  border:2px solid #727981;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.6), inset 0 -1px 2px rgba(68,74,82,.32), 0 0 0 1px rgba(200,206,214,.55);
+}
+.tele-contact::after{
+  right:6px;top:50%;transform:translateY(-50%);
+  width:30px;height:36px;
+  background:
+    radial-gradient(circle at 22% 24%, rgba(255,255,255,.9) 0 7%, transparent 8%),
+    radial-gradient(circle at 22% 76%, rgba(255,255,255,.85) 0 7%, transparent 8%),
+    radial-gradient(circle at 78% 24%, rgba(255,255,255,.82) 0 7%, transparent 8%),
+    radial-gradient(circle at 78% 76%, rgba(255,255,255,.78) 0 7%, transparent 8%),
+    linear-gradient(90deg,#5b5b5b 0%,#d7d8da 16%,#f5f6f7 32%,#b8bbc0 52%,#878b92 72%,#d5d6d7 88%,#5d5f63 100%);
+  border:2px solid #4b4640;
+  border-radius:5px;
+  box-shadow:0 0 0 1px rgba(205,210,216,.35),inset 0 1px 1px #fff9,inset 0 -2px 4px rgba(0,0,0,.18),0 1px 4px rgba(0,0,0,.22);
+  z-index:2;
+}
+.tele-instrument{bottom:clamp(44px,7.5vh,94px)}
+.tele-instrument-base-sprite{filter:drop-shadow(0 8px 8px rgba(0,0,0,.24))}
+.tele-hit-feedback{animation:teleTapePunch .18s linear}
+.tele-hit-flash{animation:teleStartFlash .18s ease-out}
+.tele-instrument.tele-hit-feedback{animation:teleLeverPunch .18s ease-out}
+@keyframes teleTapePunch{
+  0%{transform:translate3d(0,0,0)}
+  20%{transform:translate3d(-2px,0,0)}
+  45%{transform:translate3d(2px,-1px,0)}
+  70%{transform:translate3d(-1px,1px,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+@keyframes teleLeverPunch{
+  0%{transform:translate3d(0,0,0)}
+  30%{transform:translate3d(0,2px,0)}
+  65%{transform:translate3d(0,-1px,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+@keyframes teleStartFlash{
+  0%{filter:saturate(1) brightness(1)}
+  35%{filter:saturate(1.15) brightness(1.18)}
+  100%{filter:saturate(1) brightness(1)}
+}
+@media(max-width:480px){
+  .tele-tape{margin-left:4.2%;width:42%;--code-lane:52%}
+  .tele-contact{height:48px!important;right:-24px}
+  .tele-contact::after{right:5px;width:27px;height:32px}
+  .tele-instrument{bottom:clamp(34px,6.5vh,72px)}
+}
+
+/* Fase D: selezione dei cinque telegrammi per ciascuna difficolta. */
+.tele-menu .tele-message-select{display:block;width:min(100%,420px);max-width:100%;min-width:0;margin:0 auto;text-overflow:ellipsis}
+.tele-message-description{font-weight:bold;margin:9px 0 2px;color:#4f351e;font-size:14px}
+.tele-message-record{font-size:12px;margin:3px 0 8px;color:#76532c}
+
+/* Fase E: valutazione, punteggio e riepilogo senza modificare la grafica del nastro. */
+.tele-scoring-help{font-size:11px;line-height:1.35;color:#715233;margin:4px auto 10px;max-width:420px}
+.tele-results{width:min(94vw,540px)}
+.tele-results h2{margin-bottom:6px}
+.tele-results-level{font-size:13px;margin:0 0 5px;color:#6c4a27;font-weight:bold}
+.tele-results-stars{color:#af731e;letter-spacing:.12em;font-size:clamp(30px,7vw,43px);line-height:1.25;text-shadow:0 1px 1px #fff8}
+.tele-results-score{font-size:clamp(18px,4vw,24px);font-weight:bold;margin:4px 0;color:#4d321c}
+.tele-results-record{font-size:12px;margin:0 0 9px;color:#80571f}
+.tele-results-breakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-width:420px;margin:8px auto 12px}
+.tele-results-stat{display:flex;flex-direction:column;gap:3px;align-items:center;padding:9px 5px;background:#f5e7c7;border:1px solid #aa8853;border-radius:6px;box-shadow:inset 0 1px #fffa}
+.tele-results-stat span{font-size:11px;color:#705131}
+.tele-results-stat strong{font-size:16px;color:#3d2816}
+.tele-results-label{font-weight:bold;font-size:12px;margin:8px 0 3px;color:#715233}
+.tele-results .tele-paper-result{text-align:left;font-size:12px;line-height:1.4;max-height:110px;overflow-y:auto;margin:0 auto 10px;max-width:420px;white-space:normal;overflow-wrap:anywhere}
+.tele-results .tele-menu-actions{margin-top:10px}
+@media(max-width:480px){.tele-results{padding:12px;max-height:98dvh}.tele-results-breakdown{gap:5px;margin:6px auto}.tele-results-stat{padding:5px 3px}.tele-results-stat strong{font-size:14px}}
+
+/* Fase F1: comandi HUD solo icona, mantenendo accessibilita e target touch. */
+.tele-hud-buttons{align-items:center;gap:6px;flex-wrap:nowrap}
+.tele-hud-buttons button{display:inline-grid;place-items:center;flex:0 0 auto;width:34px;height:34px;min-width:34px;padding:5px!important;line-height:1;touch-action:manipulation}
+.tele-hud-buttons button svg{display:block;width:19px;height:19px;pointer-events:none}
+.tele-hud-buttons button:focus-visible{outline:3px solid #fff1c2;outline-offset:2px}
+@media(max-width:480px){.tele-hud-buttons{gap:4px}.tele-hud-buttons button{width:30px;height:30px;min-width:30px;padding:4px!important}.tele-hud-buttons button svg{width:18px;height:18px}}
