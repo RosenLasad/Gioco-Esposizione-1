@@ -247,3 +247,85 @@
 .tele-hud-buttons button svg{display:block;width:19px;height:19px;pointer-events:none}
 .tele-hud-buttons button:focus-visible{outline:3px solid #fff1c2;outline-offset:2px}
 @media(max-width:480px){.tele-hud-buttons{gap:4px}.tele-hud-buttons button{width:30px;height:30px;min-width:30px;padding:4px!important}.tele-hud-buttons button svg{width:18px;height:18px}}
+
+
+/* Fase F2: cornici della schermata e testata con margini di respiro.
+   Solo presentazione: invariati Start, nastro, collisione e strumento. */
+.tele-game-frame{
+  box-sizing:border-box;
+  border-top:7px ridge #b18a52;
+  border-bottom:8px ridge #b18a52;
+  grid-template-rows:auto minmax(0,1fr);
+}
+.tele-hud{
+  min-width:0;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) auto;
+  gap:8px;
+  padding:14px 10px 12px;
+  align-items:stretch;
+  background:linear-gradient(180deg,#e0c797 0%,#cfaa70 52%,#a67e49 100%);
+  border-bottom:3px double #674626;
+  box-shadow:inset 0 2px 0 rgba(255,246,219,.65),0 4px 9px rgba(0,0,0,.35);
+}
+.tele-hud>div:first-child,.tele-hud-level,.tele-hud-buttons{
+  min-width:0;
+  box-sizing:border-box;
+  border:1px solid rgba(107,76,40,.6);
+  border-radius:6px;
+  background:linear-gradient(180deg,rgba(253,239,207,.68),rgba(233,204,153,.62));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.55),0 1px 2px rgba(72,39,16,.16);
+}
+.tele-hud>div:first-child{
+  padding:8px 6px;
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:3px;
+  overflow-wrap:anywhere;
+}
+.tele-hud>div:first-child strong{font-size:clamp(11px,2.7vw,14px);line-height:1.2}
+.tele-hud>div:first-child small{font-size:clamp(9px,2vw,11px);line-height:1.2}
+.tele-hud-level{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:7px 6px;
+  text-align:center;
+  font-size:clamp(10px,2.5vw,13px);
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+.tele-hud-buttons{
+  gap:6px;
+  padding:5px;
+  justify-content:center;
+  align-items:center;
+  align-self:stretch;
+}
+.tele-hud-buttons button{
+  width:35px;
+  height:35px;
+  min-width:35px;
+  border:1px solid #947044;
+  border-radius:5px;
+}
+/* In fullscreen rispetta l'area del notch e della barra di stato dei telefoni. */
+#pavilionTelegraph:fullscreen .tele-game-frame{
+  padding-top:max(4px,env(safe-area-inset-top,0px));
+  padding-bottom:max(4px,env(safe-area-inset-bottom,0px));
+}
+@media(max-width:480px){
+  .tele-hud{gap:5px;padding:12px 6px 10px;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr) auto}
+  .tele-hud>div:first-child{padding:7px 5px}
+  .tele-hud-level{padding:6px 4px}
+  .tele-hud-buttons{padding:4px;gap:4px}
+  .tele-hud-buttons button{width:31px;height:31px;min-width:31px}
+  .tele-game-frame{border-top-width:6px;border-bottom-width:7px}
+}
+@media(max-width:355px){
+  .tele-hud{gap:4px;padding-left:5px;padding-right:5px}
+  .tele-hud-buttons{padding:3px;gap:3px}
+  .tele-hud-buttons button{width:29px;height:29px;min-width:29px}
+}
