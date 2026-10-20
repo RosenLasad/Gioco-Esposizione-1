@@ -41,7 +41,14 @@ const SPRITE_BASE='games/16-padiglione-invenzioni/minigames/telegrafo/images/';
 const NORMAL_SPRITE=SPRITE_BASE+'telegrafo-normale.png';
 const PRESSED_SPRITE=SPRITE_BASE+'telegrafo-meccanismo-premuto.png';
 const REST_SPRITE=SPRITE_BASE+'telegrafo-meccanismo-normale.png';
-const spritePreload=new Image();spritePreload.src=PRESSED_SPRITE;
+// Precarica e, quando supportato, decodifica entrambi i fotogrammi prima del gioco.
+// Il colpo viene registrato subito: questa preparazione riguarda solo la grafica.
+const mechanismFrames=[REST_SPRITE,PRESSED_SPRITE].map(src=>{
+ const img=new Image();img.src=src;
+ if(typeof img.decode==='function')img.decode().catch(()=>{});
+ return img;
+});
+const MIN_PRESS_MS=130;
 let pressTimer=0,releaseRequested=false,feedbackTimer=0;
 const name=$('telePlayerName'),intro=$('teleIntroStats'),menu=$('teleMenu'),play=$('telePlay'),results=$('teleResults'),pause=$('telePauseOverlay'),tape=$('teleTape'),track=$('teleTrack'),key=$('teleKey'),info=$('teleLevel'),stats=$('teleLiveStats'),typed=$('teleTranscription'),resultStats=$('teleResultsStats'),resultText=$('teleResultText');
 let phase='closed',difficulty='facile',levelIndex=0,state=null,raf=0,last=0,pressed=false,statsSession={played:0,correct:0,errors:0},result=null,fullscreenPending=false;
@@ -113,7 +120,7 @@ function showInstrumentPressed(){
  clearTimeout(pressTimer);pressTimer=0;releaseRequested=false;
  sprite.src=PRESSED_SPRITE;
  instrument.classList.add('tele-actuated');
- pressTimer=setTimeout(()=>{pressTimer=0;if(releaseRequested)releaseInstrument(true);},85);
+ pressTimer=setTimeout(()=>{pressTimer=0;if(releaseRequested)releaseInstrument(true);},MIN_PRESS_MS);
 }
 function releaseInstrument(force=false){
  if(!force && pressTimer){releaseRequested=true;return;}
