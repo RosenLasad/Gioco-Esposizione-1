@@ -1,0 +1,18 @@
+TELEGRAFO IMPAZZITO - FASE F4.1
+
+Copiare i file audio nelle seguenti sottocartelle, usando esattamente questi nomi:
+
+musiche/facile.mp3
+musiche/normale.mp3
+musiche/difficile.mp3
+effetti/morse-punto.ogg
+effetti/morse-linea.ogg
+effetti/telegrafo-tasto.ogg
+
+Questa fase non include musica o effetti: il gioco funziona anche senza file audio.
+Musiche in ripetizione; interrotte in pausa e arrestate al termine della partita.
+Effetti Morse: uno al centro dello Start per ogni punto/linea, indipendentemente dal colore.
+Suono del tasto: ad ogni pressione, separatamente dal risultato del colpo.
+Comandi di attivazione musica ed effetti nel menu principale del minigioco.
+
+Consiglio: provare i file audio su HTTPS o server locale; i browser limitano l'audio automatico.

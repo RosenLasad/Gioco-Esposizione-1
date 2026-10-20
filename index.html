@@ -337,6 +337,10 @@
               <p id="teleMessageDescription" class="tele-message-description"></p>
               <p id="teleMessageRecord" class="tele-message-record"></p><p class="tele-scoring-help">Stelle: 60% / 80% / 95%. Punteggio massimo: 1.000 punti per telegramma. Record validi solo in questa sessione.</p>
               <p class="tele-rules">Il nastro cambia velocità. Premi il tasto telegrafico (o la barra spaziatrice) sui segni rossi. La partita finisce quando il telegramma è terminato.</p>
+              <div class="tele-audio-settings" role="group" aria-label="Audio del Telegrafo">
+                <label class="tele-audio-choice"><input type="checkbox" id="teleAudioMusic" checked> Musica</label>
+                <label class="tele-audio-choice"><input type="checkbox" id="teleAudioEffects" checked> Effetti sonori</label>
+              </div>
               <div class="tele-menu-actions"><button id="teleStart" type="button">Gioca</button><button id="teleResume" type="button" disabled>Riprendi partita</button><button id="teleClose" type="button">Torna al padiglione</button></div>
             </div>
             <div id="telePlay" class="tele-play" hidden>

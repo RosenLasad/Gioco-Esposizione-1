@@ -48,6 +48,63 @@ const mechanismFrames=[REST_SPRITE,PRESSED_SPRITE].map(src=>{
  if(typeof img.decode==='function')img.decode().catch(()=>{});
  return img;
 });
+// Fase F4.1: audio facoltativo (aggiungere i file nella cartella audio/telegrafo).
+// Nessun suono sintetico di ripiego: se mancano i file il gioco resta silenzioso.
+const AUDIO_BASE='games/16-padiglione-invenzioni/audio/telegrafo/';
+const MUSIC_FILES={facile:'musiche/facile.mp3',normale:'musiche/normale.mp3',difficile:'musiche/difficile.mp3'};
+const EFFECT_FILES={dot:'effetti/morse-punto.ogg',dash:'effetti/morse-linea.ogg',key:'effetti/telegrafo-tasto.ogg'};
+const teleMusic=new Audio();teleMusic.loop=true;teleMusic.preload='none';teleMusic.volume=.28;
+let audioContext=null,audioCache={},effectSources=new Set(),audioGeneration=0;
+const audioSettings={music:true,effects:true};
+function getAudioContext(){
+ if(!audioContext){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;audioContext=new C();}
+ if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});
+ return audioContext;
+}
+function loadEffects(){
+ const ctx=getAudioContext();if(!ctx)return;
+ Object.entries(EFFECT_FILES).forEach(([kind,path])=>{
+  if(Object.hasOwn(audioCache,kind))return;
+  // Salva subito una Promise, evitando richieste ripetute e sovrapposte.
+  audioCache[kind]=null;
+  fetch(AUDIO_BASE+path).then(r=>{if(!r.ok)throw Error('Effetto assente');return r.arrayBuffer();})
+   .then(bytes=>ctx.decodeAudioData(bytes)).then(buffer=>{audioCache[kind]=buffer;}).catch(()=>{});
+ });
+}
+function stopEffectSources(){
+ for(const s of effectSources){try{s.stop();}catch(_){}}
+ effectSources.clear();
+}
+function playEffect(kind){
+ if(!audioSettings.effects||phase!=='running')return;
+ const ctx=getAudioContext(),buffer=audioCache[kind];
+ // Niente riproduzioni in ritardo: se il file non e' pronto, il simbolo passa in silenzio.
+ if(!ctx||!buffer||ctx.state!=='running')return;
+ const source=ctx.createBufferSource(),gain=ctx.createGain();
+ source.buffer=buffer;gain.gain.value=kind==='key'?.58:.28;
+ source.connect(gain);gain.connect(ctx.destination);
+ effectSources.add(source);source.onended=()=>{effectSources.delete(source);source.disconnect();gain.disconnect();};
+ source.start();
+}
+function stopMusic(){teleMusic.pause();teleMusic.currentTime=0;}
+function startMusic(){
+ stopMusic();
+ if(!audioSettings.music)return;
+ const path=AUDIO_BASE+MUSIC_FILES[difficulty];
+ if(!teleMusic.src.endsWith('/'+path))teleMusic.src=path;
+ teleMusic.play().catch(()=>{});
+}
+function pauseAudio(){teleMusic.pause();stopEffectSources();}
+function resumeAudio(){
+ if(audioSettings.music&&teleMusic.src)teleMusic.play().catch(()=>{});
+ if(audioSettings.effects)getAudioContext();
+}
+function stopAudio(){audioGeneration++;stopMusic();stopEffectSources();}
+function prepareAudioOnStart(){
+ if(audioSettings.effects)loadEffects(); // Chiamato da un clic/tocco esplicito su Gioca.
+ startMusic();
+}
+
 const MIN_PRESS_MS=130;
 let pressTimer=0,releaseRequested=false,feedbackTimer=0;
 const name=$('telePlayerName'),intro=$('teleIntroStats'),menu=$('teleMenu'),play=$('telePlay'),results=$('teleResults'),pause=$('telePauseOverlay'),tape=$('teleTape'),track=$('teleTrack'),key=$('teleKey'),info=$('teleLevel'),stats=$('teleLiveStats'),typed=$('teleTranscription'),resultStats=$('teleResultsStats'),resultText=$('teleResultText');
@@ -57,7 +114,7 @@ let lastTranscribedIndex=-1;
 function show(screen){menu.hidden=screen!=='menu';play.hidden=screen!=='play';results.hidden=screen!=='results';root.classList.toggle('tele-is-playing',screen==='play');}
 function stopClock(){if(raf)cancelAnimationFrame(raf);raf=0;last=0;}
 function clearFeedback(){clearTimeout(feedbackTimer);feedbackTimer=0;tape.classList.remove('tele-hit-feedback');contact.classList.remove('tele-hit-flash');instrument.classList.remove('tele-hit-feedback');}
-function reset(){stopClock();state=null;pressed=false;releaseInstrument(true);clearFeedback();pause.hidden=true;lastTranscribedIndex=-1;tape.style.setProperty('--paper-offset','0px');tape.style.setProperty('--paper-offset-fine','0px');}
+function reset(){stopAudio();stopClock();state=null;pressed=false;releaseInstrument(true);clearFeedback();pause.hidden=true;lastTranscribedIndex=-1;tape.style.setProperty('--paper-offset','0px');tape.style.setProperty('--paper-offset-fine','0px');}
 function close(){reset();root.hidden=true;phase='closed';show('menu');if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{});}
 function introText(){intro.textContent=`Partite: ${statsSession.played} · Simboli colpiti: ${statsSession.correct} · Errori: ${statsSession.errors} (solo questa sessione)`;}
 function starsString(n){return '★'.repeat(n)+'☆'.repeat(3-n);}
@@ -196,25 +253,32 @@ function frame(t){
  const delta=state.targetSpeed-state.speed;
  state.speed+=Math.sign(delta)*Math.min(Math.abs(delta),dt*(difficulty==='facile'?34:difficulty==='normale'?75:125));
  state.distance+=state.speed*dt;
+ // Ogni simbolo suona una volta al passaggio del proprio centro sullo Start.
+ // Il cursore avanza anche quando l'audio e' disattivato o non ancora caricato.
+ while(state.nextSoundIndex<state.symbols.length){
+  const s=state.symbols[state.nextSoundIndex];
+  if(state.distance < state.lead+s.unit*state.spacing)break;
+  playEffect(s.char==='.'?'dot':'dash');state.nextSoundIndex++;
+ }
  for(const s of state.symbols){if(s.target&&s.status==='pending'&&state.distance>s.unit*state.spacing+state.lead+state.hitHalf){s.status='miss';state.errors++;}}
  render();
  if(state.distance>state.totalDistance){finish();return;}
  raf=requestAnimationFrame(frame);
 }
 function begin(){reset();difficulty=$('teleDifficulty').value;levelIndex=Number($('teleMessage').value)||0;show('play');alignInstrument();const p=currentProfile(),message=selectedTelegram();const spacing=22,symbols=makeSymbols(message.text,Math.min(.85,p.rate+levelIndex*.035));const zone=hitZone(),hitY=zone.center,lead=hitY+65;
- state={symbols,spacing,hitY,hitHalf:zone.half,lead,distance:0,elapsed:0,speed:p.speed*levelFactor(),targetSpeed:p.speed*levelFactor(),nextChange:2,correct:0,errors:0,totalDistance:(symbols.at(-1)?.unit||0)*spacing+lead+(tape.clientHeight-hitY)+55};
+ state={symbols,spacing,hitY,hitHalf:zone.half,lead,nextSoundIndex:0,distance:0,elapsed:0,speed:p.speed*levelFactor(),targetSpeed:p.speed*levelFactor(),nextChange:2,correct:0,errors:0,totalDistance:(symbols.at(-1)?.unit||0)*spacing+lead+(tape.clientHeight-hitY)+55};
  track.replaceChildren();for(const s of symbols){const el=document.createElement('span');el.className='tele-symbol '+(s.char==='.'?'dot':'dash')+(s.target?' target':'');el.setAttribute('aria-hidden','true');track.appendChild(el);s.el=el;}
- key.disabled=false;pressed=false;$('teleGamePoints').textContent='Punti partita: 0';info.textContent=`Messaggio ${levelIndex+1} · ${p.label}`;typed.textContent='';lastTranscribedIndex=-1;phase='running';pause.hidden=true;
+ key.disabled=false;pressed=false;$('teleGamePoints').textContent='Punti partita: 0';info.textContent=`Messaggio ${levelIndex+1} · ${p.label}`;typed.textContent='';lastTranscribedIndex=-1;phase='running';pause.hidden=true;prepareAudioOnStart();
  // Schermo intero solo su scelta esplicita del giocatore.
  last=0;raf=requestAnimationFrame(frame);render();
 }
-function hit(){if(phase!=='running'||!state)return;const zone=hitZone();state.hitY=zone.center;state.hitHalf=zone.half;showInstrumentPressed();
+function hit(){if(phase!=='running'||!state)return;const zone=hitZone();state.hitY=zone.center;state.hitHalf=zone.half;showInstrumentPressed();playEffect('key');
  let best=null,dist=Infinity;for(const s of state.symbols){if(s.target&&s.status==='pending'){const d=Math.abs(state.distance-state.lead-s.unit*state.spacing);if(d<dist){best=s;dist=d;}}}
  if(best&&dist<=state.hitHalf){best.status='hit';state.correct++;pulseSuccessFeedback();}else state.errors++;
  render();
 }
 function finish(){
- stopClock();phase='results';key.disabled=true;
+ stopAudio();stopClock();phase='results';key.disabled=true;
  const targets=state.symbols.filter(s=>s.target).length;
  const correct=state.correct,errors=state.errors;
  const evaluation=scoring(targets,correct,errors);
@@ -243,9 +307,11 @@ function finish(){
  }
  resultText.textContent=message.text;show('results');introText();
 }
-function pauseGame(){if(phase!=='running')return;phase='paused';stopClock();pause.hidden=false;}
-function resumeGame(){if(phase!=='paused')return;pause.hidden=true;phase='running';last=0;raf=requestAnimationFrame(frame);}
+function pauseGame(){if(phase!=='running')return;phase='paused';stopClock();pauseAudio();pause.hidden=false;}
+function resumeGame(){if(phase!=='paused')return;pause.hidden=true;phase='running';resumeAudio();last=0;raf=requestAnimationFrame(frame);}
 function backMenu(){reset();phase='menu';show('menu');renderLevelMenu();$('teleResume').disabled=true;if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{});}
+$('teleAudioMusic').addEventListener('change',e=>{audioSettings.music=e.target.checked;if(!audioSettings.music)stopMusic();});
+$('teleAudioEffects').addEventListener('change',e=>{audioSettings.effects=e.target.checked;if(!audioSettings.effects)stopEffectSources();});
 $('teleDifficulty').addEventListener('change',e=>{difficulty=e.target.value;levelIndex=0;renderLevelMenu();});
 $('teleMessage').addEventListener('change',e=>{levelIndex=Number(e.target.value)||0;updateLevelSummary();});
 $('teleStart').addEventListener('click',begin);$('teleAgain').addEventListener('click',begin);$('teleResume').disabled=true;

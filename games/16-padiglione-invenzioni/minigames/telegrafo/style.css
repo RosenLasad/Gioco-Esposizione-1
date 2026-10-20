@@ -339,3 +339,8 @@
   user-select:none;
   touch-action:manipulation;
 }
+
+/* F4.1 - Comandi audio nel menu, senza ingombrare la barra di gioco. */
+.tele-audio-settings{display:flex;justify-content:center;align-items:center;gap:10px 20px;flex-wrap:wrap;margin:10px auto 4px;padding:10px 12px;max-width:390px;border:1px solid #a07a48;border-radius:8px;background:#fff6e13d}
+.tele-menu .tele-audio-choice{display:flex;align-items:center;justify-content:center;gap:7px;margin:0;font-size:13px;font-weight:600;cursor:pointer;color:#4c301c}
+.tele-audio-choice input{width:17px;height:17px;accent-color:#745028;cursor:pointer}
