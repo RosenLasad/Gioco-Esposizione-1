@@ -329,3 +329,13 @@
   .tele-hud-buttons{padding:3px;gap:3px}
   .tele-hud-buttons button{width:29px;height:29px;min-width:29px}
 }
+
+/* Fase F3.1: elimina il feedback azzurro del tocco Android sul tasto invisibile.
+   Il focus da tastiera resta definito da #teleKey:focus-visible. */
+#teleKey{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+  touch-action:manipulation;
+}
