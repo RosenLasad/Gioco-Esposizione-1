@@ -1,1 +1,331 @@
-/* Stili del minigioco battaglia-navale - attualmente consolidati nel CSS condiviso. */
+/* Battaglia Navale – Fase A. Stili isolati dal resto dell'Esposizione. */
+#pavilionBattleship[hidden],#pavilionBattleship [hidden]{display:none!important}
+#pavilionBattleship{position:absolute;inset:0;z-index:12;display:grid;place-items:center;padding:12px;overflow:auto;box-sizing:border-box;background:rgba(9,18,28,.88);color:#e9d8b1;font-family:Georgia,serif}
+#pavilionBattleship button,#pavilionBattleship select{font:inherit;cursor:pointer}
+#pavilionBattleship button:focus-visible,#pavilionBattleship select:focus-visible{outline:3px solid #f5d58b;outline-offset:2px}
+#pavilionBattleship .naval-menu{width:min(94vw,510px);box-sizing:border-box;max-height:94dvh;overflow-y:auto;padding:22px;background:linear-gradient(145deg,#f1e0b7,#d9bd89);color:#402c1d;border:5px double #967341;border-radius:12px;box-shadow:0 12px 45px #000b;text-align:center}
+.naval-menu-emblem{font-size:30px}.naval-menu h2{margin:3px 0;font-size:clamp(24px,4vw,34px)}.naval-subtitle{font-size:12px;letter-spacing:.05em}.naval-menu p{line-height:1.5}
+.naval-menu label{display:block;font-weight:bold;margin:14px 0 6px}.naval-menu select{min-width:180px;padding:10px;border:1px solid #8a6d45;border-radius:5px;background:#fff7dd;color:#342319}.naval-menu-note{font-size:12px;color:#6b563a}
+.naval-menu-actions{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:15px}
+#pavilionBattleship .naval-menu button,#pavilionBattleship .naval-dialog button{border:2px ridge #aa8855;border-radius:6px;padding:10px 14px;background:#294455;color:#f7e5bd;font-weight:bold}
+#pavilionBattleship .naval-play{position:absolute;inset:0;overflow:auto;display:block;background:repeating-linear-gradient(92deg,#352217 0 8px,#4a2c1b 9px 21px,#593923 22px 35px)}
+#pavilionBattleship .naval-frame{width:min(100%,1040px);min-height:100%;margin:auto;box-sizing:border-box;background:#1a3541;border:6px ridge #957447;border-top:9px ridge #a98b53;border-bottom:9px ridge #a98b53;box-shadow:0 0 26px #000a}
+.naval-hud{position:relative;display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center;background:linear-gradient(#d9c391,#a98551);color:#322416;padding:12px 15px;border-bottom:3px double #624724;box-shadow:inset 0 2px #fff7}
+.naval-heading strong,.naval-hud-status strong{display:block;font-size:clamp(12px,2vw,17px)}.naval-heading small,.naval-hud-status small{display:block;font-size:11px}.naval-hud-status{text-align:center}
+.naval-hud-actions{display:flex;gap:7px}.naval-hud-actions button{min-width:40px;min-height:38px;padding:4px;border:2px ridge #8a6d3f;border-radius:5px;background:#f0dfb9;color:#342313;font-size:20px!important}
+.naval-body{padding:clamp(9px,2vw,20px);background:radial-gradient(circle at 60% 25%,#315364,#172c39 78%)}
+#pavilionBattleship .battleship-boards{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(12px,2vw,26px)}
+.naval-board-section{min-width:0;padding:12px 10px 10px;border:2px solid #947a54;border-radius:6px;background:linear-gradient(#213f4e,#254453);box-shadow:inset 0 0 0 2px #395467,0 6px 14px #0005}
+.naval-board-section h3{margin:0 0 9px;color:#ecd6a6;text-align:center;font-size:clamp(13px,2vw,18px)}
+#pavilionBattleship .battleship-grid{width:min(100%,390px);max-width:390px;aspect-ratio:1;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));margin:auto;border:3px ridge #bd9d68;background:#6c98a7;box-sizing:border-box}
+#pavilionBattleship .battle-cell{min-width:0!important;min-height:0!important;width:100%;height:100%;padding:0!important;margin:0!important;border:1px solid #6e9fac!important;border-radius:0!important;background:#4e8294!important;color:#f8f2dc!important;display:grid;place-items:center;font:bold clamp(13px,2vw,24px) sans-serif!important;box-shadow:none!important;aspect-ratio:auto}
+#pavilionBattleship .battle-cell.ship{background:#af9774!important}
+#pavilionBattleship .battle-cell.hit{background:#b75349!important;color:white!important}
+#pavilionBattleship .battle-cell.miss{background:#83a9b8!important;color:#e3f1fa!important}
+#pavilionBattleship .battle-cell.sunk{background:#703d42!important}
+#pavilionBattleship button.battle-cell:not(:disabled):hover{background:#82b9b8!important}
+#pavilionBattleship button.battle-cell:disabled{cursor:default}
+.naval-fleet{margin-top:11px;padding:7px;background:#16313d;border:1px solid #68818c;border-radius:5px}
+.naval-ship-row{display:grid;grid-template-columns:minmax(85px,1.2fr) minmax(55px,1fr) minmax(64px,auto);align-items:center;gap:6px;padding:5px 2px;border-bottom:1px solid #4b6771;color:#e7d5b3;font-size:clamp(10px,1.4vw,12px)}
+.naval-ship-row:last-child{border-bottom:0}.naval-ship-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.naval-ship-status{text-align:right;font-size:10px}.naval-ship-length{display:flex;gap:2px;align-items:center}.naval-ship-length i{height:8px;flex:1;max-width:18px;background:#aa916a;border-radius:2px}.naval-ship-length i.damaged{background:#b44f42}.naval-ship-row.is-sunk{opacity:.6;text-decoration:line-through}
+.naval-message{margin:14px auto 8px;padding:10px 12px;min-height:20px;border:2px ridge #b99b67;border-radius:4px;box-sizing:border-box;background:#dfc99f;color:#392918;text-align:center;font-weight:bold;font-size:clamp(12px,1.8vw,15px)}
+.naval-footer{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:#ceb993}
+#pavilionBattleship .naval-overlay{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:12px;background:#0e1825dc;box-sizing:border-box}
+.naval-dialog{max-width:min(92vw,480px);width:100%;max-height:88dvh;overflow:auto;text-align:center;background:linear-gradient(#f2e5c7,#d4b47d);border:5px double #8d6b3c;border-radius:10px;padding:20px;box-sizing:border-box;color:#372818;box-shadow:0 8px 26px #0009}
+.naval-dialog h2{margin-top:0}.naval-dialog button{margin:4px}.naval-result-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:6px}
+#pavilionBattleship:fullscreen{padding:0}
+@media(max-width:680px){#pavilionBattleship .battleship-boards{grid-template-columns:1fr;gap:12px}.naval-enemy-section{order:0}.naval-player-section{order:1}.naval-hud{padding:12px 9px 9px;gap:4px}.naval-hud-actions button{min-width:34px;min-height:34px}.naval-board-section{padding:9px}.naval-ship-row{font-size:12px}.naval-body{padding:9px}#pavilionBattleship .naval-frame{width:100%}}
+@media(max-width:390px){.naval-hud{grid-template-columns:1fr auto}.naval-hud-status{grid-column:1;grid-row:2;text-align:left}.naval-hud-actions{grid-column:2;grid-row:1/3;align-self:center}.naval-heading strong{font-size:13px}.naval-heading small{font-size:10px}}
+
+/* Fase B.1: preparazione manuale della flotta, prima della battaglia. */
+.naval-deployment{padding:clamp(12px,2.5vw,26px);background:radial-gradient(circle at 50% 20%,#2b4b59,#152b37 84%);min-height:calc(100dvh - 95px);box-sizing:border-box;color:#f0dcb3}
+.naval-deploy-intro{text-align:center;max-width:770px;margin:0 auto 16px}
+.naval-deploy-intro h2{margin:0 0 8px;font-size:clamp(20px,3vw,28px)}
+.naval-deploy-intro p{font-size:clamp(12px,1.8vw,15px);line-height:1.5;margin:0}
+.naval-deploy-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(215px,.8fr);align-items:start;gap:clamp(12px,3vw,30px);max-width:865px;margin:0 auto}
+.naval-deploy-board-wrap{padding:12px;background:#1d3b48;border:2px ridge #aa895a;border-radius:8px}
+.naval-deploy-board-wrap h3,.naval-deploy-controls h3{text-align:center;margin:0 0 12px;font-size:17px}
+#pavilionBattleship .naval-deploy-grid{width:min(100%,420px);max-width:420px}
+#pavilionBattleship button.naval-deploy-cell{cursor:crosshair}
+#pavilionBattleship button.naval-deploy-cell.ship{background:#ae9270!important}
+#pavilionBattleship button.naval-deploy-cell.naval-deploy-active{background:#edc77f!important;box-shadow:inset 0 0 0 2px #76502e!important}
+#pavilionBattleship button.naval-deploy-cell:hover{background:#92c0c2!important}
+.naval-deploy-controls{background:#1d3b48;border:2px ridge #aa895a;border-radius:8px;padding:13px}
+.naval-deploy-shiplist{display:grid;gap:7px}
+#pavilionBattleship button.naval-deploy-ship{padding:8px 10px;border:1px solid #9b8156;background:#314f5b;color:#efe0c1;border-radius:5px;text-align:left;display:flex;flex-direction:column;gap:2px}
+#pavilionBattleship button.naval-deploy-ship.is-selected{border:2px solid #f1d392;background:#65704b;color:#fff3d4}
+.naval-deploy-ship small{font-size:11px;opacity:.85}
+.naval-deploy-selected{font-size:13px;margin:15px 0 8px;color:#f5dda5}
+.naval-deploy-buttons{display:flex;gap:7px;flex-wrap:wrap}
+#pavilionBattleship .naval-deploy-buttons button,#pavilionBattleship .naval-deploy-footer button{padding:9px 12px;border:2px ridge #b39460;background:#d6bd86;color:#372617;border-radius:6px;font-weight:bold;cursor:pointer}
+.naval-deploy-feedback{min-height:2.6em;font-size:12px;line-height:1.35;color:#ded0aa}
+.naval-deploy-feedback.is-error{color:#ffb5a2}
+.naval-deploy-footer{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px auto 8px}
+#pavilionBattleship .naval-deploy-footer .naval-deploy-primary{background:#496944;color:#fef0c6}
+@media(max-width:680px){.naval-deploy-layout{grid-template-columns:minmax(0,1fr)}.naval-deployment{padding:10px;min-height:0}.naval-deploy-controls{padding:10px}.naval-deploy-shiplist{grid-template-columns:repeat(2,minmax(0,1fr))}.naval-deploy-intro{margin-bottom:10px}.naval-deploy-board-wrap{padding:7px}.naval-deploy-board-wrap h3{font-size:15px}}
+
+/* Fase C1 - sagome continue delle navi, senza modificare dimensioni o interazioni. */
+#pavilionBattleship .naval-grid-with-ships{position:relative;isolation:isolate}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell{position:relative;z-index:1}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell.ship{background:rgba(158,143,108,.22)!important}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell.hit,#pavilionBattleship .naval-grid-with-ships>.battle-cell.sunk{z-index:3}
+#pavilionBattleship .naval-grid-with-ships>.naval-ship-art{
+  position:relative;z-index:2;width:100%;height:100%;min-width:0;min-height:0;
+  pointer-events:none;overflow:visible;filter:drop-shadow(0 1px 2px rgba(15,25,28,.6));
+}
+#pavilionBattleship .naval-art-hull{fill:#bb9a66;stroke:#483321;stroke-width:4;stroke-linejoin:round}
+#pavilionBattleship .naval-art-keel{fill:none;stroke:#73502d;stroke-width:4;stroke-linecap:round}
+#pavilionBattleship .naval-art-deckline{fill:none;stroke:#ead7a3;stroke-width:2;stroke-linecap:round;opacity:.75}
+#pavilionBattleship .naval-art-oar{stroke:#96754a;stroke-width:4;stroke-linecap:round}
+#pavilionBattleship .naval-art-sail{fill:#ebe0bf;stroke:#684c32;stroke-width:3}
+#pavilionBattleship .naval-art-rig{fill:#d5bc80;stroke:#725433;stroke-width:2}
+#pavilionBattleship .naval-art-castle{fill:#986c3e;stroke:#523b27;stroke-width:3}
+#pavilionBattleship .naval-art-bow{fill:none;stroke:#e6c991;stroke-width:3}
+#pavilionBattleship .naval-art-cross{fill:none;stroke:#ad433b;stroke-width:5;stroke-linecap:round}
+#pavilionBattleship .naval-ship-art--galeazza .naval-art-hull{fill:#bca16d}
+#pavilionBattleship .naval-ship-art--galea-grossa .naval-art-hull{fill:#a98255}
+#pavilionBattleship .naval-ship-art--galea-guerra .naval-art-hull{fill:#bf8f59}
+#pavilionBattleship .naval-ship-art--galeotta .naval-art-hull{fill:#ae986f}
+#pavilionBattleship .naval-ship-art--fusta .naval-art-hull{fill:#97734b}
+#pavilionBattleship .naval-grid-with-ships>.naval-deploy-active{z-index:1}
+#pavilionBattleship .naval-grid-with-ships>.naval-deploy-active.ship{background:rgba(238,202,122,.35)!important}
+
+
+/* Fase C2 - stati visivi provvisori di danno e affondamento. */
+#pavilionBattleship .naval-grid-with-ships>.naval-ship-art{
+  transition:opacity .18s ease,filter .18s ease,transform .18s ease;
+}
+#pavilionBattleship .naval-ship-art.is-damaged{filter:drop-shadow(0 2px 4px rgba(0,0,0,.45)) saturate(1.08)}
+#pavilionBattleship .naval-ship-art.is-damaged .naval-art-hull{fill:#b6845b;stroke:#412919}
+#pavilionBattleship .naval-ship-art.is-damaged .naval-art-sail{fill:#d9c49f}
+#pavilionBattleship .naval-ship-art.is-sunk{opacity:.68;filter:grayscale(.28) brightness(.82) drop-shadow(0 1px 4px rgba(0,0,0,.52))}
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-hull{fill:#6f5848;stroke:#2e2219}
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-sail{fill:#9c9280;stroke:#4a4037}
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-oar,
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-keel,
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-bow{stroke:#4a3a31}
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-cross{stroke:#733a36}
+#pavilionBattleship .naval-impact{
+  position:relative;z-index:4;align-self:stretch;justify-self:stretch;pointer-events:none;
+  display:grid;place-items:center;
+}
+#pavilionBattleship .naval-impact i,#pavilionBattleship .naval-impact b{display:block;grid-area:1/1}
+#pavilionBattleship .naval-impact--hit i{
+  width:62%;height:62%;border-radius:50%;
+  background:radial-gradient(circle,#ffd6a6 0 24%,#ce513f 25% 60%,rgba(206,81,63,0) 61%);
+  box-shadow:0 0 0 2px rgba(78,35,27,.34),0 0 12px rgba(255,157,96,.4);
+  animation:naval-impact-pulse .55s ease-out 1;
+}
+#pavilionBattleship .naval-impact--hit::after{
+  content:'×';grid-area:1/1;font:bold clamp(13px,2vw,24px)/1 serif;color:#fff5e1;
+  text-shadow:0 1px 2px rgba(42,19,14,.65)
+}
+#pavilionBattleship .naval-impact--sunk i{
+  width:82%;height:82%;border-radius:50%;
+  background:radial-gradient(circle,#f7dec0 0 16%,#8e4039 17% 52%,#3d2a2a 53% 72%,rgba(61,42,42,0) 73%);
+  box-shadow:0 0 0 2px rgba(34,25,24,.45),0 0 16px rgba(103,25,25,.34);
+}
+#pavilionBattleship .naval-impact--sunk b{
+  width:86%;height:16%;border-radius:999px;background:rgba(38,18,17,.65);transform:rotate(-28deg)
+}
+#pavilionBattleship .naval-impact--sunk::after{
+  content:'×';grid-area:1/1;font:bold clamp(16px,2.2vw,28px)/1 serif;color:#fff0df;
+  text-shadow:0 1px 2px rgba(29,12,12,.78)
+}
+@keyframes naval-impact-pulse{
+  0%{transform:scale(.55);opacity:.2}
+  60%{transform:scale(1.08);opacity:1}
+  100%{transform:scale(1);opacity:1}
+}
+
+
+/* Fase C3 - sprite storici definitivi della Repubblica di Genova. */
+#pavilionBattleship .naval-grid-with-ships>.naval-ship-art{filter:drop-shadow(0 2px 4px rgba(8,17,20,.42))}
+#pavilionBattleship .naval-art-shadow{fill:rgba(16,25,30,.18)}
+#pavilionBattleship .naval-art-hull{stroke:#4d2f20;stroke-width:4;stroke-linejoin:round}
+#pavilionBattleship .naval-art-deck{stroke:#7b5c39;stroke-width:2.3;fill:#d5b580}
+#pavilionBattleship .naval-art-keel{stroke:#6a4b2d;stroke-width:3.2;stroke-linecap:round}
+#pavilionBattleship .naval-art-plank{stroke:#b18c5c;stroke-width:1.6;opacity:.7}
+#pavilionBattleship .naval-art-rail{stroke:#eed8a8;stroke-width:2;stroke-linecap:round;opacity:.82}
+#pavilionBattleship .naval-art-oar{stroke:#8f6a40;stroke-width:3.6;stroke-linecap:round;opacity:.92}
+#pavilionBattleship .naval-art-gunport{fill:#3e2b23;stroke:#d6c092;stroke-width:1}
+#pavilionBattleship .naval-art-castle,#pavilionBattleship .naval-art-forecastle{fill:#9a7045;stroke:#5a3b26;stroke-width:2.2}
+#pavilionBattleship .naval-art-ram{fill:#d9c192;stroke:#6c4d31;stroke-width:2}
+#pavilionBattleship .naval-art-mast{stroke:#6e502f;stroke-width:3.2;stroke-linecap:round}
+#pavilionBattleship .naval-art-yard{stroke:#8a6a40;stroke-width:2;stroke-linecap:round}
+#pavilionBattleship .naval-art-mast-ring{fill:#7a592f;stroke:#e9d6a8;stroke-width:1.2}
+#pavilionBattleship .naval-art-sail{fill:#f0e3c8;stroke:#6f5134;stroke-width:2.2}
+#pavilionBattleship .naval-art-sail-seam{fill:none;stroke:#d2b690;stroke-width:1.4;opacity:.9}
+#pavilionBattleship .naval-art-emblem-disc{fill:#f5ecdd;stroke:#8f6d48;stroke-width:1.5}
+#pavilionBattleship .naval-art-cross{fill:none;stroke:#ad2e2a;stroke-width:4.2;stroke-linecap:round}
+#pavilionBattleship .naval-art-flag{filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+#pavilionBattleship .naval-art-flag-cross{fill:none;stroke:#a32722;stroke-width:1.7;stroke-linecap:round}
+#pavilionBattleship .naval-art-battery{fill:none;stroke:#66422c;stroke-width:4;stroke-linecap:round;opacity:.7}
+#pavilionBattleship .naval-art-cargo{fill:#9e7448;stroke:#604028;stroke-width:2.2}
+#pavilionBattleship .naval-art-insignia{fill:none;stroke:#e8d3a5;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+#pavilionBattleship .naval-ship-art--galeazza .naval-art-hull{fill:#8c583b}
+#pavilionBattleship .naval-ship-art--galeazza .naval-art-deck{fill:#ddb37a}
+#pavilionBattleship .naval-ship-art--galeazza .naval-art-castle,#pavilionBattleship .naval-ship-art--galeazza .naval-art-forecastle{fill:#a06f45}
+#pavilionBattleship .naval-ship-art--galea-grossa .naval-art-hull{fill:#9a613e}
+#pavilionBattleship .naval-ship-art--galea-grossa .naval-art-deck{fill:#d7b783}
+#pavilionBattleship .naval-ship-art--galea-grossa .naval-art-cargo{fill:#aa8052}
+#pavilionBattleship .naval-ship-art--galea-guerra .naval-art-hull{fill:#a86b44}
+#pavilionBattleship .naval-ship-art--galea-guerra .naval-art-deck{fill:#dfbe8c}
+#pavilionBattleship .naval-ship-art--galea-guerra .naval-art-insignia{stroke:#f0ddba}
+#pavilionBattleship .naval-ship-art--galeotta .naval-art-hull{fill:#87674d}
+#pavilionBattleship .naval-ship-art--galeotta .naval-art-deck{fill:#d1b586}
+#pavilionBattleship .naval-ship-art--fusta .naval-art-hull{fill:#755339}
+#pavilionBattleship .naval-ship-art--fusta .naval-art-deck{fill:#caa56f}
+#pavilionBattleship .naval-ship-art--fusta .naval-art-sail{fill:#f3e7d3}
+#pavilionBattleship .naval-ship-art.is-damaged .naval-art-deck{fill:#cbac7a}
+#pavilionBattleship .naval-ship-art.is-damaged .naval-art-castle,#pavilionBattleship .naval-ship-art.is-damaged .naval-art-forecastle{fill:#88623f}
+#pavilionBattleship .naval-ship-art.is-damaged .naval-art-flag{opacity:.72}
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-deck{fill:#93836d;stroke:#554b40}
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-castle,#pavilionBattleship .naval-ship-art.is-sunk .naval-art-forecastle{fill:#655346;stroke:#40342d}
+#pavilionBattleship .naval-ship-art.is-sunk .naval-art-ram,#pavilionBattleship .naval-ship-art.is-sunk .naval-art-plank,#pavilionBattleship .naval-ship-art.is-sunk .naval-art-gunport,#pavilionBattleship .naval-ship-art.is-sunk .naval-art-insignia{opacity:.72}
+
+/* Fase C3.2: geometria delle due griglie bloccata durante i colpi.
+   Le righe non possono piu adattarsi al contenuto (X, punti, sprite rivelati).
+   Larghezza e altezza delle celle restano sempre identiche. */
+#pavilionBattleship .battleship-grid,
+#pavilionBattleship .naval-deploy-grid{
+  grid-template-columns:repeat(10,minmax(0,1fr));
+  grid-template-rows:repeat(10,minmax(0,1fr));
+  grid-auto-rows:minmax(0,1fr);
+  aspect-ratio:1 / 1;
+}
+#pavilionBattleship .battleship-grid>.battle-cell,
+#pavilionBattleship .naval-deploy-grid>.battle-cell{
+  box-sizing:border-box;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:100%;
+  max-height:100%;
+  width:100%;
+  height:100%;
+  aspect-ratio:auto!important;
+  line-height:1;
+  overflow:hidden;
+}
+
+/* Correzione coordinate: sprite e marcatori non sono elementi del flusso grid.
+   Le 100 celle mantengono sempre le stesse 10 righe e 10 colonne. */
+#pavilionBattleship .naval-grid-with-ships>.naval-ship-art{
+  position:absolute;
+  min-width:0;min-height:0;
+  max-width:none;max-height:none;
+  pointer-events:none;
+  z-index:2;
+}
+#pavilionBattleship .naval-grid-with-ships>.naval-impact{
+  position:absolute;
+  z-index:4;
+  pointer-events:none;
+}
+
+/* Correzione navi nemiche affondate: mostra lo sprite sulle caselle gia colpite.
+   Le caselle restano fisse; lo sprite e assoluto e non modifica la griglia. */
+#pavilionBattleship #battleshipEnemy > .naval-ship-art.is-sunk{
+  z-index:4;
+  opacity:.92;
+  filter:grayscale(.16) brightness(.9) drop-shadow(0 2px 4px rgba(0,0,0,.55));
+}
+
+/* Fase D - opzioni audio nel menu principale. */
+#pavilionBattleship .naval-audio-options{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;margin:14px auto 5px;padding:9px 10px;background:rgba(83,59,33,.1);border:1px solid rgba(106,78,46,.35);border-radius:6px}
+#pavilionBattleship .naval-audio-options label{display:inline-flex;align-items:center;gap:7px;margin:0;cursor:pointer;font-size:14px;font-weight:normal;color:#402c1d}
+#pavilionBattleship .naval-audio-options input{width:17px;height:17px;margin:0;accent-color:#365c6b;cursor:pointer}
+
+/* Fase E - punteggi e record locali. */
+#pavilionBattleship .naval-menu-record{margin:12px auto 4px;padding:8px 10px;border:1px solid #a98a5b;border-radius:5px;background:rgba(255,250,232,.48);font-size:13px;color:#4d3723}
+#pavilionBattleship .naval-scoreboard{margin:12px auto;padding:12px 14px;border:2px ridge #b69a65;border-radius:7px;background:#f2e1bd;color:#42301e}
+#pavilionBattleship #navalResultScore{display:block;font-size:clamp(20px,4vw,29px)}
+#pavilionBattleship .naval-result-stars{font-size:clamp(24px,5vw,38px);letter-spacing:.1em;color:#b1832a;text-shadow:0 1px 1px #fff}
+#pavilionBattleship #navalResultDetails{font-size:13px;line-height:1.6}
+#pavilionBattleship .naval-record-note{font-size:13px;font-weight:bold;color:#5b522e}
+
+/* Fase F1: animazione locale di 500 ms per ogni tiro, senza immagini raster. */
+#pavilionBattleship .naval-shot-animation{
+  position:relative;align-self:stretch;justify-self:stretch;z-index:12;
+  pointer-events:none;display:grid;place-items:center;overflow:visible;
+}
+#pavilionBattleship .naval-shot-animation i,
+#pavilionBattleship .naval-shot-animation b,
+#pavilionBattleship .naval-shot-animation em{grid-area:1/1;display:block;pointer-events:none}
+#pavilionBattleship .naval-shot-animation--water i{
+  width:65%;height:65%;border:3px solid #e5faff;border-radius:50%;
+  box-shadow:0 0 4px #87d8ed;animation:navalSplash .5s ease-out both;
+}
+#pavilionBattleship .naval-shot-animation--water b{
+  width:25%;height:25%;border:2px solid #d9f8ff;border-radius:50%;
+  animation:navalSplash .5s .07s ease-out both;
+}
+#pavilionBattleship .naval-shot-animation--water em{
+  width:10%;height:10%;background:#fff;border-radius:50%;
+  box-shadow:9px -11px 0 -1px #e7ffff,-9px -9px 0 -1px #e7ffff;
+  animation:navalDroplets .5s ease-out both;
+}
+#pavilionBattleship .naval-shot-animation--hit i,
+#pavilionBattleship .naval-shot-animation--sunk i{
+  width:80%;height:80%;border-radius:50%;
+  background:radial-gradient(circle,#fff3bb 0 17%,#ffc271 22%,#dc5f36 48%,rgba(190,50,28,0) 72%);
+  animation:navalExplosion .5s ease-out both;
+}
+#pavilionBattleship .naval-shot-animation--hit b,
+#pavilionBattleship .naval-shot-animation--sunk b{
+  width:90%;height:90%;border:3px solid rgba(255,220,160,.9);border-radius:50%;
+  animation:navalShockwave .5s ease-out both;
+}
+#pavilionBattleship .naval-shot-animation--hit em,
+#pavilionBattleship .naval-shot-animation--sunk em{
+  width:70%;height:70%;border-radius:50%;background:radial-gradient(circle,rgba(75,65,63,.9),rgba(75,65,63,0) 68%);
+  animation:navalSmoke .5s ease-out both;
+}
+#pavilionBattleship .naval-shot-animation--sunk i{background:radial-gradient(circle,#fff6ca 0 12%,#edaf62 24%,#b93c2a 47%,rgba(176,42,31,0) 74%)}
+@keyframes navalSplash{0%{opacity:0;transform:scale(.08)}24%{opacity:1}100%{opacity:0;transform:scale(1.35)}}
+@keyframes navalDroplets{0%{opacity:0;transform:translateY(0) scale(.4)}35%{opacity:1}100%{opacity:0;transform:translateY(-13px) scale(.65)}}
+@keyframes navalExplosion{0%{opacity:0;transform:scale(.2)}24%{opacity:1}60%{opacity:1;transform:scale(1.18)}100%{opacity:0;transform:scale(1.4)}}
+@keyframes navalShockwave{0%{opacity:0;transform:scale(.15)}22%{opacity:.85}100%{opacity:0;transform:scale(1.48)}}
+@keyframes navalSmoke{0%,25%{opacity:0;transform:translateY(2px) scale(.2)}55%{opacity:.58}100%{opacity:0;transform:translateY(-8px) scale(1.3)}}
+#pavilionBattleship .naval-grid-with-ships>.naval-shot-animation{z-index:12}
+#pavilionBattleship .naval-grid-with-ships>.naval-ship-art{z-index:5}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell{z-index:1}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell.hit,
+#pavilionBattleship .naval-grid-with-ships>.battle-cell.sunk{z-index:3}
+@media(prefers-reduced-motion:reduce){
+ #pavilionBattleship .naval-shot-animation i,
+ #pavilionBattleship .naval-shot-animation b,
+ #pavilionBattleship .naval-shot-animation em{animation:none!important;opacity:.7}
+}
+
+
+/* Fase F1.1: l'animazione rimane contenuta nella sola cella del tiro.
+   Nessun overlay partecipa piu al layout grid o deborda nelle celle vicine. */
+#pavilionBattleship .naval-grid-with-ships>.battle-cell{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  width:100%;height:100%;
+  margin:0;padding:0;
+  overflow:hidden;
+  z-index:6;
+  pointer-events:none;
+}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation i,
+#pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation b,
+#pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation em{
+  box-sizing:border-box;
+  max-width:100%;max-height:100%;
+  margin:0;
+}
+#pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation--water i,
+#pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation--hit b,
+#pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation--sunk b{
+  border-width:clamp(1px,.35vw,3px);
+}

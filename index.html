@@ -301,14 +301,44 @@
             </div>
           </div>
           <div id="pavilionBattleship" class="pavilion-battleship" hidden>
-            <div class="battleship-card" role="dialog" aria-modal="true" aria-label="Battaglia Navale">
-              <header class="battleship-head"><h2>Battaglia Navale</h2><button type="button" id="battleshipClose">✕ Esci</button></header>
-              <p id="battleshipMessage" role="status" aria-live="polite"></p>
-              <div class="battleship-boards">
-                <section><h3>Flotta avversaria</h3><div class="battleship-grid" id="battleshipEnemy"></div></section>
-                <section><h3>La tua flotta</h3><div class="battleship-grid" id="battleshipPlayer"></div></section>
+            <section id="navalMenu" class="naval-menu" role="dialog" aria-modal="true" aria-labelledby="navalTitle">
+              <div class="naval-menu-emblem" aria-hidden="true">⚓</div>
+              <h2 id="navalTitle">Battaglia Navale</h2>
+              <p class="naval-subtitle">Teatro delle Battaglie · Esposizione 1892</p>
+              <p>Comanda cinque imbarcazioni genovesi e individua la flotta avversaria. Prima della battaglia puoi personalizzare la disposizione della tua flotta.</p>
+              <label for="navalDifficulty">Difficoltà della battaglia</label>
+              <select id="navalDifficulty"><option value="facile">Facile</option><option value="normale" selected>Normale</option><option value="difficile">Difficile</option></select>
+              <p class="naval-menu-note">Le difficoltà modificano la strategia dell’avversario. Potrai scegliere la posizione delle tue navi prima di iniziare.</p>
+              <div class="naval-audio-options" role="group" aria-label="Impostazioni audio"><label><input id="navalMusicEnabled" type="checkbox" checked> Musica</label><label><input id="navalEffectsEnabled" type="checkbox" checked> Effetti sonori</label></div>
+              <p id="navalMenuRecord" class="naval-menu-record" aria-live="polite">Nessun risultato salvato per questa difficoltà.</p><div class="naval-menu-actions"><button type="button" id="navalStart">Prepara la flotta</button><button type="button" id="navalRules">Regole</button><button type="button" id="battleshipClose">Torna al padiglione</button></div>
+              <p id="navalRulesText" hidden>Le flotte occupano 17 caselle ciascuna: Galeazza (5), Galea grossa (4), Galea da guerra (3), Galeotta (3), Fusta (2). Tocca una casella della flotta nemica per sparare. Vince chi colpisce tutti i segmenti della flotta avversaria.</p>
+            </section>
+            <div id="navalPlay" class="naval-play" hidden>
+              <div class="naval-frame">
+                <header class="naval-hud">
+                  <div class="naval-heading"><strong>BATTAGLIA NAVALE</strong><small>Teatro delle Battaglie</small></div>
+                  <div class="naval-hud-status"><strong id="navalLevel">Normale</strong><small id="navalTurn">Il tuo turno</small></div>
+                  <div class="naval-hud-actions"><button type="button" id="navalPause" aria-label="Pausa" title="Pausa">Ⅱ</button><button type="button" id="navalFullscreen" aria-label="Schermo intero" title="Schermo intero">⛶</button></div>
+                </header>
+                <section class="naval-deployment" id="navalDeployment" hidden aria-label="Preparazione della flotta genovese">
+                  <div class="naval-deploy-intro"><h2>Preparazione della flotta</h2><p>Scegli un’imbarcazione, tocca una casella per posizionarla e usa Ruota per cambiarne l’orientamento. Le navi non possono sovrapporsi.</p></div>
+                  <div class="naval-deploy-layout">
+                    <div class="naval-deploy-board-wrap"><h3>La tua flotta genovese</h3><div class="battleship-grid naval-deploy-grid" id="navalDeployGrid" role="group" aria-label="Posiziona le navi sulla griglia"></div></div>
+                    <div class="naval-deploy-controls"><h3>Le cinque imbarcazioni</h3><div class="naval-deploy-shiplist" id="navalDeployShips" role="group" aria-label="Scegli una nave"></div><p class="naval-deploy-selected" id="navalDeploySelected">Seleziona una nave.</p><div class="naval-deploy-buttons"><button type="button" id="navalDeployRotate">↻ Ruota la nave</button><button type="button" id="navalDeployRandom">⚄ Disposizione casuale</button></div><p id="navalDeployFeedback" class="naval-deploy-feedback" role="status" aria-live="polite">Puoi modificare la disposizione iniziale.</p></div>
+                  </div>
+                  <div class="naval-deploy-footer"><button type="button" id="navalDeployMenu">Torna al menu</button><button type="button" id="navalDeployConfirm" class="naval-deploy-primary">Inizia la battaglia</button></div>
+                </section>
+                <div class="naval-body" id="navalBattleBody" hidden>
+                  <div class="battleship-boards">
+                    <section class="naval-board-section naval-enemy-section" aria-label="Flotta nemica"><h3>Flotta nemica</h3><div class="battleship-grid" id="battleshipEnemy"></div><div class="naval-fleet" id="navalEnemyFleet"></div></section>
+                    <section class="naval-board-section naval-player-section" aria-label="Flotta genovese"><h3>La tua flotta genovese</h3><div class="battleship-grid" id="battleshipPlayer"></div><div class="naval-fleet" id="navalPlayerFleet"></div></section>
+                  </div>
+                  <div class="naval-message" id="battleshipMessage" role="status" aria-live="polite">Scegli dove sparare.</div>
+                  <footer class="naval-footer"><span id="battleshipStats">Colpi: 0</span><span>Genova · 1892</span></footer>
+                </div>
               </div>
-              <footer class="battleship-actions"><button type="button" id="battleshipNew">Nuova partita</button><span id="battleshipStats"></span></footer>
+              <div id="navalPauseOverlay" class="naval-overlay" hidden role="dialog" aria-modal="true" aria-label="Partita in pausa"><section class="naval-dialog"><h2>Partita in pausa</h2><button type="button" id="navalResume">Riprendi</button><button type="button" id="battleshipNew">Ricomincia</button><button type="button" id="navalBackMenu">Torna al menu</button></section></div>
+              <div id="navalResultOverlay" class="naval-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="navalResultTitle"><section class="naval-dialog"><h2 id="navalResultTitle">Battaglia conclusa</h2><p id="navalResultText"></p><div class="naval-scoreboard"><strong id="navalResultScore">0 / 1000 punti</strong><div id="navalResultStars" class="naval-result-stars" aria-label="0 stelle su 3">☆☆☆</div><p id="navalResultDetails"></p><p id="navalResultRecord" class="naval-record-note"></p></div><div class="naval-result-buttons"><button type="button" id="navalAgain">Rigioca</button><button type="button" id="navalResultMenu">Menu</button><button type="button" id="navalResultExit">Torna al padiglione</button></div></section></div>
             </div>
           </div>
           <div id="pavilionShellGame" class="pavilion-shellgame" hidden>
@@ -411,6 +441,7 @@
   <script src="games/04-teatro-battaglie/config.js"></script>
   <script src="games/05-galleria-fortuna/config.js"></script>
   <script src="games/16-padiglione-invenzioni/config.js"></script>
+  <link rel="stylesheet" href="games/04-teatro-battaglie/minigames/battaglia-navale/style.css">
   <script src="games/04-teatro-battaglie/minigames/battaglia-navale/game.js"></script>
   <script src="games/05-galleria-fortuna/minigames/bussolotti/game.js"></script>
   <link rel="stylesheet" href="games/16-padiglione-invenzioni/minigames/telegrafo/style.css">
