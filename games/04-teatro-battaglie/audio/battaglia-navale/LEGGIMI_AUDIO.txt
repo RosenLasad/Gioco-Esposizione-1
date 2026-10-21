@@ -1,0 +1,21 @@
+BATTAGLIA NAVALE - FASE D / RISORSE AUDIO
+
+Inserisci i file audio nelle cartelle qui indicate, conservando esattamente nomi ed estensioni.
+I file non sono inclusi in questo ZIP; il gioco resta funzionante anche senza audio.
+
+MUSICHE (MP3):
+  musiche/facile.mp3
+  musiche/normale.mp3
+  musiche/difficile.mp3
+
+EFFETTI (OGG Vorbis):
+  effetti/colpo-acqua.ogg
+  effetti/nave-colpita.ogg
+  effetti/nave-affondata.ogg
+
+Le musiche sono in loop nella partita, si mettono in pausa e si fermano alla fine.
+Gli effetti suonano alla risoluzione di ciascun colpo, sia del giocatore sia dell'IA.
+Il gioco gestisce la mancanza degli audio senza interrompere la battaglia.
+Nel menu sono disponibili le opzioni Musica ed Effetti sonori.
+In alcuni browser l'apertura con file:/// limita la riproduzione audio: provare online
+o con un server locale per verificare il funzionamento.
