@@ -115,7 +115,7 @@ function show(screen){menu.hidden=screen!=='menu';play.hidden=screen!=='play';re
 function stopClock(){if(raf)cancelAnimationFrame(raf);raf=0;last=0;}
 function clearFeedback(){clearTimeout(feedbackTimer);feedbackTimer=0;tape.classList.remove('tele-hit-feedback');contact.classList.remove('tele-hit-flash');instrument.classList.remove('tele-hit-feedback');}
 function reset(){stopAudio();stopClock();state=null;pressed=false;releaseInstrument(true);clearFeedback();pause.hidden=true;lastTranscribedIndex=-1;tape.style.setProperty('--paper-offset','0px');tape.style.setProperty('--paper-offset-fine','0px');}
-function close(){reset();root.hidden=true;phase='closed';show('menu');if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{});}
+function close(){reset();root.hidden=true;phase='closed';show('menu');if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{});window.EsposizionePavilions?.dismissGameHistory?.();}
 function introText(){intro.textContent=`Partite: ${statsSession.played} · Simboli colpiti: ${statsSession.correct} · Errori: ${statsSession.errors} (solo questa sessione)`;}
 function starsString(n){return '★'.repeat(n)+'☆'.repeat(3-n);}
 function scoring(targets,correct,errors){
@@ -340,5 +340,5 @@ window.addEventListener('resize',()=>{if(phase==='running'||phase==='paused'){al
 document.addEventListener('fullscreenchange',()=>{if(!root.hidden){requestAnimationFrame(()=>{alignInstrument();if(state){const z=hitZone();state.hitY=z.center;state.hitHalf=z.half;render();}});}});
 document.addEventListener('keydown',e=>{if(root.hidden)return;if(e.code==='Space'&&phase==='running'&&!e.repeat){e.preventDefault();hit();}if(e.key==='Escape'&&phase==='running'){e.preventDefault();e.stopImmediatePropagation();pauseGame();}},true);
 window.addEventListener('blur',()=>{if(phase==='running')pauseGame();});
-window.EsposizioneMinigames.register('telegrafo',{start:open,close,isOpen:()=>!root.hidden,back(){if(phase==='running'){pauseGame();return true;}if(phase==='paused'){backMenu();return true;}close();return true;},getResult:()=>result});
+window.EsposizioneMinigames.register('telegrafo',{start:open,close,isOpen:()=>!root.hidden,back(){if(phase==='running'||phase==='paused'||phase==='results'){backMenu();return true;}close();return true;},getResult:()=>result});
 })();

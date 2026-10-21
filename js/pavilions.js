@@ -30,6 +30,7 @@
   let returnFocus = null;
   let pavilionHistoryToken = null;
   let historySequence = 0;
+  let gameHistoryActive = false;
 
   const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
 
@@ -96,6 +97,7 @@
     const action = selected.action;
     hideActivity();
     minigames.get(action)?.start();
+    if(minigames.anyOpen()) enterGameHistory();
   });
 
   function draw(){
@@ -245,7 +247,9 @@
   function close(fromHistory=false){
     if(!active) return false;
     const ownedEntry = !!pavilionHistoryToken && window.history.state?.esposizionePavilionToken === pavilionHistoryToken;
+    const hadGameEntry = ownedEntry && gameHistoryActive && !!window.history.state?.esposizioneGameLayer;
     pavilionHistoryToken = null;
+    gameHistoryActive = false;
     minigames.closeAll();
     activity.hidden = true;
     selected = null;
@@ -258,11 +262,51 @@
     const fn = restore;
     restore = null;
     fn?.();
-    if(!fromHistory && ownedEntry) window.history.back();
+    if(!fromHistory && ownedEntry) {
+      if(hadGameEntry) window.history.go(-2);
+      else window.history.back();
+    }
     return true;
   }
 
-  window.addEventListener('popstate', ()=>{ if(active) close(true); });
+  // Lo smartphone usa la cronologia, non gli eventi keydown/Escape.
+  // Ogni minigioco occupa un livello di history sopra quello del padiglione.
+  function enterGameHistory(){
+    if(!active || !minigames.anyOpen() || gameHistoryActive) return;
+    try {
+      window.history.pushState({...window.history.state, esposizioneGameLayer:true}, '', window.location.href);
+      gameHistoryActive=true;
+    } catch (_) { gameHistoryActive=false; }
+  }
+  function dismissGameHistory(){
+    if(!gameHistoryActive)return;
+    gameHistoryActive=false;
+    // L'entry sottostante resta quella del padiglione.
+    if(active && window.history.state?.esposizioneGameLayer)window.history.back();
+  }
+  function backInMinigame(){
+    for(const id of ['battleship','telegrafo','bussolotti']){
+      const game=minigames.get(id);
+      if(game?.isOpen()){
+        if(game.back)game.back();else game.close();
+        return true;
+      }
+    }
+    return false;
+  }
+  window.addEventListener('popstate', ()=>{
+    if(!active)return;
+    if(window.history.state?.esposizionePavilionToken!==pavilionHistoryToken){
+      gameHistoryActive=false;
+      close(true);
+      return;
+    }
+    // Tornati dall'entry del gioco all'entry del padiglione.
+    if(gameHistoryActive){
+      gameHistoryActive=false;
+      if(backInMinigame() && minigames.anyOpen())enterGameHistory();
+    }
+  });
   function isOpen(){ return !!active; }
 
   document.getElementById('pavilionExit').addEventListener('click', close);
@@ -275,7 +319,7 @@
     if(event.key === 'Escape'){
       event.preventDefault();
       event.stopImmediatePropagation();
-      if(minigames.anyOpen()){const game=minigames.get('telegrafo');if(game?.isOpen()&&game.back)game.back();else minigames.closeOpen();}
+      if(minigames.anyOpen())backInMinigame();
       else if(!activity.hidden) hideActivity();
       else close();
       return;
@@ -289,5 +333,5 @@
   }, true);
 
   const definitions = Object.freeze(Object.fromEntries(registry.all().map(config=>[config.key,config])));
-  window.EsposizionePavilions = Object.freeze({definitions, resolve, open, close, isOpen});
+  window.EsposizionePavilions = Object.freeze({definitions, resolve, open, close, isOpen, dismissGameHistory});
 })();

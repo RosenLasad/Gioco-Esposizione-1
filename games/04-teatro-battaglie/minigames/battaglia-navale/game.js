@@ -183,7 +183,7 @@ function showBattleView(active){$('navalDeployment').hidden=active;$('navalBattl
 function updateState(phaseNext){phase=phaseNext;$('navalPauseOverlay').hidden=phaseNext!=='paused';$('navalResultOverlay').hidden=phaseNext!=='results';}
 function stopFullscreen(){if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{});}
 function open(){stopNavalMusic();clearNavalEffects();syncNavalAudioControls();deployment=null;board=null;root.hidden=false;selectedDifficulty=$('navalDifficulty').value;updateState('menu');show('menu');renderNavalRecords();$('navalStart').focus();}
-function close(){cancelCombat();stopNavalMusic();clearNavalEffects();matchId++;deployment=null;board=null;updateState('closed');root.hidden=true;show('menu');stopFullscreen();}
+function close(){cancelCombat();stopNavalMusic();clearNavalEffects();matchId++;deployment=null;board=null;updateState('closed');root.hidden=true;show('menu');stopFullscreen();window.EsposizionePavilions?.dismissGameHistory?.();}
 function backMenu(){cancelCombat();stopNavalMusic();clearNavalEffects();matchId++;deployment=null;board=null;updateState('menu');show('menu');stopFullscreen();renderNavalRecords();$('navalStart').focus();}
 function isSunk(unit,shots){return unit.cells.every(i=>shots.has(i));}
 /* Fase F1.3: cinque sagome compatte, senza informazioni sui danni parziali. */
@@ -644,5 +644,5 @@ $('navalAgain').addEventListener('click',newBattle);
 $('navalResultMenu').addEventListener('click',backMenu);
 $('navalResultExit').addEventListener('click',close);
 $('navalFullscreen').addEventListener('click',()=>{if(document.fullscreenElement===root)stopFullscreen();else root.requestFullscreen?.().catch(()=>{});});
-window.EsposizioneMinigames.register('battleship',{start:open,close,isOpen:()=>!root.hidden,back(){if(phase==='playing'){pause();return true;}if(phase==='paused'||phase==='results'||phase==='preparing'){backMenu();return true;}close();return true;}});
+window.EsposizioneMinigames.register('battleship',{start:open,close,isOpen:()=>!root.hidden,back(){if(phase==='playing'||phase==='paused'||phase==='results'||phase==='preparing'){backMenu();return true;}close();return true;}});
 })();
