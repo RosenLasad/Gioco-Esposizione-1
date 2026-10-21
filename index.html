@@ -342,18 +342,29 @@
             </div>
           </div>
           <div id="pavilionShellGame" class="pavilion-shellgame" hidden>
-            <div class="shellgame-card" role="dialog" aria-modal="true" aria-label="Il Gioco dei Bussolotti">
+            <div id="shellMenu" class="shellgame-card shellgame-menu" role="dialog" aria-modal="true" aria-label="Menu dei Bussolotti">
               <header class="shellgame-head"><h2>Il Gioco dei Bussolotti</h2><button type="button" id="shellGameClose">✕ Esci</button></header>
-              <p id="shellGameMessage" class="shellgame-message" role="status" aria-live="polite"></p>
-              <div class="shellgame-stage">
-                <div class="shell-table" id="shellTable" aria-label="Tavolo del gioco dei bussolotti">
-                  <div id="shellBall" class="shell-ball" aria-hidden="true"></div>
-                  <button type="button" id="shellCup0" class="shell-cup" aria-label="Bussolotto sinistro"></button>
-                  <button type="button" id="shellCup1" class="shell-cup" aria-label="Bussolotto centrale"></button>
-                  <button type="button" id="shellCup2" class="shell-cup" aria-label="Bussolotto destro"></button>
+              <p>Segui il bussolotto che nasconde la pallina, anche durante gli scambi più veloci.</p>
+              <label for="shellDifficulty">Difficoltà</label>
+              <select id="shellDifficulty"><option value="facile">Facile</option><option value="normale" selected>Normale</option><option value="difficile">Difficile</option></select>
+              <p class="shellgame-hint">Scambio semplice e rotazione tripla. Ogni spostamento è visibile: niente cambi nascosti.</p>
+              <div class="shellgame-menu-actions"><button type="button" id="shellStart">Inizia partita</button></div>
+            </div>
+            <div id="shellPlay" class="shellgame-play" hidden>
+              <div class="shellgame-frame">
+                <header class="shellgame-head shellgame-hud"><div><h2>Il Gioco dei Bussolotti</h2><small id="shellLevel">Normale</small></div><div class="shellgame-hud-actions"><button type="button" id="shellPause" aria-label="Pausa" title="Pausa">Ⅱ</button><button type="button" id="shellFullscreen" aria-label="Schermo intero" title="Schermo intero">⛶</button></div></header>
+                <p id="shellGameMessage" class="shellgame-message" role="status" aria-live="polite">Preparati a seguire la pallina.</p>
+                <div class="shellgame-stage">
+                  <div class="shell-table" id="shellTable" aria-label="Tavolo del gioco dei bussolotti">
+                    <div id="shellBall" class="shell-ball" aria-hidden="true"></div>
+                    <button type="button" id="shellCup0" class="shell-cup" aria-label="Bussolotto 1"></button>
+                    <button type="button" id="shellCup1" class="shell-cup" aria-label="Bussolotto 2"></button>
+                    <button type="button" id="shellCup2" class="shell-cup" aria-label="Bussolotto 3"></button>
+                  </div>
                 </div>
+                <footer class="shellgame-actions"><span id="shellGameStats">Vittorie: 0 · Sconfitte: 0</span><button type="button" id="shellGameNew">Rigioca</button><button type="button" id="shellBackMenu">Menu</button></footer>
               </div>
-              <footer class="shellgame-actions"><button type="button" id="shellGameNew">Nuovo giro</button><span id="shellGameStats"></span></footer>
+              <div id="shellPauseOverlay" class="shellgame-overlay" hidden role="dialog" aria-modal="true"><div class="shellgame-dialog"><h3>Partita in pausa</h3><button type="button" id="shellResume">Riprendi</button><button type="button" id="shellPauseMenu">Torna al menu</button></div></div>
             </div>
           </div>
           <div id="pavilionTelegraph" class="pavilion-telegraph" hidden>
