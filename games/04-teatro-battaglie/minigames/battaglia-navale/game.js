@@ -186,9 +186,50 @@ function open(){stopNavalMusic();clearNavalEffects();syncNavalAudioControls();de
 function close(){cancelCombat();stopNavalMusic();clearNavalEffects();matchId++;deployment=null;board=null;updateState('closed');root.hidden=true;show('menu');stopFullscreen();}
 function backMenu(){cancelCombat();stopNavalMusic();clearNavalEffects();matchId++;deployment=null;board=null;updateState('menu');show('menu');stopFullscreen();renderNavalRecords();$('navalStart').focus();}
 function isSunk(unit,shots){return unit.cells.every(i=>shots.has(i));}
+/* Fase F1.3: cinque sagome compatte, senza informazioni sui danni parziali. */
+function renderEnemyFleetCompact(out, units, shots){
+ out.classList.add('naval-fleet-compact');
+ out.setAttribute('aria-label','Flotta nemica: stato delle cinque navi');
+ for(const unit of units){
+   const sunk=isSunk(unit,shots);
+   const slot=document.createElement('div');
+   slot.className='naval-enemy-icon'+(sunk?' is-sunk':'');
+   slot.setAttribute('role','img');
+   slot.setAttribute('aria-label',`${unit.name}: ${sunk?'affondata':'ancora in gioco'}`);
+   slot.title=`${unit.name} — ${sunk?'Affondata':'Da affondare'}`;
+   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+   svg.setAttribute('viewBox','0 0 100 76');
+   svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+   svg.setAttribute('aria-hidden','true');
+   svg.classList.add('naval-enemy-icon-art');
+   const make=(tag,attrs)=>{
+     const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
+     for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));
+     svg.appendChild(e);
+   };
+   const beam=unit.length===5?19:unit.length===4?17:unit.length===2?12:15;
+   make('path',{d:`M 50 3 Q ${50+beam} 16 ${50+beam-2} 38 L ${50+beam-3} 58 Q 50 75 ${50-beam+3} 58 L ${50-beam+2} 38 Q ${50-beam} 16 50 3 Z`,class:'naval-icon-hull'});
+   make('path',{d:'M 50 10 L 50 61',class:'naval-icon-keel'});
+   for(const y of [28,40,52])make('path',{d:`M ${50-beam+5} ${y} L ${50+beam-5} ${y}`,class:'naval-icon-deck'});
+   const remi=unit.length>=4?[24,33,43,53]:unit.length===2?[34,48]:[29,40,51];
+   for(const y of remi){
+     make('path',{d:`M ${50-beam+3} ${y} L ${50-beam-9} ${y+4} M ${50+beam-3} ${y} L ${50+beam+9} ${y+4}`,class:'naval-icon-oar'});
+   }
+   const masts=unit.length>=4?[26,48]:[37];
+   masts.forEach(y=>{
+     make('ellipse',{cx:50,cy:y,rx:beam*.45,ry:7,class:'naval-icon-sail'});
+     make('circle',{cx:50,cy:y,r:2,class:'naval-icon-mast'});
+   });
+   make('path',{d:'M 46 13 h 8 M 50 9 v 9',class:'naval-icon-cross'});
+   slot.appendChild(svg);
+   out.appendChild(slot);
+ }
+}
 function fleetStatus(side){
   const out=$(side==='enemy'?'navalEnemyFleet':'navalPlayerFleet');out.replaceChildren();
   const unitList=board[side].units, shots=side==='enemy'?board.playerShots:board.enemyShots;
+  if(side==='enemy'){renderEnemyFleetCompact(out,unitList,shots);return;}
+  out.classList.remove('naval-fleet-compact');
   for(const unit of unitList){
     const hits=unit.cells.filter(i=>shots.has(i)).length;
     const sunk=hits===unit.length;
