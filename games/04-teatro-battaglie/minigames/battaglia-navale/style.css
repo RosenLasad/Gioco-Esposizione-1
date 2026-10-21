@@ -329,3 +329,25 @@
 #pavilionBattleship .naval-grid-with-ships>.battle-cell>.naval-shot-animation--sunk b{
   border-width:clamp(1px,.35vw,3px);
 }
+
+/* Fase F1.2: su smartphone la legenda nemica precede la propria griglia.
+   L'ordine DOM e il layout desktop restano invariati. */
+@media(max-width:680px){
+  #pavilionBattleship .battleship-boards{row-gap:6px}
+  #pavilionBattleship .naval-enemy-section{
+    display:flex;
+    flex-direction:column;
+    padding-bottom:7px;
+  }
+  #pavilionBattleship .naval-enemy-section>h3{order:0;margin-bottom:5px}
+  #pavilionBattleship .naval-enemy-section>#navalEnemyFleet{
+    order:1;
+    margin-top:0;
+    margin-bottom:7px;
+  }
+  #pavilionBattleship .naval-enemy-section>#battleshipEnemy{
+    order:2;
+    flex:none;
+  }
+  #pavilionBattleship .naval-player-section{padding-top:7px}
+}
