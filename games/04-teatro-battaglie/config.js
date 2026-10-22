@@ -11,7 +11,7 @@ const config = {
     };
 config.key = 'battaglie';
 config.items = [
-      {id:'bombarda',name:'Bombarda!',icon:'☄',color:'red',x:11,y:62,desc:'Prendi la mira con il cannone e colpisci i bersagli della flotta nemica.'},
+      {id:'bombarda',name:'Bombarda!',icon:'☄',color:'red',x:11,y:62,desc:'Prendi la mira con il cannone e colpisci i bersagli della flotta nemica.',action:'bombarda'},
       {id:'fortezza',name:'Difendi la Fortezza',icon:'♜',color:'green',x:29,y:43,desc:'Proteggi la fortezza dagli attacchi organizzando la sua difesa.'},
       {id:'guida',name:'Guida',icon:'ℹ',color:'blue',x:52,y:51,desc:'Scopri le curiosità e la storia delle battaglie raccontate nel padiglione.'},
       {id:'shopping',name:'Shopping',icon:'▣',color:'brown',x:77,y:42,desc:'Visita il banco dei souvenir e scopri modelli navali e oggetti da collezione.'},
