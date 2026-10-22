@@ -344,3 +344,210 @@
 .tele-audio-settings{display:flex;justify-content:center;align-items:center;gap:10px 20px;flex-wrap:wrap;margin:10px auto 4px;padding:10px 12px;max-width:390px;border:1px solid #a07a48;border-radius:8px;background:#fff6e13d}
 .tele-menu .tele-audio-choice{display:flex;align-items:center;justify-content:center;gap:7px;margin:0;font-size:13px;font-weight:600;cursor:pointer;color:#4c301c}
 .tele-audio-choice input{width:17px;height:17px;accent-color:#745028;cursor:pointer}
+
+
+/* Fase G1 - Nastri decorativi sul tavolo. Nessuna interazione o collisione. */
+.tele-background-ribbons{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;isolation:isolate}
+.tele-decor-ribbon{
+ --speed:9s;--edge:rgba(78,47,25,.65);
+ position:absolute;display:none;overflow:visible;opacity:.68;
+ background:linear-gradient(90deg,#ac956e,#ebdbb4 10%,#e9d5a9 83%,#a99570);
+ border:1px solid var(--edge);border-radius:1px;
+ box-shadow:inset 3px 0 5px #4f331c44,inset -3px 0 5px #5b3e2244,0 4px 8px #130a0855;
+}
+.tele-decor-ribbon::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 3px,#fff4 4px 5px,transparent 7px 13px);opacity:.5}
+.tele-decor-scroll{position:absolute;inset:-80px 0;will-change:transform;
+ background:repeating-linear-gradient(180deg,transparent 0px,transparent 13px,#30251a 14px,#30251a 19px,transparent 20px,transparent 32px,#30251a 33px,#30251a 36px,transparent 37px,transparent 66px);
+ opacity:.66;mask-image:linear-gradient(90deg,transparent 0%,#000 31%,#000 69%,transparent 100%);
+ animation:teleRibbonTravel var(--speed) linear infinite;
+}
+/* Velocita' ciclica non uniforme, senza lavoro JS aggiuntivo per frame. */
+@keyframes teleRibbonTravel{0%{transform:translateY(-34px)}20%{transform:translateY(-10px)}49%{transform:translateY(25px)}68%{transform:translateY(42px)}100%{transform:translateY(88px)}}
+.tele-decor-ribbon.tele-reverse .tele-decor-scroll{animation-direction:reverse}
+/* Le due fessure sono disegnate sopra la carta, con rivetti ai lati. */
+.tele-decor-mouth{position:absolute;left:-6px;right:-6px;height:12px;z-index:3;
+ border:2px solid #3e322d;border-radius:3px;
+ background:radial-gradient(circle at 7px 50%,#e2d7c0 0 2px,#56463b 2.5px 3.5px,transparent 4px),
+ radial-gradient(circle at calc(100% - 7px) 50%,#e2d7c0 0 2px,#56463b 2.5px 3.5px,transparent 4px),
+ linear-gradient(180deg,#8e8d87 0%,#404142 35%,#211e1a 48%,#11110f 57%,#74706b 78%,#ada69a 100%);
+ box-shadow:0 2px 4px #0009, inset 0 1px 1px #fff5;
+}
+.tele-mouth-in{top:-6px}.tele-mouth-out{bottom:-6px}
+/* Nastri orizzontali: orientamento e scanalature ruotate con il nastro. */
+.tele-decor-h1,.tele-decor-h2,.tele-decor-h3{height:35px;width:32%;background:linear-gradient(180deg,#ac956e,#eadbb4 15%,#e9d5a9 82%,#a99570)}
+.tele-decor-h1 .tele-decor-scroll,.tele-decor-h2 .tele-decor-scroll,.tele-decor-h3 .tele-decor-scroll{inset:0 -80px;background:repeating-linear-gradient(90deg,transparent 0px,transparent 13px,#30251a 14px,#30251a 19px,transparent 20px,transparent 32px,#30251a 33px,#30251a 36px,transparent 37px,transparent 66px);mask-image:linear-gradient(180deg,transparent 0%,#000 31%,#000 69%,transparent 100%);animation-name:teleRibbonHorizontal}
+@keyframes teleRibbonHorizontal{0%{transform:translateX(-34px)}20%{transform:translateX(-10px)}49%{transform:translateX(25px)}68%{transform:translateX(42px)}100%{transform:translateX(88px)}}
+.tele-decor-h1 .tele-decor-mouth,.tele-decor-h2 .tele-decor-mouth,.tele-decor-h3 .tele-decor-mouth{top:-5px;bottom:-5px;height:auto;width:12px;left:auto;right:auto;background:radial-gradient(circle at 50% 8px,#ddd6c8 0 2px,#413a34 2.5px 3.5px,transparent 4px),radial-gradient(circle at 50% calc(100% - 8px),#ddd6c8 0 2px,#413a34 2.5px 3.5px,transparent 4px),linear-gradient(90deg,#8e8d87,#383838 33%,#141310 50%,#77716b 80%,#ada69a)}
+.tele-decor-h1 .tele-mouth-in,.tele-decor-h2 .tele-mouth-in,.tele-decor-h3 .tele-mouth-in{left:-6px}
+.tele-decor-h1 .tele-mouth-out,.tele-decor-h2 .tele-mouth-out,.tele-decor-h3 .tele-mouth-out{right:-6px}
+.tele-content:not(.tele-decor-active) .tele-decor-scroll{animation-play-state:paused}
+/* Facile: 1 verticale, 2 orizzontali */
+.tele-content[data-decor-difficulty="facile"] .tele-decor-v1{display:block;left:47%;top:29%;height:46%;width:31px;--speed:10s}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h1{display:block;left:53%;top:38%;width:30%;--speed:11s}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h2{display:block;left:51%;top:66%;width:37%;--speed:13s}
+/* Normale: 2 verticali, 2 orizzontali */
+.tele-content[data-decor-difficulty="normale"] .tele-decor-v1{display:block;left:42%;top:27%;height:48%;width:32px;--speed:7.5s}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-v2{display:block;left:69%;top:22%;height:54%;width:30px;--speed:8.5s}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-h1{display:block;left:50%;top:34%;width:38%;--speed:9s}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-h2{display:block;left:51%;top:63%;width:38%;--speed:8s}
+/* Difficile: 2 verticali, 3 orizzontali, incroci sotto al pannello telegramma */
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-v1{display:block;left:39%;top:8%;height:84%;width:34px;--speed:6s}
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-v2{display:block;left:70%;top:10%;height:82%;width:32px;--speed:5.8s}
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-h1{display:block;left:51%;top:34%;width:39%;--speed:6.5s}
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-h2{display:block;left:50%;top:55%;width:40%;--speed:7.5s}
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-h3{display:block;left:52%;top:72%;width:37%;--speed:6.1s}
+/* Alternanza direzioni definita a prescindere dalle difficolta. */
+.tele-decor-v1 .tele-decor-scroll,.tele-decor-h2 .tele-decor-scroll{animation-direction:reverse}
+.tele-decor-v2 .tele-decor-scroll,.tele-decor-h1 .tele-decor-scroll,.tele-decor-h3 .tele-decor-scroll{animation-direction:normal}
+/* Tavolo, pannello, nastro e strumento restano sopra lo sfondo decorativo. */
+.tele-content>.tele-tape{z-index:3}
+.tele-content>.tele-paper{z-index:6}
+@media(max-width:480px){.tele-decor-ribbon{opacity:.54}.tele-decor-h1,.tele-decor-h2,.tele-decor-h3{height:29px}.tele-decor-v1,.tele-decor-v2{max-width:29px}}
+@media(prefers-reduced-motion:reduce){.tele-decor-scroll{animation:none!important}}
+
+
+/* Fase G2 - I segni animati restano rigorosamente sulla carta.
+   Il viewport ritaglia il contenuto senza tagliare le fessure sporgenti. */
+.tele-decor-ribbon{overflow:visible;isolation:isolate}
+.tele-decor-viewport{position:absolute;inset:0;overflow:hidden;z-index:0;border-radius:1px;pointer-events:none}
+.tele-decor-viewport .tele-decor-scroll{z-index:0}
+.tele-decor-ribbon::before{z-index:2}
+/* Guide metalliche sopra al nastro: apertura centrale scura e bordi in rilievo. */
+.tele-decor-mouth{
+ z-index:6;
+ border-color:#4a443f;
+ box-shadow:0 3px 5px #0009,inset 0 2px 1px #fff7,inset 0 -2px 2px #15110ddd;
+}
+.tele-decor-mouth::after{content:"";position:absolute;inset:4px 8px 3px;pointer-events:none;border-radius:2px;
+ background:linear-gradient(180deg,#151310,#30302e 42%,#080807 56%,#69635a 100%);
+ box-shadow:inset 0 1px 2px #000c,0 1px 0 #c0ada084;opacity:.85}
+.tele-decor-h1 .tele-decor-mouth::after,.tele-decor-h2 .tele-decor-mouth::after,.tele-decor-h3 .tele-decor-mouth::after{
+ inset:8px 3px;
+ background:linear-gradient(90deg,#151310,#30302e 42%,#080807 56%,#69635a 100%);
+}
+/* Verticali sotto agli orizzontali, con un'ombra leggera dove si incrociano. */
+.tele-decor-v1,.tele-decor-v2{z-index:1}
+.tele-decor-h1,.tele-decor-h2,.tele-decor-h3{z-index:2;
+ box-shadow:inset 0 3px 5px #4f331c44,inset 0 -3px 5px #5b3e2244,0 3px 7px #160d0866}
+.tele-decor-h1 .tele-decor-viewport,.tele-decor-h2 .tele-decor-viewport,.tele-decor-h3 .tele-decor-viewport{border-radius:1px}
+
+
+/* G2.1: esattamente 5 nastri per modalita. Facile e Normale con disegni
+   differenti; Difficile preservata rispetto alla versione G2 gia testata. */
+/* Facile: due verticali ben distanziati, tre orizzontali sfalsati. */
+.tele-content[data-decor-difficulty="facile"] .tele-decor-v1{left:43%;top:8%;height:84%;width:30px;--speed:10s}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-v2{display:block;left:75%;top:10%;height:82%;width:28px;--speed:12s}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h1{left:52%;top:36%;width:34%;--speed:11s}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h2{left:49%;top:61%;width:39%;--speed:13s}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h3{display:block;left:56%;top:76%;width:27%;--speed:12s}
+/* Normale: tre verticali, due orizzontali incrociati, composizione piu fitta. */
+.tele-content[data-decor-difficulty="normale"] .tele-decor-v1{left:39%;top:9%;height:83%;width:29px;--speed:7.5s}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-v2{left:63%;top:7%;height:86%;width:27px;--speed:8.5s}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-v3{display:block;left:83%;top:12%;height:79%;width:26px;--speed:8s}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-h1{left:46%;top:43%;width:44%;--speed:9s}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-h2{left:55%;top:69%;width:35%;--speed:8s}
+/* La terza pista verticale conserva gli stessi bordi, guide e clipping della G2. */
+.tele-decor-v3{z-index:1}
+.tele-decor-v3 .tele-decor-scroll{animation-direction:normal}
+@media(max-width:480px){.tele-decor-v3{max-width:26px}}
+
+
+/* Fase G3 - Cambi di velocita' ben percepibili, solo per i nastri decorativi.
+   Avanzamento totale 132px = 2 periodi del motivo Morse (66px): il ciclo
+   ricomincia senza salti visivi. L'overflow resta ritagliato dalla G2. */
+.tele-decor-viewport .tele-decor-scroll{
+  /* Margine sufficiente per far traslare il motivo senza scoprirne i bordi. */
+  animation-timing-function:linear;
+}
+.tele-decor-v1 .tele-decor-scroll,
+.tele-decor-v2 .tele-decor-scroll,
+.tele-decor-v3 .tele-decor-scroll{inset:-160px 0}
+.tele-decor-h1 .tele-decor-scroll,
+.tele-decor-h2 .tele-decor-scroll,
+.tele-decor-h3 .tele-decor-scroll{inset:0 -160px}
+
+/* Facile: due accelerazioni dolci e lunghi tratti tranquilli. */
+@keyframes teleG3EasyV{
+  0%{transform:translateY(-66px)}
+  20%{transform:translateY(-54px)}
+  40%{transform:translateY(-18px)}
+  65%{transform:translateY(16px)}
+  82%{transform:translateY(38px)}
+  100%{transform:translateY(66px)}
+}
+@keyframes teleG3EasyH{
+  0%{transform:translateX(-66px)}
+  20%{transform:translateX(-54px)}
+  40%{transform:translateX(-18px)}
+  65%{transform:translateX(16px)}
+  82%{transform:translateX(38px)}
+  100%{transform:translateX(66px)}
+}
+/* Normale: accelerazione netta, tratto lento, nuova accelerazione. */
+@keyframes teleG3MediumV{
+  0%{transform:translateY(-66px)}
+  18%{transform:translateY(-61px)}
+  34%{transform:translateY(-12px)}
+  54%{transform:translateY(1px)}
+  74%{transform:translateY(47px)}
+  88%{transform:translateY(52px)}
+  100%{transform:translateY(66px)}
+}
+@keyframes teleG3MediumH{
+  0%{transform:translateX(-66px)}
+  18%{transform:translateX(-61px)}
+  34%{transform:translateX(-12px)}
+  54%{transform:translateX(1px)}
+  74%{transform:translateX(47px)}
+  88%{transform:translateX(52px)}
+  100%{transform:translateX(66px)}
+}
+/* Difficile: scatti rapidi alternati a rallentamenti, senza fermarsi. */
+@keyframes teleG3HardV{
+  0%{transform:translateY(-66px)}
+  15%{transform:translateY(-63px)}
+  27%{transform:translateY(-19px)}
+  45%{transform:translateY(-15px)}
+  59%{transform:translateY(28px)}
+  75%{transform:translateY(32px)}
+  88%{transform:translateY(62px)}
+  100%{transform:translateY(66px)}
+}
+@keyframes teleG3HardH{
+  0%{transform:translateX(-66px)}
+  15%{transform:translateX(-63px)}
+  27%{transform:translateX(-19px)}
+  45%{transform:translateX(-15px)}
+  59%{transform:translateX(28px)}
+  75%{transform:translateX(32px)}
+  88%{transform:translateX(62px)}
+  100%{transform:translateX(66px)}
+}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-ribbon:not(.tele-decor-h1):not(.tele-decor-h2):not(.tele-decor-h3) .tele-decor-scroll{animation-name:teleG3EasyV}
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h1 .tele-decor-scroll,
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h2 .tele-decor-scroll,
+.tele-content[data-decor-difficulty="facile"] .tele-decor-h3 .tele-decor-scroll{animation-name:teleG3EasyH}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-ribbon:not(.tele-decor-h1):not(.tele-decor-h2):not(.tele-decor-h3) .tele-decor-scroll{animation-name:teleG3MediumV}
+.tele-content[data-decor-difficulty="normale"] .tele-decor-h1 .tele-decor-scroll,
+.tele-content[data-decor-difficulty="normale"] .tele-decor-h2 .tele-decor-scroll{animation-name:teleG3MediumH}
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-ribbon:not(.tele-decor-h1):not(.tele-decor-h2):not(.tele-decor-h3) .tele-decor-scroll{animation-name:teleG3HardV}
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-h1 .tele-decor-scroll,
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-h2 .tele-decor-scroll,
+.tele-content[data-decor-difficulty="difficile"] .tele-decor-h3 .tele-decor-scroll{animation-name:teleG3HardH}
+
+/* G4: tavola fotografica opzionale, interposta fra nastri di sfondo e gioco.
+   Sostituire solo images/tavolo-crepe.png per provare nuove crepe.
+   Il PNG deve avere legno opaco e aperture realmente trasparenti. */
+.tele-content > .tele-table-overlay {
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background-image:url("images/tavolo-crepe.png");
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:100% 100%;
+}
+/* Nastro principale e testo rimangono sopra alla nuova tavola. */
+.tele-content > .tele-tape { z-index:3; }
+.tele-content > .tele-paper { z-index:6; }

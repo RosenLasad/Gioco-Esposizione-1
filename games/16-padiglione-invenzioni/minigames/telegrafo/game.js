@@ -110,11 +110,13 @@ let pressTimer=0,releaseRequested=false,feedbackTimer=0;
 const name=$('telePlayerName'),intro=$('teleIntroStats'),menu=$('teleMenu'),play=$('telePlay'),results=$('teleResults'),pause=$('telePauseOverlay'),tape=$('teleTape'),track=$('teleTrack'),key=$('teleKey'),info=$('teleLevel'),stats=$('teleLiveStats'),typed=$('teleTranscription'),resultStats=$('teleResultsStats'),resultText=$('teleResultText');
 let phase='closed',difficulty='facile',levelIndex=0,state=null,raf=0,last=0,pressed=false,statsSession={played:0,correct:0,errors:0},result=null,fullscreenPending=false;
 const sampleName='Operatore';
+const decorHost=$('teleContent');
+function setDecorMotion(active){decorHost.classList.toggle('tele-decor-active',active);}
 let lastTranscribedIndex=-1;
 function show(screen){menu.hidden=screen!=='menu';play.hidden=screen!=='play';results.hidden=screen!=='results';root.classList.toggle('tele-is-playing',screen==='play');}
 function stopClock(){if(raf)cancelAnimationFrame(raf);raf=0;last=0;}
 function clearFeedback(){clearTimeout(feedbackTimer);feedbackTimer=0;tape.classList.remove('tele-hit-feedback');contact.classList.remove('tele-hit-flash');instrument.classList.remove('tele-hit-feedback');}
-function reset(){stopAudio();stopClock();state=null;pressed=false;releaseInstrument(true);clearFeedback();pause.hidden=true;lastTranscribedIndex=-1;tape.style.setProperty('--paper-offset','0px');tape.style.setProperty('--paper-offset-fine','0px');}
+function reset(){setDecorMotion(false);stopAudio();stopClock();state=null;pressed=false;releaseInstrument(true);clearFeedback();pause.hidden=true;lastTranscribedIndex=-1;tape.style.setProperty('--paper-offset','0px');tape.style.setProperty('--paper-offset-fine','0px');}
 function close(){reset();root.hidden=true;phase='closed';show('menu');if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{});window.EsposizionePavilions?.dismissGameHistory?.();}
 function introText(){intro.textContent=`Partite: ${statsSession.played} · Simboli colpiti: ${statsSession.correct} · Errori: ${statsSession.errors} (solo questa sessione)`;}
 function starsString(n){return '★'.repeat(n)+'☆'.repeat(3-n);}
@@ -265,7 +267,7 @@ function frame(t){
  if(state.distance>state.totalDistance){finish();return;}
  raf=requestAnimationFrame(frame);
 }
-function begin(){reset();difficulty=$('teleDifficulty').value;levelIndex=Number($('teleMessage').value)||0;show('play');alignInstrument();const p=currentProfile(),message=selectedTelegram();const spacing=22,symbols=makeSymbols(message.text,Math.min(.85,p.rate+levelIndex*.035));const zone=hitZone(),hitY=zone.center,lead=hitY+65;
+function begin(){reset();difficulty=$('teleDifficulty').value;decorHost.dataset.decorDifficulty=difficulty;setDecorMotion(true);levelIndex=Number($('teleMessage').value)||0;show('play');alignInstrument();const p=currentProfile(),message=selectedTelegram();const spacing=22,symbols=makeSymbols(message.text,Math.min(.85,p.rate+levelIndex*.035));const zone=hitZone(),hitY=zone.center,lead=hitY+65;
  state={symbols,spacing,hitY,hitHalf:zone.half,lead,nextSoundIndex:0,distance:0,elapsed:0,speed:p.speed*levelFactor(),targetSpeed:p.speed*levelFactor(),nextChange:2,correct:0,errors:0,totalDistance:(symbols.at(-1)?.unit||0)*spacing+lead+(tape.clientHeight-hitY)+55};
  track.replaceChildren();for(const s of symbols){const el=document.createElement('span');el.className='tele-symbol '+(s.char==='.'?'dot':'dash')+(s.target?' target':'');el.setAttribute('aria-hidden','true');track.appendChild(el);s.el=el;}
  key.disabled=false;pressed=false;$('teleGamePoints').textContent='Punti partita: 0';info.textContent=`Messaggio ${levelIndex+1} · ${p.label}`;typed.textContent='';lastTranscribedIndex=-1;phase='running';pause.hidden=true;prepareAudioOnStart();
@@ -278,7 +280,7 @@ function hit(){if(phase!=='running'||!state)return;const zone=hitZone();state.hi
  render();
 }
 function finish(){
- stopAudio();stopClock();phase='results';key.disabled=true;
+ setDecorMotion(false);stopAudio();stopClock();phase='results';key.disabled=true;
  const targets=state.symbols.filter(s=>s.target).length;
  const correct=state.correct,errors=state.errors;
  const evaluation=scoring(targets,correct,errors);
@@ -307,8 +309,8 @@ function finish(){
  }
  resultText.textContent=message.text;show('results');introText();
 }
-function pauseGame(){if(phase!=='running')return;phase='paused';stopClock();pauseAudio();pause.hidden=false;}
-function resumeGame(){if(phase!=='paused')return;pause.hidden=true;phase='running';resumeAudio();last=0;raf=requestAnimationFrame(frame);}
+function pauseGame(){if(phase!=='running')return;phase='paused';setDecorMotion(false);stopClock();pauseAudio();pause.hidden=false;}
+function resumeGame(){if(phase!=='paused')return;pause.hidden=true;phase='running';setDecorMotion(true);resumeAudio();last=0;raf=requestAnimationFrame(frame);}
 function backMenu(){reset();phase='menu';show('menu');renderLevelMenu();$('teleResume').disabled=true;if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{});}
 $('teleAudioMusic').addEventListener('change',e=>{audioSettings.music=e.target.checked;if(!audioSettings.music)stopMusic();});
 $('teleAudioEffects').addEventListener('change',e=>{audioSettings.effects=e.target.checked;if(!audioSettings.effects)stopEffectSources();});

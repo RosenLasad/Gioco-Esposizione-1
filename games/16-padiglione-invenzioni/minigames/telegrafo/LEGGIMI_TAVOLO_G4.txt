@@ -1,0 +1,23 @@
+FASE G4 - PREDISPOSIZIONE TAVOLO CON CREPE
+
+Percorso immagine opzionale:
+games/16-padiglione-invenzioni/minigames/telegrafo/images/tavolo-crepe.png
+
+L'immagine NON e' ancora inclusa. Finche' manca, l'aspetto resta quello
+della G3. Quando la aggiungerai, verra' caricata automaticamente.
+
+Il PNG dovra' contenere legno opaco (alpha=255) e crepe/aperture
+trasparenti (alpha=0). Attraverso le aperture si vedranno i nastri
+animati sottostanti. Non basta colorare le crepe di nero.
+
+Il PNG si adatta all'intera zona di gioco SOTTO alla barra superiore
+(tele-content), comprese le aree normalmente coperte dal pannello dei
+telegrammi e dallo strumento. Il nastro principale e il pannello
+del testo rimangono sopra. Il file e' unico per tutte le difficolta'.
+
+Dimensione consigliata per le prime prove: 1000x2400 pixel, PNG RGBA;
+meglio disegnare tenendo conto che la zona si adatta al rapporto
+d'aspetto del dispositivo. Non includere HUD o nastro giocabile nel PNG.
+
+Per provare varianti, sostituire tavolo-crepe.png con un altro PNG
+dallo stesso nome. Dopo il deploy, aggiornare la cache del browser.
