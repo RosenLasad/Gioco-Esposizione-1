@@ -285,7 +285,7 @@
     if(active && window.history.state?.esposizioneGameLayer)window.history.back();
   }
   function backInMinigame(){
-    for(const id of ['battleship','telegrafo','bussolotti']){
+    for(const id of ['bombarda','battleship','telegrafo','bussolotti']){
       const game=minigames.get(id);
       if(game?.isOpen()){
         if(game.back)game.back();else game.close();
