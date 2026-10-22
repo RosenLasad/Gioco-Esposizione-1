@@ -234,9 +234,8 @@ function render(){
    completed.textContent=written.slice(0,-1);
    const current=document.createElement('span');current.className='tele-current-letter';
    current.textContent=written.slice(-1);
-   const unread=document.createElement('span');unread.className='tele-unread';
-   unread.textContent=message.slice(idx);
-   typed.append(completed,current,unread);
+   // Mostra solo i caratteri realmente ricevuti: il resto del messaggio rimane nascosto.
+   typed.append(completed,current);
    $('teleTextCounter').textContent=`${idx} / ${message.length} caratteri ricevuti`;
    // La finestra si adatta al testo, senza muovere il nastro.
    const paperBody=$('telePaperContent');paperBody.scrollTop=paperBody.scrollHeight;

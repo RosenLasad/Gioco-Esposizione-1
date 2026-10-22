@@ -551,3 +551,8 @@
 /* Nastro principale e testo rimangono sopra alla nuova tavola. */
 .tele-content > .tele-tape { z-index:3; }
 .tele-content > .tele-paper { z-index:6; }
+
+/* V4.3 - Vibrazione sicura: si muovono gli sprite, non il contenitore.
+   Il contenitore mantiene il suo stacking context e lo strumento resta visibile. */
+.tele-instrument.tele-hit-feedback{animation:none!important}
+.tele-instrument.tele-hit-feedback .tele-instrument-sprite{animation:teleLeverPunch .18s ease-out}
