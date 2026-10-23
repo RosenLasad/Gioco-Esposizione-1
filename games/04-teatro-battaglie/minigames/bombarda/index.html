@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bombarda! – Test autonomo</title>
+<base href="../../../../">
+<link rel="stylesheet" href="games/04-teatro-battaglie/minigames/bombarda/native.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;}#bombardaNative{display:grid;}</style>
+</head><body>
+<div id="bombardaNative" class="bombarda-native" aria-label="Bombarda!" role="dialog" aria-modal="true"><div id="app">
+  <section id="menuScreen" class="screen active">
+    <button id="menuFullscreenBtn" class="fullscreen-btn menu-fullscreen" type="button" aria-label="Attiva schermo intero" title="Full screen">
+      <span class="fullscreen-icon" aria-hidden="true">⛶</span><span class="fullscreen-label">Full screen</span>
+    </button>
+    <div class="menu-decor menu-rope rope-left" aria-hidden="true"></div>
+    <div class="menu-decor menu-rope rope-right" aria-hidden="true"></div>
+    <div class="menu-card">
+      <div class="menu-crest" aria-hidden="true"><span class="crest-cross"></span></div>
+      <div class="eyebrow">REPUBBLICA DI GENOVA · DIFESA COSTIERA</div>
+      <h1>Bombarda!</h1>
+      <div class="title-ornament" aria-hidden="true"><span></span><b>⚓</b><span></span></div>
+      <p class="subtitle">Difendi la postazione genovese dalle flotte nemiche.</p>
+
+      <div class="level-picker-wrap">
+        <label for="levelSelect">Livello pilota</label>
+        <select id="levelSelect" class="level-select"></select>
+        <div id="levelMeta" class="level-meta"></div>
+      </div>
+
+      <div class="menu-actions">
+        <button id="returnToPavilion" class="btn" type="button">Torna al Teatro delle Battaglie</button>
+        <button id="newGameBtn" class="btn primary">Avvia livello</button>
+        <button id="continueBtn" class="btn" disabled>Continua partita</button>
+        <button id="settingsBtn" class="btn">Impostazioni</button>
+      </div>
+
+      <div class="stats-box">
+        <div><span>Partite</span><strong id="statGames">0</strong></div>
+        <div><span>Vittorie</span><strong id="statWins">0</strong></div>
+        <div><span>Miglior punteggio</span><strong id="statBest">0</strong></div>
+      </div>
+
+      <div class="howto">
+        <div class="howto-title">Ordini alla batteria</div>
+        <b>PC:</b> muovi il mouse o usa A/D / ← → per ruotare il cannone, clic sinistro o Spazio per sparare.<br>
+        <b>Smartphone:</b> joystick per ruotare, pulsante <b>E</b> per sparare.
+      </div>
+      <div class="menu-footer-mark" aria-hidden="true"><span class="wave"></span><span class="wave"></span><span class="wave"></span></div>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen">
+    <div id="gameShell">
+      <canvas id="gameCanvas" width="720" height="1280" aria-label="Campo di gioco Bombarda!"></canvas>
+
+      <div id="hud">
+        <div class="hud-cluster">
+          <button id="pauseBtn" class="icon-btn" aria-label="Pausa">Ⅱ</button>
+          <div class="hud-pill">L<span id="levelText">1</span></div>
+          <div class="hud-pill">⏱ <span id="timeText">0.0</span></div>
+        </div>
+        <div class="hud-cluster right">
+          <div id="hpPill" class="hud-pill hp-pill" aria-label="Resistenza postazione">
+            <span class="hp-icon">❤</span>
+            <div class="hp-meter"><div id="hpFill"></div></div>
+            <span id="hpText">100</span>
+          </div>
+          <div class="hud-pill">★ <span id="scoreText">0</span></div>
+          <button id="gameFullscreenBtn" class="fullscreen-btn game-fullscreen" type="button" aria-label="Attiva schermo intero" title="Full screen">
+            <span class="fullscreen-icon" aria-hidden="true">⛶</span><span class="fullscreen-label">Full screen</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="levelBanner" class="level-banner hidden">
+        <strong id="levelBannerTitle"></strong>
+        <span id="levelBannerSubtitle"></span>
+      </div>
+
+      <div id="reloadWrap" class="ready">
+        <div class="reload-label">CARICO</div>
+        <div class="reload-track"><div id="reloadFill"></div></div>
+      </div>
+
+      <div id="mobileControls">
+        <button id="fireBtn" class="fire-btn" aria-label="Spara">E</button>
+        <div id="joystick" class="joystick" aria-label="Joystick mira">
+          <div class="joy-ring"></div>
+          <div id="joyKnob" class="joy-knob"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="settingsOverlay" class="overlay hidden">
+    <div class="dialog">
+      <h2>Impostazioni</h2>
+      <label class="setting-row"><span><b>Linea di mira</b><small>Linea tratteggiata animata davanti al cannone.</small></span><input id="aimLineToggle" type="checkbox" checked></label>
+      <label class="setting-row"><span><b>Vibrazione</b><small>Feedback tattile leggero sui dispositivi compatibili.</small></span><input id="vibrationToggle" type="checkbox" checked></label>
+      <label class="setting-row"><span><b>Musica</b><small>Musica del menu e dei livelli.</small></span><input id="musicToggle" type="checkbox" checked></label>
+      <label class="setting-row"><span><b>SFX</b><small>Colpi di cannone, impatti, esplosioni e suoni dell'interfaccia.</small></span><input id="sfxToggle" type="checkbox" checked></label>
+      <div class="setting-row sensitivity-row">
+        <span><b>Sensibilità cannone</b><small>1 = più frenata · 5 = più veloce.</small></span>
+        <div class="sensitivity-control">
+          <input id="cannonSensitivity" type="range" min="1" max="5" step="1" value="3" aria-label="Sensibilità cannone">
+          <div class="sensitivity-scale" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+          <strong id="cannonSensitivityValue">3</strong>
+        </div>
+      </div>
+      <div class="dialog-actions"><button id="closeSettingsBtn" class="btn primary">Chiudi</button></div>
+    </div>
+  </div>
+
+  <div id="pauseOverlay" class="overlay hidden">
+    <div class="dialog compact">
+      <h2>Pausa</h2>
+      <label class="setting-row"><span><b>Musica</b><small>Attiva o disattiva la musica.</small></span><input id="pauseMusicToggle" type="checkbox" checked></label>
+      <label class="setting-row"><span><b>SFX</b><small>Attiva o disattiva gli effetti sonori.</small></span><input id="pauseSfxToggle" type="checkbox" checked></label>
+      <div class="dialog-actions vertical">
+        <button id="resumeBtn" class="btn primary">Riprendi</button>
+        <button id="restartBtn" class="btn">Ricomincia</button>
+        <button id="quitBtn" class="btn danger">Salva e torna al menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="endOverlay" class="overlay hidden">
+    <div class="dialog compact">
+      <div id="endKicker" class="eyebrow">FINE PARTITA</div>
+      <h2 id="endTitle">Vittoria!</h2>
+      <p id="endMessage"></p>
+      <div class="result-grid">
+        <div><span>Punteggio</span><strong id="endScore">0</strong></div>
+        <div><span>Navi distrutte</span><strong id="endKills">0</strong></div>
+        <div><span>Tempo</span><strong id="endTime">0.0 s</strong></div>
+      </div>
+      <div class="dialog-actions vertical">
+        <button id="nextLevelBtn" class="btn primary hidden">Livello n° 2</button>
+        <button id="playAgainBtn" class="btn">Rigioca livello</button>
+        <button id="endMenuBtn" class="btn">Menu</button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<script src="games/04-teatro-battaglie/minigames/bombarda/js/data/levels.js"></script>
+<script src="games/04-teatro-battaglie/minigames/bombarda/js/assets.js"></script>
+<script src="games/04-teatro-battaglie/minigames/bombarda/js/audio.js"></script>
+<script src="games/04-teatro-battaglie/minigames/bombarda/js/battlefields.js"></script>
+<script src="games/04-teatro-battaglie/minigames/bombarda/js/game.js"></script>
+<script src="games/04-teatro-battaglie/minigames/bombarda/standalone.js"></script>
+</body></html>

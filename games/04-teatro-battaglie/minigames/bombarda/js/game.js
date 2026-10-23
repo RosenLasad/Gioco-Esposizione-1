@@ -213,15 +213,112 @@
     if(audio){audio.setPaused(false);if(settings.music)audio.playMenuMusic();}
   }
 
+  function pilotSea(){
+    const bf=window.BombardaBattlefields;
+    return state && state.levelId===1 && bf && bf.enabled(1) ? bf.level(1).navigation : null;
+  }
+  function pilotStart(zone){
+    const x0=zone.xMin*W,x1=zone.xMax*W;
+    return rand(x0,x1);
+  }
+  function shipScale(s){
+    const nav=pilotSea();
+    if(nav && s.pilotApproach){
+      if(s.routeId!=null){
+        const route=window.BombardaBattlefields.level(1).routes.find(r=>r.id===s.routeId&&r.type===s.type);
+        if(route){
+          let done=0,total=0;
+          for(let i=1;i<route.points.length;i++){
+            const a=route.points[i-1],b=route.points[i],len=Math.hypot(b[0]-a[0],b[1]-a[1]);
+            total+=len;
+            if(i<s.routeIndex)done+=len;
+            else if(i===s.routeIndex)done+=Math.min(len,Math.hypot(s.x-a[0],s.y-a[1]));
+          }
+          const t=clamp(done/Math.max(1,total),0,1),e=t*t*(3-2*t);
+          const cfg=nav[s.type];return lerp(cfg.startScale,cfg.endScale,e);
+        }
+      }
+      const endY=s.type==='small'?nav.small.endY:nav.large.endY;
+      const t=clamp((s.y-s.startY)/Math.max(1,endY-s.startY),0,1);
+      const eased=t*t*(3-2*t);
+      const cfg=s.type==='small'?nav.small:nav.large;
+      return lerp(cfg.startScale,cfg.endScale,eased);
+    }
+    return s.type==='small'?smallScale(s.y):1;
+  }
+  function pilotRoute(type,ordinal){
+    const bf=window.BombardaBattlefields;
+    const all=bf && bf.enabled(1) ? (bf.level(1).routes||[]).filter(r=>r.type===type&&r.points.length>1) : [];
+    return all.length ? all[ordinal%all.length] : null;
+  }
+  function advancePilotRoute(s,dt){
+    const bf=window.BombardaBattlefields;
+    const route=bf && bf.level(1).routes.find(r=>r.id===s.routeId&&r.type===s.type);
+    if(!route)return false;
+    let remaining=dt,iterations=0;
+    while(remaining>0 && iterations++<20){
+      const next=route.points[s.routeIndex||1];
+      if(!next){
+        s.routeFinished=true;
+        if(s.type==='small')return 'arrived';
+        return true; // Le navi grandi restano in posizione e continuano a sparare.
+      }
+      const dx=next[0]-s.x,dy=next[1]-s.y,dist=Math.hypot(dx,dy);
+      if(dist<.01){s.routeIndex++;continue;}
+      const cfg=pilotSea()[s.type];
+      const speed=Math.abs(dx)>Math.abs(dy) ? (s.type==='large'?38:48) : cfg.speed;
+      const step=speed*remaining;
+      if(step>=dist){s.x=next[0];s.y=next[1];s.routeIndex++;remaining-=dist/speed;}
+      else{s.x+=dx/dist*step;s.y+=dy/dist*step;remaining=0;}
+    }
+    return true;
+  }
   function spawnSmall(){
-    const lane=Math.floor(rand(0,8)), x=125+lane*67+rand(-11,11);
-    state.ships.push({id:state.nextShipId++,type:'small',x,y:CFG.smallStartY+rand(-20,20),hp:1,phase:rand(0,Math.PI*2)});
+    const nav=pilotSea();
+    const lane=Math.floor(rand(0,8));
+    const zone=nav && nav.small.zones[Math.floor(Math.random()*nav.small.zones.length)];
+    const x=zone?pilotStart(zone):125+lane*67+rand(-11,11);
+    const y=nav?nav.horizonY+rand(12,32):CFG.smallStartY+rand(-20,20);
+    const route=nav?pilotRoute('small',state.spawnedSmall):null;
+    const p=route?route.points[0]:[x,y];
+    state.ships.push({id:state.nextShipId++,type:'small',x:p[0],y:p[1],startY:p[1],
+      routeId:route?route.id:null,routeIndex:route?1:null,
+      pilotApproach:!!nav,pilotSide:nav?(p[0]<W/2?'sinistro':'destro'):null,
+      drift:rand(-7,7),hp:1,phase:rand(0,Math.PI*2)});
     state.spawnedSmall++;
   }
   function spawnLarge(){
-    const l=getLevel(state.levelId),x=rand(205,515),y=rand(195,390);
+    const l=getLevel(state.levelId),nav=pilotSea();
     const maxHp=l.largeHP||4;
-    state.ships.push({id:state.nextShipId++,type:'large',x,y,hp:maxHp,maxHp,warn:0,fireIn:rand(l.largeFireMin,l.largeFireMax),phase:rand(0,Math.PI*2),hitTimer:0,flashTimer:0});
+    const route=nav?pilotRoute('large',state.spawnedLarge):null;
+    if(route){
+      const [x,y]=route.points[0];
+      state.ships.push({id:state.nextShipId++,type:'large',x,y,startY:y,
+        routeId:route.id,routeIndex:1,pilotApproach:true,
+        hp:maxHp,maxHp,warn:0,fireIn:rand(l.largeFireMin,l.largeFireMax),
+        phase:rand(0,Math.PI*2),hitTimer:0,flashTimer:0});
+    }else if(nav && nav.large && nav.large.sideStartX){
+      const side=Math.random()<0.5?'left':'right';
+      const sx=nav.large.sideStartX[side]||[205,515];
+      const cx=nav.large.centerTurnBands[side]||[.4,.6];
+      const x=rand(sx[0],sx[1]);
+      const y=rand(...(nav.large.sideSpawnY||[nav.horizonY+12,nav.horizonY+27]));
+      const targetX=rand(cx[0]*W,cx[1]*W);
+      const lateralSpeed=rand(...(nav.large.lateralSpeed||[30,42]));
+      const lateralDropSpeed=rand(...(nav.large.lateralDropSpeed||[3,6]));
+      const drift=rand(...(nav.large.drift||[-3,3]));
+      state.ships.push({id:state.nextShipId++,type:'large',x,y,startY:y,
+        pilotApproach:true,pilotEntry:'side',pilotSide:side,pilotTurnX:targetX,
+        lateralSpeed,lateralDropSpeed,drift,hp:maxHp,maxHp,warn:0,
+        fireIn:rand(l.largeFireMin,l.largeFireMax),phase:rand(0,Math.PI*2),hitTimer:0,flashTimer:0});
+    }else{
+      const zone=nav && nav.large.zones[Math.floor(Math.random()*nav.large.zones.length)];
+      const x=zone?pilotStart(zone):rand(205,515);
+      const y=nav?nav.horizonY+rand(12,27):rand(195,390);
+      state.ships.push({id:state.nextShipId++,type:'large',x,y,startY:y,
+        pilotApproach:!!nav,drift:rand(-4,4),hp:maxHp,maxHp,warn:0,
+        fireIn:rand(l.largeFireMin,l.largeFireMax),phase:rand(0,Math.PI*2),hitTimer:0,flashTimer:0});
+    }
     state.spawnedLarge++;
   }
   function spawnFlagship(){
@@ -263,9 +360,54 @@
       if(s.hitTimer>0)s.hitTimer=Math.max(0,s.hitTimer-dt);
       if(s.flashTimer>0)s.flashTimer=Math.max(0,s.flashTimer-dt);
       if(s.type==='small'){
-        s.y+=l.smallSpeed*dt; s.x+=Math.sin(s.phase)*4*dt;
+        if(s.routeId!=null){
+          if(advancePilotRoute(s,dt)==='arrived'){
+            endGame(false,'Una nave nemica ha raggiunto la batteria.');return;
+          }
+          continue;
+        }
+        const nav=pilotSea();
+        const speed=nav && s.pilotApproach?nav.small.speed:l.smallSpeed;
+        s.y+=speed*dt;
+        const naturalX=clamp(s.x+(Math.sin(s.phase)*4+(s.drift||0))*dt,35,W-35);
+        s.x=naturalX;
+        // Solo nella missione pilota: le navi piccole lasciano la prima parte
+        // del promontorio alle spalle, poi seguono gradualmente il suo bordo interno.
+        // Nessuna modifica alle sagome degli ostacoli o alle collisioni delle cannonate.
+        if(nav && s.pilotApproach && nav.small.avoidance){
+          const a=nav.small.avoidance;
+          if(s.y>=a.startY && s.y<=a.endY){
+            const bf=window.BombardaBattlefields;
+            const side=s.pilotSide || (s.x<W/2?'sinistro':'destro');
+            s.pilotSide=side;
+            const edge=bf&&bf.innerCoverEdgeAt ? bf.innerCoverEdgeAt(1,side,s.y+a.lookAhead) : null;
+            if(edge!==null){
+              const safeX=side==='sinistro'?edge+a.margin:edge-a.margin;
+              const delta=side==='sinistro'?Math.max(0,safeX-s.x):Math.min(0,safeX-s.x);
+              const move=clamp(delta,-a.turnSpeed*dt,a.turnSpeed*dt);
+              s.x=clamp(s.x+move,35,W-35);
+            }
+          }
+        }
         if(s.y>=CFG.smallLoseY){endGame(false,'Una nave nemica ha raggiunto la batteria.');return;}
       }else{
+        const nav=pilotSea();
+        if(s.routeId!=null){
+          advancePilotRoute(s,dt);
+        }else if(nav && s.type==='large' && s.pilotApproach){
+          if(s.pilotEntry==='side'){
+            const dir=s.pilotSide==='left'?1:-1;
+            const nextX=s.x+dir*(s.lateralSpeed||38)*dt;
+            const reachedTurn=dir>0 ? nextX>=s.pilotTurnX : nextX<=s.pilotTurnX;
+            s.x=reachedTurn ? s.pilotTurnX : nextX;
+            s.y=Math.min(nav.large.endY,s.y+(s.lateralDropSpeed||4.5)*dt);
+            if(reachedTurn) s.pilotEntry='descent';
+          }
+          if(s.pilotEntry!=='side'){
+            s.y=Math.min(nav.large.endY,s.y+nav.large.speed*dt);
+            s.x=clamp(s.x+(s.drift||0)*dt,90,W-90);
+          }
+        }
         const warning=s.type==='flagship'?(l.flagship.warning||1.25):CFG.largeWarning;
         const fireMin=s.type==='flagship'?l.flagship.fireMin:l.largeFireMin;
         const fireMax=s.type==='flagship'?l.flagship.fireMax:l.largeFireMax;
@@ -275,15 +417,36 @@
       }
     }
 
-    for(const b of state.bullets){b.x+=b.vx*dt;b.y+=b.vy*dt;}
+    for(const b of state.bullets){b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;}
     for(let i=state.bullets.length-1;i>=0;i--){
       const b=state.bullets[i];let hit=false;
+      const bf=window.BombardaBattlefields;
+      const cover=bf&&bf.firstCoverOnSegment?bf.firstCoverOnSegment(state.levelId,b.prevX,b.prevY,b.x,b.y):null;
+      // L'ostacolo fisico blocca il proiettile prima della nave sottostante.
+      // Testiamo la posizione lungo il tratto del frame, non soltanto l'estremita'.
+      let coveredBeforeShip=false;
+      if(cover){
+        const samples=Math.max(1,Math.ceil(Math.hypot(b.x-b.prevX,b.y-b.prevY)/4));
+        for(let k=0;k<=samples;k++){
+          const t=k/samples;
+          if(t>=cover.t)break;
+          const test={x:b.prevX+(b.x-b.prevX)*t,y:b.prevY+(b.y-b.prevY)*t};
+          if(state.ships.some(ship=>projectileHitsShip(test,ship))){coveredBeforeShip=true;break;}
+        }
+        // Se non si e' incontrata una nave prima della copertura, la cannonata si ferma.
+        if(!coveredBeforeShip){
+          createImpactBurst(cover.x,cover.y,false);
+          if(audio)audio.playSfx('impactSmall',.45);
+          state.bullets.splice(i,1);continue;
+        }
+      }
       for(let j=state.ships.length-1;j>=0;j--){
         const s=state.ships[j];
-        if(projectileHitsShip(b,s)){
+        if(projectileHitsShip(b,s) && !(cover&&!coveredBeforeShip)){
           hit=true;
           s.hp--;
-          createExplosion(b.x,b.y,false);
+          // Effetto preliminare (flash + tre puff), indipendente dall'esplosione letale.
+          createSpriteImpact(b.x,b.y,s.type==='small'?'small':'large');
           if(s.type==='large'){applyLargeHitEffects(s,b.x,b.y);if(audio)audio.playSfx('impactLarge',.9);}
           else if(s.type==='small'){addScreenShake(4.4,.10);if(audio)audio.playSfx('impactSmall',.8);}
           vibrate(12);
@@ -291,7 +454,7 @@
           if(s.hp<=0){
             const score=s.type==='small'?CFG.scoreSmall:s.type==='large'?CFG.scoreLarge:(l.flagship.score||900);
             state.score+=score;state.kills++;
-            if(s.type==='small'){createSmallShipExplosion(s.x,s.y,smallScale(s.y));if(audio)audio.playSfx('smallExplosion',.9);}
+            if(s.type==='small'){createSmallShipExplosion(s.x,s.y,shipScale(s));if(audio)audio.playSfx('smallExplosion',.9);}
             else if(s.type==='large'){createLargeShipExplosion(s.x,s.y);if(audio)audio.playSfx('largeExplosion',1);}
             else createExplosion(s.x,s.y,true);
             state.ships.splice(j,1);
@@ -328,9 +491,9 @@
   }
 
   function projectileHitsShip(b,s){
-    if(s.type==='small'){const sc=smallScale(s.y),r=26*sc;return (b.x-s.x)**2+(b.y-s.y)**2<=(r+7)**2;}
+    if(s.type==='small'){const sc=shipScale(s),r=26*sc;return (b.x-s.x)**2+(b.y-s.y)**2<=(r+7)**2;}
     if(s.type==='flagship')return Math.abs(b.x-s.x)<86&&Math.abs(b.y-s.y)<68;
-    return Math.abs(b.x-s.x)<58&&Math.abs(b.y-s.y)<44;
+    const sc=shipScale(s);return Math.abs(b.x-s.x)<58*sc&&Math.abs(b.y-s.y)<44*sc;
   }
   function smallScale(y){const p=clamp((y-CFG.smallStartY)/(CFG.smallLoseY-CFG.smallStartY),0,1),e=p*p*(3-2*p);return lerp(CFG.smallScaleStart,CFG.smallScaleEnd,e);}
   function largeDamageStage(s){const maxHp=Math.max(1,Number(s.maxHp)||4);const hits=Math.max(0,maxHp-Math.max(0,Number(s.hp)||0));return Math.min(3,hits);}
@@ -361,6 +524,11 @@
     state.canFire=false;state.reloadUntil=performance.now()+CFG.reloadMs;vibrate(16);createMuzzle(origin.x,origin.y);if(audio)audio.playSfx('cannonFire',.9);
   }
   function enemyBomb(ship){state.enemyShots.push({sx:ship.x,sy:ship.y,ex:W/2+rand(-90,90),ey:1050,t:0,duration:rand(.7,1.0),big:ship.type==='flagship'});}
+  function createSpriteImpact(x,y,shipSize){
+    // La posizione resta fissa per ogni fotogramma; il tempo si basa sul loop esistente.
+    const total=shipSize==='large'?.48:.37;
+    state.fx.push({type:'spriteImpact',x,y,shipSize,life:total,max:total});
+  }
   function createExplosion(x,y,big){state.fx.push({type:'boom',x,y,life:big?.6:.35,max:big?.6:.35,big:!!big});}
   function createSmallShipExplosion(x,y,scale=1){
     state.fx.push({type:'smallShipExplosion',x,y,life:.46,max:.46,scale});
@@ -404,9 +572,35 @@
     }
     ctx.save();
     if(hasShake)ctx.translate(sx,sy);
-    drawBackground();
-    if(!state){drawCannon(0);drawFrame();ctx.restore();return;}
-    drawAimLine();drawShips();drawEnemyShots();drawBullets();drawFX();drawCannon(state.cannonDeg);drawFrame();
+    const battlefield = window.BombardaBattlefields || null;
+    const levelId = state ? state.levelId : Number(levelSelect.value || 1);
+    // Il livello 1 usa il nuovo panorama pilota; gli altri conservano il renderer legacy.
+    if(battlefield && battlefield.enabled(levelId)) battlefield.drawBase(ctx,levelId,W,H);
+    else drawBackground();
+    if(battlefield) battlefield.drawLayer(ctx,levelId,'background',W,H);
+    if(battlefield) battlefield.drawLayer(ctx,levelId,'fogBehind',W,H);
+    if(battlefield && battlefield.drawFog) battlefield.drawFog(ctx,levelId,false);
+    if(!state){
+      if(battlefield && battlefield.hasImage(levelId,'coverRight')) battlefield.drawLayer(ctx,levelId,'coverRight',W,H);
+    else if(battlefield && battlefield.drawObstacles) battlefield.drawObstacles(ctx,levelId);
+      if(battlefield) battlefield.drawLayer(ctx,levelId,'foreground',W,H);
+      drawCannon(0);
+      if(battlefield && battlefield.hasImage(levelId,'frame')) battlefield.drawLayer(ctx,levelId,'frame',W,H);
+      else drawFrame();
+      ctx.restore();return;
+    }
+    drawAimLine();drawShips();
+    if(battlefield && battlefield.drawFog) battlefield.drawFog(ctx,levelId,true);
+    if(battlefield && battlefield.hasImage(levelId,'coverRight')) battlefield.drawLayer(ctx,levelId,'coverRight',W,H);
+    else if(battlefield && battlefield.drawObstacles) battlefield.drawObstacles(ctx,levelId);
+    if(battlefield && battlefield.hasImage(levelId,'coverRight') && battlefield.drawObstacles) battlefield.drawObstacles(ctx,levelId,'promontorio-sinistro');
+    if(battlefield)battlefield.drawLayer(ctx,levelId,'coverLeft',W,H);
+    drawEnemyShots();drawBullets();drawFX();
+    // Il primo piano viene disegnato davanti alle navi; le collisioni saranno nella D0.4.
+    if(battlefield) battlefield.drawLayer(ctx,levelId,'foreground',W,H);
+    drawCannon(state.cannonDeg);
+    if(battlefield && battlefield.hasImage(levelId,'frame')) battlefield.drawLayer(ctx,levelId,'frame',W,H);
+    else drawFrame();
     ctx.restore();
   }
   function drawBackground(){
@@ -417,7 +611,7 @@
   function drawAimLine(){if(!settings.aimLine||!state)return;const rad=(state.cannonDeg-90)*Math.PI/180,x=W/2,y=1084;ctx.save();ctx.setLineDash([12,12]);ctx.lineDashOffset=-(performance.now()*.03)%24;ctx.strokeStyle='rgba(255,233,165,.62)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x+Math.cos(rad)*70,y+Math.sin(rad)*70);ctx.lineTo(x+Math.cos(rad)*980,y+Math.sin(rad)*980);ctx.stroke();ctx.restore();}
   function drawShips(){for(const s of [...state.ships].sort((a,b)=>a.y-b.y)){if(s.type==='small')drawSmallShip(s);else if(s.type==='flagship')drawFlagship(s);else drawLargeShip(s);}}
   function drawSmallShip(s){
-    const sc=smallScale(s.y);
+    const sc=shipScale(s);
     const roll=Math.sin(s.phase*1.05)*0.035;
     const bob=Math.sin(s.phase*1.65)*3;
     ctx.save();
@@ -430,6 +624,12 @@
       // I PNG sono asset indipendenti: non hanno lo stesso ingombro interno
       // nel canvas sorgente. Li componiamo quindi con rettangoli dedicati,
       // invece di sovrapporli tutti nello stesso 220x220.
+      // Ombreggiatura dietro ogni componente: non copre scafo, vele o bandiere.
+      const shade=assets.base('shade');
+      // Overlay ricondotta all'ingombro reale dello scafo piccolo,
+      // con un margine minimo per non debordare rispetto alla nave.
+      if(shade)ctx.drawImage(shade,-80,-28,160,116);
+
       const mast=assets.base('mast');
       if(mast)ctx.drawImage(mast,-85,-164,170,170);
 
@@ -447,8 +647,6 @@
       const hull=assets.base('hull');
       if(hull)ctx.drawImage(hull,-76,-18,152,106);
 
-      const shade=assets.base('shade');
-      if(shade)ctx.drawImage(shade,-110,-150,220,220);
     }else{
       ctx.scale(sc,sc);
       ctx.fillStyle='#e2ad53';ctx.strokeStyle='#20150b';ctx.lineWidth=4;
@@ -469,7 +667,7 @@
     if(hitKick>0)ctx.translate(Math.sin(performance.now()*.09+s.id)*7*hitKick,Math.cos(performance.now()*.11+s.id)*4*hitKick);
     ctx.translate(0,bob);
     ctx.rotate(roll);
-    ctx.scale(pulse,pulse);
+    ctx.scale(pulse*shipScale(s),pulse*shipScale(s));
 
     if(s.warn>0){
       ctx.beginPath();
@@ -483,6 +681,12 @@
       const artScale=.52;
       const stage=largeDamageStage(s);
       ctx.scale(artScale,artScale);
+
+      // Ombreggiatura dietro ogni componente, anche quando lo scafo e' danneggiato.
+      const shade=assets.largeBase('shade');
+      // Overlay ricondotta all'ingombro reale dello scafo grande,
+      // evitando che l'ombra superi visivamente la nave.
+      if(shade)ctx.drawImage(shade,-132,-30,264,188);
 
       const mast=assets.largeBase('mast');
       if(mast)ctx.drawImage(mast,-110,-214,220,220);
@@ -500,8 +704,6 @@
       const hull=(stage>=2&&assets.largeBase('hullHit'))||assets.largeBase('hull');
       if(hull)ctx.drawImage(hull,-126,-22,252,176);
 
-      const shade=assets.largeBase('shade');
-      if(shade)ctx.drawImage(shade,-160,-160,320,320);
 
       if((s.flashTimer||0)>0){
         const a=clamp((s.flashTimer||0)/.14,0,1)*.62;
@@ -535,7 +737,30 @@
       const p=1-f.life/f.max;
       ctx.save();
       ctx.translate(f.x,f.y);
-      if(f.type==='smallShipExplosion'){
+      if(f.type==='spriteImpact'){
+        const big=f.shipSize==='large';
+        const flashDuration=big?.105:.075;
+        const elapsed=f.max-f.life;
+        const flash=elapsed<flashDuration;
+        const frames=flash
+          ? (assets&&assets.hitFlashFor?[assets.hitFlashFor(f.shipSize)]:[])
+          : (assets&&assets.impactFramesFor?assets.impactFramesFor(f.shipSize):[]);
+        const frameIndex=flash?0:Math.min(2,Math.floor((elapsed-flashDuration)/(f.max-flashDuration)*3));
+        const sprite=frames[frameIndex];
+        if(sprite){
+          // Le due taglie condividono un canvas quadrato, ma hanno scale differenti.
+          const size=big?142:76;
+          ctx.globalAlpha=flash?1:Math.min(1,Math.max(0,f.life/(f.max-flashDuration)));
+          ctx.drawImage(sprite,-size/2,-size/2,size,size);
+        }else{
+          // Fallback provvisorio per caricamenti mancanti o lenti.
+          const t=flash?0:Math.max(0,(elapsed-flashDuration)/(f.max-flashDuration));
+          const radius=(big?23:13)*(flash?1:1+t);
+          ctx.globalAlpha=flash?.9:(1-t)*.6;
+          ctx.fillStyle=flash?'#ffe2a4':'#5a5651';
+          ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.fill();
+        }
+      }else if(f.type==='smallShipExplosion'){
         const frames=assets&&assets.explosionFrames?assets.explosionFrames():[];
         if(frames.length===8){
           const idx=Math.min(7,Math.floor(p*8));
