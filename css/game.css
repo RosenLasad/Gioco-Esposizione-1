@@ -701,7 +701,7 @@ html,body,#app,.screen{height:var(--app-height,100dvh);max-height:var(--app-heig
 .inventory-inspect-layer{
   position:absolute;
   inset:0;
-  z-index:6;
+  z-index:3;
   background:rgba(23,13,6,.82);
   display:flex;
   align-items:center;
@@ -1013,3 +1013,11 @@ button.battle-cell:disabled{cursor:default}
 .shop-wallet{text-align:center;font-weight:bold}.shop-buy{display:block;width:100%;cursor:pointer}.shop-buy:disabled{opacity:.55;cursor:not-allowed}
 .shop-result{min-height:1.5em;text-align:center;color:#576b34;font-weight:bold;font-size:14px!important}
 @media(max-width:520px){.pavilion-activity.shop-mode .pavilion-activity-card{padding:25px 15px}.shop-product{gap:10px}.shop-product img{width:85px;height:85px}.shop-product h3{font-size:16px}.shop-product p{font-size:12px!important}}
+
+/* Inventario: separazione intestazione/categorie su smartphone verticale.
+   Regole finali per prevalere sulle precedenti media query (max-height). */
+@media (orientation: portrait) {
+  .inventory-header { top: 8.2%; }
+  .inventory-categories { top: 26.5%; }
+  .inventory-grid { top: 39%; }
+}
