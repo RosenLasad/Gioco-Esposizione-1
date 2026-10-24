@@ -15,6 +15,8 @@
   const activityDescription = document.getElementById('pavilionActivityDescription');
   const activityMessage = document.getElementById('pavilionActivityMessage');
   const activityStart = document.getElementById('pavilionActivityStart');
+  const guidePanel = document.getElementById('pavilionGuide');
+  const shopPanel = document.getElementById('pavilionShop');
 
 
   let active = null;
@@ -66,19 +68,94 @@
     hotspotLayer.style.transform = `translate3d(${-offset}px,0,0)`;
   }
 
+  function buildGuide(){
+    const config = registry.get(active);
+    guidePanel.replaceChildren();
+    const make = (tag, cls, content, parent=guidePanel) => {
+      const el = document.createElement(tag);
+      if(cls) el.className = cls;
+      if(content !== undefined) el.textContent = content;
+      parent.appendChild(el);
+      return el;
+    };
+    make('div', 'guide-kicker', 'ESPOSIZIONE INTERNAZIONALE DI GENOVA · 1892');
+    make('h3', 'guide-name', config.name);
+    make('p', 'guide-number', `PADIGLIONE N° ${config.number}`);
+    make('p', 'guide-intro', config.guideIntro || `Scoprite le attrazioni e le curiosità di ${config.name}.`);
+    make('h4', 'guide-section-title', 'Giochi e attività');
+    const list = make('div', 'guide-list');
+    for(const entry of config.items.filter(i => i.id !== 'guida' && i.id !== 'shopping')){
+      const row = make('div', 'guide-entry', undefined, list);
+      make('span', `guide-entry-icon hotspot-${entry.color}`, entry.icon, row);
+      const texts = make('div', 'guide-entry-texts', undefined, row);
+      make('strong', '', entry.name, texts);
+      make('p', '', entry.desc, texts);
+    }
+    const shops = config.items.filter(i => i.id === 'shopping');
+    if(shops.length){
+      make('h4', 'guide-section-title', 'Bottega e souvenir');
+      for(const entry of shops){
+        const row = make('div', 'guide-entry', undefined, guidePanel);
+        make('span', `guide-entry-icon hotspot-${entry.color}`, entry.icon, row);
+        const texts = make('div', 'guide-entry-texts', undefined, row);
+        make('strong', '', entry.name, texts);
+        make('p', '', entry.desc, texts);
+      }
+    }
+    if(config.guideClosing) make('p', 'guide-closing', config.guideClosing);
+  }
+
+  function buildShop(){
+    const inventory=window.EsposizioneInventory;
+    const available=inventory?.getState()?.lire ?? 0;
+    const qty=inventory?.getQuantity?.('medaglia_ricordo_1892') ?? 0;
+    shopPanel.replaceChildren();
+    const kicker=document.createElement('p');kicker.className='shop-kicker';kicker.textContent='ESPOSIZIONE INTERNAZIONALE DI GENOVA · 1892';
+    const heading=document.createElement('h2');heading.textContent='Bottega dei Ricordi';
+    const subtitle=document.createElement('p');subtitle.className='shop-subtitle';subtitle.textContent='Un souvenir in ogni padiglione';
+    const product=document.createElement('div');product.className='shop-product';
+    const image=document.createElement('img');image.src='images/ui/inventory/items/collectibles/medaglia_ricordo_1892.png';image.alt='Immagine provvisoria della medaglia';
+    const details=document.createElement('div');
+    const name=document.createElement('h3');name.textContent='Medaglia Ricordo dell’Esposizione 1892';
+    const description=document.createElement('p');description.textContent='Medaglia commemorativa dell’Esposizione genovese del 1892, da conservare tra i Collezionabili.';
+    const price=document.createElement('strong');price.textContent='10 Lire';
+    details.append(name,description,price);product.append(image,details);
+    const wallet=document.createElement('p');wallet.className='shop-wallet';wallet.textContent=`Disponibilità: ${available} Lire · Medaglie possedute: ${qty}`;
+    const button=document.createElement('button');button.className='activity-primary shop-buy';button.type='button';button.textContent='Acquista · 10 Lire';
+    const result=document.createElement('p');result.className='shop-result';result.setAttribute('role','status');
+    if(available<10){button.disabled=true;result.textContent='Lire insufficienti per acquistare la medaglia.';}
+    button.addEventListener('click',()=>{
+      const outcome=window.EsposizioneInventory?.buy('medaglia_ricordo_1892',10);
+      if(outcome?.ok){wallet.textContent=`Disponibilità: ${outcome.lire} Lire · Medaglie possedute: ${outcome.quantity}`;result.textContent='Acquisto riuscito! La medaglia è nei Collezionabili.';if(outcome.lire<10)button.disabled=true;}
+      else{result.textContent=outcome?.reason==='funds'?'Lire insufficienti.':'Acquisto non disponibile.';button.disabled=true;}
+    });
+    shopPanel.append(kicker,heading,subtitle,product,wallet,button,result);
+  }
+
   function showActivity(item, button){
     releaseJoy();
     selected = item;
     returnFocus = button;
+    const isGuide = item.id === 'guida';
+    const isShop = item.id === 'shopping';
+    shopPanel.hidden = !isShop;
+    if(isShop)buildShop();
+    guidePanel.hidden = !isGuide;
+    if(isGuide) buildGuide();
+    activityIcon.hidden = isGuide || isShop;
     activityIcon.textContent = item.icon;
     activityIcon.className = 'activity-large-icon hotspot-' + item.color;
+    activityTitle.hidden = isGuide || isShop;
     activityTitle.textContent = item.name;
+    activityDescription.hidden = isGuide || isShop;
     activityDescription.textContent = item.desc;
-    const hasAction = !!item.action;
+    const hasAction = !isGuide && !isShop && !!item.action;
     activityMessage.textContent = hasAction ? '' : 'Attività in preparazione';
-    activityMessage.hidden = hasAction;
+    activityMessage.hidden = hasAction || isGuide || isShop;
     activityStart.hidden = !hasAction;
     activityStart.textContent = item.action === 'telegrafo' ? 'Avvia gioco' : 'Avvia attività';
+    activity.classList.toggle('guide-mode', isGuide);
+    activity.classList.toggle('shop-mode', isShop);
     activity.hidden = false;
     document.getElementById('pavilionActivityClose').focus();
   }
@@ -311,7 +388,8 @@
 
   document.getElementById('pavilionExit').addEventListener('click', close);
   document.getElementById('pavilionInventory').addEventListener('click', ()=>{
-    document.getElementById('pavilionStatus').textContent = 'Inventario: collegamento previsto nelle prossime fasi.';
+    if(!activity.hidden)hideActivity();
+    if(!minigames.anyOpen())window.EsposizioneInventory?.open();
   });
 
   document.addEventListener('keydown', event => {

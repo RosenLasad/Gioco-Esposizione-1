@@ -171,7 +171,7 @@
   $('#guideBtn').onclick=()=>$('#guideDialog').showModal();$('#guideClose').onclick=()=>$('#guideDialog').close();
   $('#menuFullscreenBtn').onclick=toggleFullscreen;$('#playerFullscreenBtn').onclick=toggleFullscreen;$('#pauseFullscreenBtn').onclick=toggleFullscreen;
   $('#playerMenuBtn').onclick=ui.onPause;
-  window.EsposizioneInventoryGame=()=>game;window.EsposizioneInventoryCanOpen=()=>!window.EsposizionePavilions?.isOpen()&&screen.classList.contains('active')&&!game.editorActive&&pauseOverlay.hidden&&interactionOverlay.hidden;
+  window.EsposizioneInventoryGame=()=>game;window.EsposizioneInventoryCanOpen=()=>screen.classList.contains('active')&&!window.EsposizioneMinigames?.anyOpen()&&!game.editorActive&&pauseOverlay.hidden&&interactionOverlay.hidden;
   $('#pauseLayoutBtn').onclick=()=>{if(gameMode!=='player'||!isMobileLike()){ui.onToast('Layout smartphone disponibile su schermi piccoli');return}pauseOverlay.hidden=true;game.setPaused(true);showOrientationPicker(()=>{game.setPaused(false)},true)};
   $('#chooseLandscape').onclick=()=>chooseLayout('landscape');$('#choosePortrait').onclick=()=>chooseLayout('portrait');
   $('#orientationCancel').onclick=()=>{pendingPlayerStart=null;orientationDialog.close();if(screen.classList.contains('active'))game.setPaused(false)};
