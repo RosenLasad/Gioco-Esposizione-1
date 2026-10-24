@@ -107,29 +107,39 @@
 
   function buildShop(){
     const inventory=window.EsposizioneInventory;
-    const available=inventory?.getState()?.lire ?? 0;
-    const qty=inventory?.getQuantity?.('medaglia_ricordo_1892') ?? 0;
+    const products=[
+      {id:'medaglia_ricordo_1892',name:'Medaglia Ricordo dell’Esposizione 1892',price:10,category:'Collezionabili',image:'images/ui/inventory/items/collectibles/medaglia_ricordo_1892.png',description:'Medaglia commemorativa dell’Esposizione genovese del 1892.'}
+    ];
+    // Il cannocchiale è acquistabile solo all'ingresso del Pallone Colombo.
+    if(active==='pallonecolombo')products.push({id:'cannocchiale_pallone_colombo',name:'Cannocchiale del Pallone Colombo',price:15,category:'Gadget',image:'images/ui/inventory/items/gadgets/cannocchiale_pallone_colombo.png',description:'Cannocchiale ottocentesco in ottone e cuoio, da conservare nel tuo Inventario.'});
     shopPanel.replaceChildren();
     const kicker=document.createElement('p');kicker.className='shop-kicker';kicker.textContent='ESPOSIZIONE INTERNAZIONALE DI GENOVA · 1892';
     const heading=document.createElement('h2');heading.textContent='Bottega dei Ricordi';
-    const subtitle=document.createElement('p');subtitle.className='shop-subtitle';subtitle.textContent='Un souvenir in ogni padiglione';
-    const product=document.createElement('div');product.className='shop-product';
-    const image=document.createElement('img');image.src='images/ui/inventory/items/collectibles/medaglia_ricordo_1892.png';image.alt='Immagine provvisoria della medaglia';
-    const details=document.createElement('div');
-    const name=document.createElement('h3');name.textContent='Medaglia Ricordo dell’Esposizione 1892';
-    const description=document.createElement('p');description.textContent='Medaglia commemorativa dell’Esposizione genovese del 1892, da conservare tra i Collezionabili.';
-    const price=document.createElement('strong');price.textContent='10 Lire';
-    details.append(name,description,price);product.append(image,details);
-    const wallet=document.createElement('p');wallet.className='shop-wallet';wallet.textContent=`Disponibilità: ${available} Lire · Medaglie possedute: ${qty}`;
-    const button=document.createElement('button');button.className='activity-primary shop-buy';button.type='button';button.textContent='Acquista · 10 Lire';
-    const result=document.createElement('p');result.className='shop-result';result.setAttribute('role','status');
-    if(available<10){button.disabled=true;result.textContent='Lire insufficienti per acquistare la medaglia.';}
-    button.addEventListener('click',()=>{
-      const outcome=window.EsposizioneInventory?.buy('medaglia_ricordo_1892',10);
-      if(outcome?.ok){wallet.textContent=`Disponibilità: ${outcome.lire} Lire · Medaglie possedute: ${outcome.quantity}`;result.textContent='Acquisto riuscito! La medaglia è nei Collezionabili.';if(outcome.lire<10)button.disabled=true;}
-      else{result.textContent=outcome?.reason==='funds'?'Lire insufficienti.':'Acquisto non disponibile.';button.disabled=true;}
-    });
-    shopPanel.append(kicker,heading,subtitle,product,wallet,button,result);
+    const subtitle=document.createElement('p');subtitle.className='shop-subtitle';subtitle.textContent=active==='pallonecolombo'?'Souvenir e strumenti del Pallone Colombo':'Un souvenir in ogni padiglione';
+    const wallet=document.createElement('p');wallet.className='shop-wallet';
+    const refresh=()=>{wallet.textContent=`Disponibilità: ${inventory?.getState()?.lire??0} Lire`;};
+    shopPanel.append(kicker,heading,subtitle,wallet);
+    const updates=[];
+    for(const item of products){
+      const product=document.createElement('div');product.className='shop-product';
+      const image=document.createElement('img');image.src=item.image;image.alt=item.name;
+      const details=document.createElement('div');
+      const name=document.createElement('h3');name.textContent=item.name;
+      const description=document.createElement('p');description.textContent=item.description;
+      const price=document.createElement('strong');price.textContent=`${item.price} Lire · ${item.category}`;
+      const qty=document.createElement('p');
+      const button=document.createElement('button');button.className='activity-primary shop-buy';button.type='button';button.textContent=`Acquista · ${item.price} Lire`;
+      const result=document.createElement('p');result.className='shop-result';result.setAttribute('role','status');
+      const update=()=>{qty.textContent=`Posseduti: ${inventory?.getQuantity?.(item.id)??0}`;button.disabled=(inventory?.getState()?.lire??0)<item.price;};
+      button.addEventListener('click',()=>{
+        const outcome=inventory?.buy(item.id,item.price);
+        if(outcome?.ok){result.textContent=`Acquisto riuscito! ${item.name} aggiunto a ${item.category}.`;refresh();for(const fn of updates)fn();}
+        else{result.textContent=outcome?.reason==='funds'?'Lire insufficienti.':'Acquisto non disponibile.';refresh();for(const fn of updates)fn();}
+      });
+      details.append(name,description,price,qty,button,result);product.append(image,details);shopPanel.append(product);
+      updates.push(update);
+    }
+    refresh();for(const fn of updates)fn();
   }
 
   function showActivity(item, button){

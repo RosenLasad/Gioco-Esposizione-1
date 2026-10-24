@@ -263,6 +263,18 @@
               <div class="inventory-detail-actions"><button id="inventoryAction">Esamina</button><button id="inventoryBack">Indietro</button></div>
             </article>
           </div>
+          <div id="inventoryInspect" class="inventory-inspect-layer" hidden>
+            <article class="inventory-inspect" role="dialog" aria-modal="true" aria-label="Osserva oggetto">
+              <button id="inventoryInspectClose" class="inventory-detail-x" aria-label="Chiudi osservazione">×</button>
+              <h3 id="inventoryInspectTitle"></h3>
+              <p id="inventoryInspectSubtitle" class="inventory-inspect-subtitle"></p>
+              <div class="inventory-inspect-stage">
+                <img id="inventoryInspectImage" alt="Immagine ingrandita dell'oggetto">
+              </div>
+              <p id="inventoryInspectCaption" class="inventory-inspect-caption"></p>
+              <div class="inventory-inspect-actions"><button id="inventoryInspectRotate">Ruota</button><button id="inventoryInspectBack">Indietro</button></div>
+            </article>
+          </div>
         </div>
         <div id="pauseOverlay" class="overlay" hidden>
           <div class="panel">
