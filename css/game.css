@@ -885,3 +885,6 @@ button.battle-cell:disabled{cursor:default}
 .telegraph-key:active,.telegraph-key.is-active{transform:translateY(1px);background:linear-gradient(180deg,#f9edca,#ebcc91);box-shadow:0 2px 7px #0002, inset 0 2px 0 #fff8}
 @media(max-width:650px){.pavilion-hotspot{width:42px;height:42px;font-size:23px}.pavilion-activity-card{padding:23px 16px}.battleship-boards{gap:8px}.battleship-card{padding:10px 9px}.battleship-head h2,.shellgame-head h2,.telegraph-head h2{font-size:19px}.battleship-boards h3{font-size:13px}.battleship-grid{width:100%}.battleship-card #battleshipMessage,.shellgame-message,.telegraph-message{font-size:13px}.battleship-head button,.shellgame-head button,.telegraph-head button{padding:7px!important;font-size:12px}.shell-table{height:190px}.shell-cup{width:64px;height:82px;top:56px}.telegraph-key{min-height:56px;font-size:24px}}
 
+
+/* Nasconde la sovraimpressione del titolo in tutti gli ingressi panoramici, presenti e futuri. */
+.pavilion-view .pavilion-welcome{display:none!important}
