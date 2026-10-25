@@ -194,12 +194,14 @@
       :'Buongiorno, signore! Avete con voi il biglietto d’ingresso? Permettete che lo timbri, poi vi consegnerò i doni di benvenuto.';
     $('#ticketInspectorGift').hidden=true;
     $('#ticketInspectorAction').hidden=done;
+    $('#ticketInspectorInventory').hidden=!done;
     inspectorOverlay.hidden=false;game.setPaused(true);
     (done?$('#ticketInspectorBack'):$('#ticketInspectorAction')).focus();
   }
   function closeInspector(){inspectorOverlay.hidden=true;game.setPaused(false)}
   $('#ticketInspectorClose').onclick=closeInspector;
   $('#ticketInspectorBack').onclick=closeInspector;
+  $('#ticketInspectorInventory').onclick=()=>{closeInspector();window.EsposizioneInventory?.open?.()};
   $('#ticketInspectorAction').onclick=()=>{
     const result=window.EsposizioneInventory?.stampTicketAndGiveWelcome?.();
     if(!result?.ok){$('#ticketInspectorText').textContent='Non è stato possibile salvare il timbro. Riproviamo, per favore.';return}
@@ -208,7 +210,8 @@
       :'Benvenuto all’Esposizione Internazionale di Genova! Ecco la pianta dell’Esposizione, una moneta ricordo e un ombrello in omaggio. Vi auguro una splendida visita!';
     $('#ticketInspectorGift').hidden=false;
     $('#ticketInspectorAction').hidden=true;
-    $('#ticketInspectorBack').focus();
+    $('#ticketInspectorInventory').hidden=false;
+    $('#ticketInspectorInventory').focus();
   };
   function closeInteraction(){interactionOverlay.hidden=true;game.setPaused(false)}
   function showGame(save,mode='player'){

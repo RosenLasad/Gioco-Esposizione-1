@@ -7,9 +7,16 @@
       "name": "Biglietto Area Nord",
       "description": "Biglietto d'ingresso valido per l'Area Nord. Include un ombrello omaggio e 100 Lire dell'Esposizione.",
       "status": "Valido",
-      "action": "Esamina",
+      "action": "Osserva",
       "icon": "🎟",
-      "image": "images/ui/inventory/items/documents/biglietto_area_nord.png"
+      "image": "images/ui/inventory/items/documents/biglietto_area_nord_definitivo.png",
+      "inspectSubtitle": "Biglietto d’ingresso dell’Area Nord · Esposizione Internazionale di Genova 1892",
+      "inspectViews": [
+        {
+          "src": "images/ui/inventory/items/documents/biglietto_area_nord_definitivo.png",
+          "label": "Biglietto d’ingresso dell’Area Nord"
+        }
+      ]
     },
     {
       "id": "mappa_esposizione",
@@ -17,9 +24,16 @@
       "name": "Mappa dell'Esposizione",
       "description": "Pianta dell’Esposizione per orientarsi tra padiglioni, viali e attrazioni.",
       "status": "Disponibile",
-      "action": "Consulta",
+      "action": "Osserva",
       "icon": "🗺",
-      "image": "images/ui/inventory/items/useful/mappa_esposizione.png"
+      "image": "images/ui/inventory/items/useful/mappa_esposizione_definitivo.png",
+      "inspectSubtitle": "Mappa pieghevole dell’Esposizione di Genova 1892",
+      "inspectViews": [
+        {
+          "src": "images/ui/inventory/items/useful/mappa_esposizione_definitivo.png",
+          "label": "Mappa dell’Esposizione"
+        }
+      ]
     },
     {
       "id": "ombrello_omaggio",
@@ -27,9 +41,16 @@
       "name": "Ombrello omaggio",
       "description": "Un ombrello ricordo consegnato assieme al biglietto dell'Area Nord.",
       "status": "In possesso",
-      "action": "Esamina",
+      "action": "Osserva",
       "icon": "☂",
-      "image": "images/ui/inventory/items/gadgets/ombrello_omaggio.png"
+      "image": "images/ui/inventory/items/gadgets/ombrello_omaggio_definitivo.png",
+      "inspectSubtitle": "Ombrello omaggio consegnato all’ingresso principale",
+      "inspectViews": [
+        {
+          "src": "images/ui/inventory/items/gadgets/ombrello_omaggio_definitivo.png",
+          "label": "Ombrello omaggio dell’Esposizione"
+        }
+      ]
     },
     {
       "id": "moneta_benvenuto",
@@ -39,7 +60,14 @@
       "status": "Raccolta",
       "action": "Osserva",
       "icon": "🪙",
-      "image": "images/ui/inventory/items/collectibles/moneta_benvenuto.png"
+      "image": "images/ui/inventory/items/collectibles/moneta_benvenuto_definitivo.png",
+      "inspectSubtitle": "Moneta di benvenuto dell’Esposizione di Genova 1892",
+      "inspectViews": [
+        {
+          "src": "images/ui/inventory/items/collectibles/moneta_benvenuto_definitivo.png",
+          "label": "Moneta di benvenuto"
+        }
+      ]
     },
     {
       "id": "chiave_area_sud",
