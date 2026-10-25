@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Sfida del Macchinista | Prova diretta</title>
+<link rel="stylesheet" href="style.css">
+<style>
+ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d0b}
+ #pavilionView{position:relative;width:100%;height:100%;height:100dvh;overflow:hidden}
+ #standaloneHome{position:absolute;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;background:linear-gradient(135deg,#1c100a,#372411);font-family:Georgia,serif}
+ #standaloneHome[hidden]{display:none!important}
+ .standalone-card{width:min(540px,100%);border:7px double #c6a36b;border-radius:18px;background:linear-gradient(#f3e4c4,#dbc494);color:#3a2413;text-align:center;padding:clamp(18px,4vw,36px);box-shadow:0 10px 40px #0009}
+ .standalone-card h1{margin:0 0 14px;font-size:clamp(23px,5vw,38px)}
+ .standalone-card p{line-height:1.55}
+ .standalone-card button{cursor:pointer;border:1px solid #c7a36b;border-radius:9px;padding:13px 24px;background:linear-gradient(#6e4d2a,#412713);color:#fff0c8;font:bold 17px Georgia,serif}
+ #macchinistaLayer{position:absolute}
+</style>
+</head>
+<body>
+<main id="pavilionView">
+  <div id="standaloneHome">
+    <section class="standalone-card">
+      <h1>⚙ La Sfida del Macchinista</h1>
+      <p>Prototipo autonomo · Montagne Russe · Genova 1892</p>
+      <p>Usa <strong>← / →</strong> oppure <strong>A / D</strong>, o i pulsanti sullo schermo. La scelta funziona <strong>quando compare “SCAMBIO IN ARRIVO”</strong>; se non scegli o sbagli, il carrello torna al principio del circuito.</p>
+      <button id="standaloneLaunch" type="button">Apri il minigioco</button>
+    </section>
+  </div>
+</main>
+<script>
+(function(){
+ 'use strict';
+ let minigame=null;
+ window.EsposizioneMinigames={
+  get(id){return id==='macchinista'?minigame:null},
+  register(id,api){if(id==='macchinista')minigame=api}
+ };
+ const home=document.getElementById('standaloneHome');
+ document.getElementById('standaloneLaunch').onclick=()=>{
+   if(!minigame)return;
+   home.hidden=true;
+   minigame.start();
+ };
+ // The original game closes to its pavilion. Here it returns to the direct-launch screen.
+ function attach(){
+   const layer=document.getElementById('macchinistaLayer');
+   if(!layer)return;
+   new MutationObserver(()=>{if(layer.hidden)home.hidden=false}).observe(layer,{attributes:true,attributeFilter:['hidden']});
+ }
+ window.addEventListener('load',attach);
+})();
+</script>
+<script src="game.js"></script>
+</body>
+</html>

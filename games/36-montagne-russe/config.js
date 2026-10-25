@@ -7,11 +7,13 @@ const config = {
   image: "games/36-montagne-russe/images/ingresso.jpg",
   alt: "Panorama delle Montagne Russe",
   status: "Montagne Russe: panorama esplorabile.",
+  guideIntro: 'Preparativi, binari e grandi discese animano le Montagne Russe dell’Esposizione. Scoprite i percorsi dell’attrazione e mettete alla prova riflessi e capacità di osservazione tra curve e sorprese.',
+  guideClosing: 'Allacciate la fantasia: la prossima corsa è tutta da scoprire!',
   items: [
     {id:"discesa",name:"La Grande Discesa",icon:"⌔",color:"red",x:11,y:24,desc:"Evita ostacoli e raccogli oggetti durante la corsa."},
     {id:"percorso",name:"Il Percorso Perfetto",icon:"⤧",color:"green",x:58,y:25,desc:"Scegli i binari giusti e completa il percorso migliore."},
     {id:"souvenir",name:"Caccia al Souvenir",icon:"⌑",color:"brown",x:92,y:30,desc:"Trova i simboli nascosti e i piccoli oggetti durante il giro."},
-    {id:"macchinista",name:"La Sfida del Macchinista",icon:"⚙",color:"brown",x:16,y:58,desc:"Aziona gli scambi e i meccanismi al momento giusto."},
+    {id:"macchinista",name:"La Sfida del Macchinista",icon:"⚙",color:"brown",x:16,y:58,desc:"Aziona gli scambi e trova l’uscita del circuito di collaudo.",action:"macchinista"},
     {id:"shopping",name:"Shopping",icon:"▣",color:"brown",x:78,y:53,desc:"Gadget e souvenir del padiglione."},
     {id:"guida",name:"Guida",icon:"ℹ",color:"blue",x:56,y:70,desc:"Informazioni sulle Montagne Russe e le loro attività."},
   ]
