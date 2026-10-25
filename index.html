@@ -276,6 +276,15 @@
             </article>
           </div>
         </div>
+        <div id="unsavedExitOverlay" class="overlay unsaved-exit-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="unsavedExitTitle">
+          <div class="panel unsaved-exit-panel">
+            <h2 id="unsavedExitTitle">Hai modifiche non salvate</h2>
+            <div class="unsaved-exit-actions">
+              <button type="button" id="unsavedStayBtn">Resta nella pagina</button>
+              <button type="button" id="unsavedLeaveBtn">Esci</button>
+            </div>
+          </div>
+        </div>
         <div id="pauseOverlay" class="overlay" hidden>
           <div class="panel">
             <h2>Pausa</h2>
@@ -421,6 +430,22 @@
           </footer>
         </section>
 
+        <div id="ticketInspectorOverlay" class="overlay npc-dialog-overlay" hidden>
+          <section class="npc-dialog" role="dialog" aria-modal="true" aria-labelledby="ticketInspectorTitle">
+            <button type="button" id="ticketInspectorClose" class="npc-dialog-x" aria-label="Chiudi dialogo">×</button>
+            <div class="npc-dialog-portrait"><img src="images/decor/npc/bigliettaio_ingresso_principale.png" alt="Bigliettaio dell'Esposizione"></div>
+            <div class="npc-dialog-body">
+              <p class="npc-dialog-kicker">ESPOSIZIONE INTERNAZIONALE · GENOVA 1892</p>
+              <h2 id="ticketInspectorTitle">Il Bigliettaio</h2>
+              <p id="ticketInspectorText" aria-live="polite"></p>
+              <div id="ticketInspectorGift" class="npc-dialog-gift" hidden>✓ Biglietto timbrato<br>Pianta dell’Esposizione · Moneta di benvenuto · Ombrello omaggio</div>
+              <div class="npc-dialog-actions">
+                <button type="button" id="ticketInspectorAction">Mostra il biglietto</button>
+                <button type="button" id="ticketInspectorBack">Chiudi</button>
+              </div>
+            </div>
+          </section>
+        </div>
         <div id="interactionOverlay" class="overlay" hidden>
           <div class="panel interaction-panel">
             <p class="eyebrow">PADIGLIONE / ATTRAZIONE</p>

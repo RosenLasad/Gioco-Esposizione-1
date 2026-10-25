@@ -1021,3 +1021,30 @@ button.battle-cell:disabled{cursor:default}
   .inventory-categories { top: 26.5%; }
   .inventory-grid { top: 39%; }
 }
+
+/* Conferma di uscita interna, senza salvare automaticamente la partita. */
+.unsaved-exit-overlay{z-index:100;}
+.unsaved-exit-panel{width:min(440px,95%);text-align:center;border:2px solid #bb965c;border-radius:12px;background:linear-gradient(160deg,#30261b,#1d1712);color:#f9e9c9;font-family:Georgia,serif}
+.unsaved-exit-panel h2{font-size:clamp(20px,4.5vw,27px);line-height:1.25}
+.unsaved-exit-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px}
+.unsaved-exit-actions button{min-width:150px;flex:1;border:1px solid #b79361;border-radius:9px;padding:12px 15px;background:#6b5032;color:#fff4df;font-size:15px;cursor:pointer}
+.unsaved-exit-actions button:first-child{background:#456246}
+.unsaved-exit-actions button:focus-visible{outline:2px solid #f6cf8c;outline-offset:3px}
+@media(max-width:460px){.unsaved-exit-panel{padding:24px 16px}.unsaved-exit-actions button{min-width:120px}}
+
+/* NPC: dialogo bigliettaio, separato dai popup dei padiglioni. */
+.npc-dialog-overlay{z-index:63;background:rgba(12,9,5,.78)}
+.npc-dialog{position:relative;display:grid;grid-template-columns:minmax(105px,30%) 1fr;gap:20px;align-items:center;width:min(690px,96vw);max-height:min(90vh,760px);overflow:auto;padding:24px;border:7px double #a77c44;border-radius:18px;background:linear-gradient(135deg,#f5e8ce,#e5c996);color:#3e2918;box-shadow:0 20px 65px #000a,inset 0 0 0 4px #76512e}
+.npc-dialog-portrait{height:250px;display:grid;place-items:end center;border-radius:11px;background:radial-gradient(ellipse at 50% 70%,#efe1bf,#d2af74);overflow:hidden;box-shadow:inset 0 0 0 1px #b99456}
+.npc-dialog-portrait img{width:auto;height:94%;object-fit:contain;filter:drop-shadow(0 5px 5px #0003)}
+.npc-dialog-kicker{font:700 11px Georgia,serif;letter-spacing:.1em;color:#81582b}
+.npc-dialog-body h2{font:700 clamp(22px,3.3vw,31px) Georgia,serif;margin:7px 32px 12px 0;color:#4b2e19}
+.npc-dialog-body>p:not(.npc-dialog-kicker){font:16px/1.55 Georgia,serif;min-height:80px}
+.npc-dialog-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.npc-dialog-actions button{background:#533a25;color:#f8e8be;border:1px solid #bb915b;border-radius:7px;padding:10px 14px;font:700 14px Georgia,serif;cursor:pointer}
+.npc-dialog-actions button:first-child{background:#35583a}
+.npc-dialog-actions button[hidden],.npc-dialog-gift[hidden]{display:none!important}
+.npc-dialog-gift{padding:12px;border:1px solid #987047;border-radius:8px;background:#fff6e0;font:14px/1.6 Georgia,serif;color:#4d3d21}
+.npc-dialog-x{position:absolute;right:14px;top:12px;width:34px;height:34px;border-radius:50%;background:#644429;color:#fff5d8;border:1px solid #b48c54;font-size:23px;cursor:pointer}
+@media(max-width:530px){.npc-dialog{grid-template-columns:1fr;gap:7px;padding:17px 15px}.npc-dialog-portrait{height:128px}.npc-dialog-portrait img{height:140%}.npc-dialog-body>p:not(.npc-dialog-kicker){min-height:0;font-size:14px}.npc-dialog-kicker{font-size:9px}.npc-dialog-actions{justify-content:center}.npc-dialog-actions button{flex:1 1 120px}}
+@media(max-height:480px){.npc-dialog{grid-template-columns:96px 1fr;padding:12px;gap:13px}.npc-dialog-portrait{height:155px}.npc-dialog-portrait img{height:95%}.npc-dialog-body>p:not(.npc-dialog-kicker){min-height:0;font-size:13px;margin:7px 0}.npc-dialog-actions{margin-top:8px}}

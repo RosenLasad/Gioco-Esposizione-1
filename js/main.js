@@ -2,7 +2,7 @@
   'use strict';
   const $=s=>document.querySelector(s);
   const menu=$('#menuScreen'),screen=$('#gameScreen'),canvas=$('#gameCanvas'),frame=$('#gameFrame');
-  const pauseOverlay=$('#pauseOverlay'),interactionOverlay=$('#interactionOverlay');
+  const pauseOverlay=$('#pauseOverlay'),interactionOverlay=$('#interactionOverlay'),inspectorOverlay=$('#ticketInspectorOverlay');
   const prompt=$('#prompt'),toast=$('#toast'),fade=$('#fade');
   const orientationDialog=$('#orientationDialog');
   let toastTimer=null,areaBadgeTimer=null,gameMode='player',pendingPlayerStart=null;
@@ -91,12 +91,12 @@
       prompt.hidden=!text;prompt.textContent=text;
       const touch=$('#touchInteract');touch?.classList.toggle('ready',!!text);touch?.setAttribute('aria-label',text?text.replace(/^E\s*·\s*/,''):'Interagisci');
     },
-    onInteract(h){const pavilion=window.EsposizionePavilions;const key=pavilion?.resolve(h,game?.area);if(key){game.setPaused(true);pavilion.open(key,()=>game.setPaused(false));return}$('#interactionTitle').textContent=h.title;$('#interactionText').textContent=h.text;interactionOverlay.hidden=false;game.setPaused(true)},
+    onInteract(h){if(h.id==='npc-bigliettaio-ingresso-principale'){openInspector();return}const pavilion=window.EsposizionePavilions;const key=pavilion?.resolve(h,game?.area);if(key){game.setPaused(true);pavilion.open(key,()=>game.setPaused(false));return}$('#interactionTitle').textContent=h.title;$('#interactionText').textContent=h.text;interactionOverlay.hidden=false;game.setPaused(true)},
     onToast(text){clearTimeout(toastTimer);toast.textContent=text;toast.classList.add('show');toastTimer=setTimeout(()=>toast.classList.remove('show'),1800)},
     onFade(v){fade.classList.toggle('on',v)},
     onBoatGate(g,accept,cancel){confirm('Vuoi salire sul battello e raggiungere l’altra area dell’Esposizione?')?accept():cancel()},
     onExitGate(g,accept,cancel){if(!confirm('Vuoi lasciare l’Esposizione e tornare ai Giochi di Genova mApp?')){cancel();return}accept();game.requestSave();if(window.parent!==window){window.parent.postMessage({type:'genova-mapp:game-exit',game:'esposizione'},location.origin)}returnMenu(false)},
-    onPause(){if(window.EsposizionePavilions?.isOpen()){window.EsposizionePavilions.close();return}if(window.EsposizioneInventory?.isOpen()){window.EsposizioneInventory.close();return}if(!screen.classList.contains('active')||game.editorActive)return;if(!interactionOverlay.hidden){closeInteraction();return}pauseOverlay.hidden=!pauseOverlay.hidden;game.setPaused(!pauseOverlay.hidden)}
+    onPause(){if(exitWarningPending)return;if(window.EsposizionePavilions?.isOpen()){window.EsposizionePavilions.close();return}if(window.EsposizioneInventory?.isOpen()){window.EsposizioneInventory.close();return}if(!screen.classList.contains('active')||game.editorActive)return;if(!inspectorOverlay.hidden){closeInspector();return}if(!interactionOverlay.hidden){closeInteraction();return}pauseOverlay.hidden=!pauseOverlay.hidden;game.setPaused(!pauseOverlay.hidden)}
   };
 
   // Online: i JSON pubblicati sono la sola fonte per collisioni e percorsi.
@@ -133,6 +133,34 @@
   // Nessuna collisione viene piu caricata da localStorage.
 
   const game=new window.EsposizioneGame(canvas,ui);
+  // Checkpoint della posizione salvata: non altera i dati persistenti dell'inventario.
+  let savedCheckpoint=null;
+  let exitWarningPending=false;
+  const exitWarning=$('#unsavedExitOverlay');
+  const positionSnapshot=()=>({area:game.areaId,x:Math.round(game.player.x),y:Math.round(game.player.y)});
+  const checkpoint=()=>{savedCheckpoint=positionSnapshot()};
+  const unsavedProgress=()=>{
+    if(!game.running||!screen.classList.contains('active')||game.editorActive)return false;
+    if(!savedCheckpoint)return false;
+    const p=positionSnapshot();
+    return p.area!==savedCheckpoint.area||Math.hypot(p.x-savedCheckpoint.x,p.y-savedCheckpoint.y)>2;
+  };
+  const originalRequestSave=game.requestSave.bind(game);
+  game.requestSave=function(){const result=originalRequestSave();checkpoint();return result};
+  // Il browser gestisce il testo e le opzioni degli avvisi nativi di chiusura/ricarica.
+  window.addEventListener('beforeunload',e=>{
+    if(!unsavedProgress())return;
+    e.preventDefault();e.returnValue='';
+  });
+  function dismissExitWarning(){exitWarning.hidden=true;exitWarningPending=false;game.setPaused(!pauseOverlay.hidden)}
+  function requestReturnMenu(){
+    if(!unsavedProgress()){returnMenu(false);return}
+    exitWarningPending=true;exitWarning.hidden=false;game.setPaused(true);
+    $('#unsavedStayBtn').focus();
+  }
+  $('#unsavedStayBtn').onclick=dismissExitWarning;
+  $('#unsavedLeaveBtn').onclick=()=>{exitWarningPending=false;exitWarning.hidden=true;returnMenu(false)};
+
   const editor=new window.EsposizioneEditor(game,{
     panel:$('#testPanel'),dragHandle:$('#testDragHandle'),close:$('#testClose'),resetPanel:$('#testResetPanel'),lockPanel:$('#testLockPanel'),
     select:$('#toolSelect'),undoHistory:$('#toolUndoHistory'),redoHistory:$('#toolRedoHistory'),saveCurrent:$('#toolSaveCurrent'),saveDecor:$('#toolSaveDecor'),
@@ -157,12 +185,37 @@
     game.debug=false;
   }
   function updateMenu(){const s=window.EsposizioneSave.load();$('#continueBtn').disabled=!s;const areaName=s?.area==='sud'?'Area Sud':'Area Nord';$('#saveInfo').textContent=s?`Salvataggio: ${areaName} · ${new Date(s.updatedAt).toLocaleString('it-IT')}`:'Nessuna partita salvata.'}
+  function openInspector(){
+    if(!inspectorOverlay.hidden)return;
+    const adm=window.EsposizioneInventory?.getAdmission?.()||{stamped:false,kitDelivered:false};
+    const done=adm.stamped&&adm.kitDelivered;
+    $('#ticketInspectorText').textContent=done
+      ?'Bentornato all’Esposizione! Vedo che il vostro biglietto è già stato timbrato. Potete proseguire liberamente. Buona visita!'
+      :'Buongiorno, signore! Avete con voi il biglietto d’ingresso? Permettete che lo timbri, poi vi consegnerò i doni di benvenuto.';
+    $('#ticketInspectorGift').hidden=true;
+    $('#ticketInspectorAction').hidden=done;
+    inspectorOverlay.hidden=false;game.setPaused(true);
+    (done?$('#ticketInspectorBack'):$('#ticketInspectorAction')).focus();
+  }
+  function closeInspector(){inspectorOverlay.hidden=true;game.setPaused(false)}
+  $('#ticketInspectorClose').onclick=closeInspector;
+  $('#ticketInspectorBack').onclick=closeInspector;
+  $('#ticketInspectorAction').onclick=()=>{
+    const result=window.EsposizioneInventory?.stampTicketAndGiveWelcome?.();
+    if(!result?.ok){$('#ticketInspectorText').textContent='Non è stato possibile salvare il timbro. Riproviamo, per favore.';return}
+    $('#ticketInspectorText').textContent=result.already
+      ?'Il biglietto è già timbrato, signore. Bentornato all’Esposizione!'
+      :'Benvenuto all’Esposizione Internazionale di Genova! Ecco la pianta dell’Esposizione, una moneta ricordo e un ombrello in omaggio. Vi auguro una splendida visita!';
+    $('#ticketInspectorGift').hidden=false;
+    $('#ticketInspectorAction').hidden=true;
+    $('#ticketInspectorBack').focus();
+  };
   function closeInteraction(){interactionOverlay.hidden=true;game.setPaused(false)}
   function showGame(save,mode='player'){
     window.dispatchEvent(new CustomEvent('esposizione:inventory-start',{detail:{newGame:!save}}));
-    setMode(mode);menu.classList.remove('active');screen.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;editor.toggle(false);fitCanvas();game.start(save);
+    setMode(mode);menu.classList.remove('active');screen.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;inspectorOverlay.hidden=true;exitWarning.hidden=true;exitWarningPending=false;editor.toggle(false);fitCanvas();game.start(save);checkpoint();
   }
-  function returnMenu(save){window.EsposizionePavilions?.close();window.EsposizioneInventory?.close();if(save)game.requestSave();editor.toggle(false);game.stop();screen.classList.remove('active');menu.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;frame.classList.remove('admin-mode','player-mode','layout-portrait','layout-landscape');updateMenu()}
+  function returnMenu(save){exitWarning.hidden=true;exitWarningPending=false;window.EsposizionePavilions?.close();window.EsposizioneInventory?.close();if(save)game.requestSave();editor.toggle(false);game.stop();screen.classList.remove('active');menu.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;inspectorOverlay.hidden=true;frame.classList.remove('admin-mode','player-mode','layout-portrait','layout-landscape');updateMenu()}
 
   $('#playerGameBtn').onclick=()=>showOrientationPicker(()=>{window.EsposizioneSave.clear();showGame(null,'player')});
   $('#newGameBtn').onclick=()=>{window.EsposizioneSave.clear();showGame(null,'admin')};
@@ -171,13 +224,13 @@
   $('#guideBtn').onclick=()=>$('#guideDialog').showModal();$('#guideClose').onclick=()=>$('#guideDialog').close();
   $('#menuFullscreenBtn').onclick=toggleFullscreen;$('#playerFullscreenBtn').onclick=toggleFullscreen;$('#pauseFullscreenBtn').onclick=toggleFullscreen;
   $('#playerMenuBtn').onclick=ui.onPause;
-  window.EsposizioneInventoryGame=()=>game;window.EsposizioneInventoryCanOpen=()=>screen.classList.contains('active')&&!window.EsposizioneMinigames?.anyOpen()&&!game.editorActive&&pauseOverlay.hidden&&interactionOverlay.hidden;
+  window.EsposizioneInventoryGame=()=>game;window.EsposizioneInventoryCanOpen=()=>screen.classList.contains('active')&&!window.EsposizioneMinigames?.anyOpen()&&!game.editorActive&&pauseOverlay.hidden&&interactionOverlay.hidden&&inspectorOverlay.hidden;
   $('#pauseLayoutBtn').onclick=()=>{if(gameMode!=='player'||!isMobileLike()){ui.onToast('Layout smartphone disponibile su schermi piccoli');return}pauseOverlay.hidden=true;game.setPaused(true);showOrientationPicker(()=>{game.setPaused(false)},true)};
   $('#chooseLandscape').onclick=()=>chooseLayout('landscape');$('#choosePortrait').onclick=()=>chooseLayout('portrait');
   $('#orientationCancel').onclick=()=>{pendingPlayerStart=null;orientationDialog.close();if(screen.classList.contains('active'))game.setPaused(false)};
 
   $('#pauseBtn').onclick=ui.onPause;$('#resumeBtn').onclick=ui.onPause;$('#saveBtn').onclick=()=>{game.requestSave();ui.onToast('Posizione salvata')};
-  $('#saveMenuBtn').onclick=()=>returnMenu(true);$('#menuBtn').onclick=()=>returnMenu(false);
+  $('#saveMenuBtn').onclick=()=>returnMenu(true);$('#menuBtn').onclick=requestReturnMenu;
   $('#interactionClose').onclick=closeInteraction;interactionOverlay.addEventListener('click',e=>{if(e.target===interactionOverlay)closeInteraction()});
   $('#debugBtn').onclick=()=>{if(gameMode!=='admin')return;game.debug=!game.debug;ui.onToast(game.debug?'Collisioni visibili':'Collisioni nascoste')};
   $('#testBtn').onclick=()=>{if(gameMode==='admin')editor.toggle()};
