@@ -357,6 +357,21 @@
       "pillarDepth": 72
     },
     {
+      "id": "npc-bigliettaio-ingresso-principale",
+      "kind": "npc",
+      "type": "ysort",
+      "asset": "images/decor/npc/bigliettaio_ingresso_principale.png",
+      "x": 2430,
+      "y": 2060,
+      "anchorX": 0.5,
+      "anchorY": 1,
+      "scale": 0.115,
+      "rotation": 0,
+      "collisionRadius": 160,
+      "width": 1086,
+      "height": 1448
+    },
+    {
       "id": "ingresso-area-b-principale",
       "kind": "entrance",
       "variant": "ingresso_B",

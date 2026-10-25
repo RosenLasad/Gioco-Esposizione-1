@@ -150,12 +150,12 @@
           items.push({kind:'decor',obj:o,sortY:basinY,part:'fountain-back'});
         }else if(o.kind==='entrance'&&o.passageAxis==='x'){
           items.push({kind:'decor',obj:o,sortY:o.y-90*(o.scale||1),part:'lateral-lower'});
-        }else if((o.type||'ysort')==='ysort')items.push({kind:'decor',obj:o,sortY:o.y});
+        }else if(o.kind!=='npc'&&(o.type||'ysort')==='ysort')items.push({kind:'decor',obj:o,sortY:o.y});
       }
       items.sort((a,b)=>a.sortY-b.sortY);
       for(const it of items){if(it.kind==='player')this.drawPlayer(c);else this.drawDecorObject(c,it.obj,it.part)}
     }
-    drawDecorFront(c){if(this.editorActive&&this.editor&&!this.editor.visibility.decor)return;for(const o of this.area.decor||[]){if(o.type==='split')this.drawDecorObject(c,o,'front');if(o.kind==='entrance'&&o.passageAxis==='x')this.drawDecorObject(c,o,'lateral-upper')}}
+    drawDecorFront(c){if(this.editorActive&&this.editor&&!this.editor.visibility.decor)return;for(const o of this.area.decor||[]){if(o.type==='split')this.drawDecorObject(c,o,'front');if(o.kind==='entrance'&&o.passageAxis==='x')this.drawDecorObject(c,o,'lateral-upper');if(o.kind==='npc')this.drawDecorObject(c,o,'front')}}
     decorFrameAsset(o,part){if(part==='back'&&o.backAsset)return o.backAsset;if(part==='front'&&o.frontAsset)return o.frontAsset;const anim=o.animation;if(anim?.frames?.length){const fps=anim.fps||4,idx=Math.floor(performance.now()/1000*fps)%anim.frames.length;return anim.frames[idx]}return o.asset}
     drawDecorObject(c,o,part){const asset=this.decorFrameAsset(o,part);if(!asset)return;let im=this.decorImages[asset];if(!im){im=new Image();im.src=asset;this.decorImages[asset]=im}if(!im.complete)return;const sc=o.scale||1,w=(o.width||im.naturalWidth||1)*sc,h=(o.height||im.naturalHeight||1)*sc,ax=o.anchorX??.5,ay=o.anchorY??1;c.save();c.translate(o.x,o.y);if(o.rotation)c.rotate(o.rotation*Math.PI/180);if(o.kind==='entrance'&&o.passageAxis==='x'&&(part==='lateral-upper'||part==='lateral-lower')){
         // Roof is always above the player, the lower façade is depth sorted.

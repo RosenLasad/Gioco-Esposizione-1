@@ -1410,6 +1410,14 @@
       "r": 65,
       "title": "1.2. Padiglione dei Sapori - Ristorante",
       "text": "Hotspot di prova creato in Modalità Test."
+    },
+    {
+      "id": "npc-bigliettaio-ingresso-principale",
+      "x": 2430,
+      "y": 2028,
+      "r": 72,
+      "title": "Bigliettaio dell’ingresso principale",
+      "text": "Benvenuto all’Esposizione di Genova! Il bigliettaio dell’ingresso principale è pronto a timbrare il tuo biglietto e a consegnarti la mappa dell’Esposizione, la moneta di benvenuto e l’ombrello omaggio."
     }
   ],
   "gates": [
