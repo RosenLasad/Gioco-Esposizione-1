@@ -365,9 +365,9 @@
       "y": 2060,
       "anchorX": 0.5,
       "anchorY": 1,
-      "scale": 0.115,
+      "scale": 0.055,
       "rotation": 0,
-      "collisionRadius": 160,
+      "collisionRadius": 12,
       "width": 1086,
       "height": 1448
     },
