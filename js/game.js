@@ -79,10 +79,44 @@
     checkHotspots(){let best=null,bd=1e9;for(const h of this.area.hotspots||[]){const d=dist(this.player.x,this.player.y,h.x,h.y);if(d<h.r+80&&d<bd){best=h;bd=d}}this.nearHotspot=best;this.ui.onPrompt(best?`E · ${best.title}`:'')}
     interact(){if(this.paused||this.editorActive)return;if(this.nearHotspot)this.ui.onInteract(this.nearHotspot)}
     checkGates(){if(this.transitionArrivalGate){const g=this.transitionArrivalGate;if(this.player.x>=g.x&&this.player.x<=g.x+g.w&&this.player.y>=g.y&&this.player.y<=g.y+g.h)return;this.transitionArrivalGate=null}if(this.transitionLock>0)return;for(const g of this.area.gates||[]){if(this.player.x>=g.x&&this.player.x<=g.x+g.w&&this.player.y>=g.y&&this.player.y<=g.y+g.h){this.activateGate(g);break}}}
+    // Dopo Annulla, allontana il giocatore dal varco d'uscita evitando
+    // zone non percorribili, ostacoli e gli altri varchi.
+    moveAwayFromExit(g){
+      const p=this.player;
+      const margin=Math.max(35,p.r+15);
+      const cx=g.x+g.w/2,cy=g.y+g.h/2;
+      const candidates=[];
+      // Cerca prima nelle immediate vicinanze, privilegiando il lato interno.
+      for(const distance of [margin,margin+25,margin+55,margin+95,margin+150,margin+220]){
+        for(const [x,y] of [
+          [p.x,g.y-distance],
+          [p.x,g.y+g.h+distance],
+          [g.x-distance,p.y],
+          [g.x+g.w+distance,p.y],
+          [cx,g.y-distance],
+          [cx,g.y+g.h+distance],
+          [g.x-distance,cy],
+          [g.x+g.w+distance,cy]
+        ])candidates.push({x,y});
+      }
+      // Posizioni alternative verso il centro, utili in presenza di ostacoli.
+      const center=this.area.spawn;
+      for(let t=.08;t<=1.001;t+=.08)candidates.push({x:p.x+(center.x-p.x)*t,y:p.y+(center.y-p.y)*t});
+      const valid=q=>Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+        !(this.area.gates||[]).some(h=>q.x>=h.x-margin&&q.x<=h.x+h.w+margin&&q.y>=h.y-margin&&q.y<=h.y+h.h+margin)&&
+        this.isWalkable(q.x,q.y,p.r);
+      const destination=candidates.filter(valid).sort((a,b)=>dist(p.x,p.y,a.x,a.y)-dist(p.x,p.y,b.x,b.y))[0]
+        || (valid(center)?center:null);
+      if(destination){p.x=destination.x;p.y=destination.y;this.cameraToPlayer();this.checkHotspots();this.requestSave()}
+      // Protezione anche quando non esiste un punto vicino percorribile.
+      this.transitionArrivalGate=g;
+      this.transitionLock=1;
+      this.keys.clear();this.joy.x=0;this.joy.y=0;
+    }
     activateGate(g){
       this.transitionLock=1;
       if(g.type==='exit'){
-        if(this.ui.onExitGate){this.setPaused(true);this.ui.onExitGate(g,()=>{this.setPaused(false);this.transitionLock=1},()=>{this.setPaused(false);this.transitionLock=.8})}else{this.toast(g.message||"Uscita dall'Esposizione");this.transitionLock=.8}
+        if(this.ui.onExitGate){this.setPaused(true);this.ui.onExitGate(g,()=>{this.setPaused(false);this.transitionLock=1},()=>{this.moveAwayFromExit(g);this.setPaused(false)})}else{this.toast(g.message||"Uscita dall'Esposizione");this.transitionLock=.8}
         return;
       }
       const target=this.areas[g.target];
