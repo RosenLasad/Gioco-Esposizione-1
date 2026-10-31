@@ -372,7 +372,7 @@
     if(active && window.history.state?.esposizioneGameLayer)window.history.back();
   }
   function backInMinigame(){
-    for(const id of ['bombarda','battleship','telegrafo','bussolotti','macchinista']){
+    for(const id of ['occhio-artista','bombarda','battleship','telegrafo','bussolotti','macchinista']){
       const game=minigames.get(id);
       if(game?.isOpen()){
         if(game.back)game.back();else game.close();

@@ -1,0 +1,12 @@
+L’OCCHIO DELL’ARTISTA – base v1 (Esposizione v4.8)
+
+TEST: aprire games/40-palazzo-belle-arti/minigames/occhio-artista/index.html tramite server locale oppure avviare dal pulsante nel Padiglione 40.
+Le 30 immagini SVG sono SEGNAPOSTO DIDATTICI e NON dipinti autentici.
+Catalogo: quadri.js contiene 15 coppie (pic1–pic15) in tre gruppi da cinque.
+Sostituire i file immagini e modificare original/modified in quadri.js (es. pic1.1.png, pic1.2.png).
+Le differenze in quadri.js sono coordinate percentuali rispetto all’immagine 2: x,y e raggi rx,ry.
+Definire le zone con precisione dopo la realizzazione delle immagini definitive.
+L’ordine dei cinque quadri per difficoltà viene estratto all’inizio della partita e conservato in localStorage.
+La musica non è ancora inserita; opzione preparata ma nessuna traccia riprodotta.
+Timer: cronometro interno predisposto, non ancora mostrato come HUD; affinamento futuro.
+Lo zoom è semplice, senza trascinamento/pan: da rifinire con i dipinti definitivi.
