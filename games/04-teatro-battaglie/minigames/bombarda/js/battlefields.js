@@ -4,7 +4,7 @@
   // Le immagini sono opzionali: usare il solo nome file, senza cambiare i percorsi esistenti.
   // assetReady: false evita richieste di rete finche' le immagini non saranno pronte.
   const levels = {};
-  for(let id=1;id<=6;id++){
+  for(let id=1;id<=16;id++){
     const folder=ROOT+'level_'+String(id).padStart(2,'0')+'/';
     levels[id]={
       id, enabled: id===1, horizonY: id===1?435:435,
@@ -66,6 +66,29 @@
       maskImage:'coverRight',alphaThreshold:40,
       points:[[720,424],[674,441],[632,468],[607,507],[584,569],[578,674],[612,732],[720,749]]}
   ];
+  // Nuove missioni: copia indipendente della configurazione del livello 1.
+  // I PNG sono duplicati in cartelle dedicate; percorsi e nebbia sono personalizzabili.
+  const newLevelFolders = {
+    7: 'level_07_portovenere',
+    8: 'level_08_pola',
+    9: 'level_09_curzola',
+    10: 'level_10_chio',
+    11: 'level_11_corsari_nel_golfo',
+    12: 'level_12_rapallo',
+    13: 'level_13_chioggia',
+    14: 'level_14_la_meloria',
+    15: 'level_15_caffa',
+    16: 'level_16_sampierdarena',
+  };
+  for(const [rawId,folderName] of Object.entries(newLevelFolders)){
+    const id=Number(rawId), source=levels[1], folder=ROOT+folderName+'/';
+    const copy=JSON.parse(JSON.stringify(source));
+    copy.id=id;
+    copy.images=Object.fromEntries(Object.entries(source.images).map(([key,path])=>
+      [key,folder+path.substring(path.lastIndexOf('/')+1)]));
+    // I livelli 7-16 usano immagini e dati indipendenti, senza alterare il livello 1.
+    levels[id]=copy;
+  }
   // La sagoma poligonale NON blocca piu le cannonate: e usata solo dalla navigazione.
   function pointInPolygon(x,y,polygon){
     let inside=false;

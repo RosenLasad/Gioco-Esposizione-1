@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  // Sei livelli pilota. Il tempo ora e' crescente: ogni livello termina
+  // Sei livelli originali e dieci nuove missioni basate sul livello 1. Il tempo ora e' crescente: ogni livello termina
   // quando sono state generate e distrutte tutte le navi previste.
   window.BOMBARDA_LEVELS = [
     {
@@ -150,6 +150,76 @@
       },
       theme: 'stone-night',
       music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_06.mp3', ready: false }
+    },
+    {
+      id: 7, title: "Portovenere", location: "Portovenere", faction: "Pisa", assetFaction: "pisa", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 8, title: "Pola", location: "Pola", faction: "Venezia", assetFaction: "venice", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 9, title: "Curzola", location: "Curzola", faction: "Venezia", assetFaction: "venice", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 10, title: "Chio", location: "Chio", faction: "Ottomani", assetFaction: "ottoman", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 11, title: "Corsari nel golfo", location: "Corsari nel golfo", faction: "Pirati", assetFaction: "rival", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 12, title: "Rapallo", location: "Rapallo", faction: "Pisa", assetFaction: "pisa", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 13, title: "Chioggia", location: "Chioggia", faction: "Pisa", assetFaction: "pisa", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 14, title: "La Meloria", location: "La Meloria", faction: "Pisa", assetFaction: "pisa", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 15, title: "Caffa", location: "Caffa", faction: "Ottomani", assetFaction: "ottoman", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
+    },
+    {
+      id: 16, title: "Sampierdarena", location: "Sampierdarena", faction: "Francia", assetFaction: "france", difficulty: 'Facile',
+      smallTotal: 6, largeTotal: 1, smallSpeed: 29, spawnSmallEvery: 3.6,
+      spawnLargeEvery: 12.5, maxSmalls: 5, maxLarges: 1, largeHP: 4,
+      largeFireMin: 5.2, largeFireMax: 6.4, flagship: null, theme: 'stone-light',
+      music: { path: 'games/04-teatro-battaglie/minigames/bombarda/audio/music/levels/level_01.mp3', ready: true }
     }
   ];
 })();

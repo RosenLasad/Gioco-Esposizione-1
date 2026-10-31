@@ -215,7 +215,7 @@
 
   function pilotSea(){
     const bf=window.BombardaBattlefields;
-    return state && state.levelId===1 && bf && bf.enabled(1) ? bf.level(1).navigation : null;
+    return state && bf && bf.enabled(state.levelId) ? bf.level(state.levelId).navigation : null;
   }
   function pilotStart(zone){
     const x0=zone.xMin*W,x1=zone.xMax*W;
@@ -225,7 +225,7 @@
     const nav=pilotSea();
     if(nav && s.pilotApproach){
       if(s.routeId!=null){
-        const route=window.BombardaBattlefields.level(1).routes.find(r=>r.id===s.routeId&&r.type===s.type);
+        const route=window.BombardaBattlefields.level(state.levelId).routes.find(r=>r.id===s.routeId&&r.type===s.type);
         if(route){
           let done=0,total=0;
           for(let i=1;i<route.points.length;i++){
@@ -248,12 +248,12 @@
   }
   function pilotRoute(type,ordinal){
     const bf=window.BombardaBattlefields;
-    const all=bf && bf.enabled(1) ? (bf.level(1).routes||[]).filter(r=>r.type===type&&r.points.length>1) : [];
+    const all=bf && state && bf.enabled(state.levelId) ? (bf.level(state.levelId).routes||[]).filter(r=>r.type===type&&r.points.length>1) : [];
     return all.length ? all[ordinal%all.length] : null;
   }
   function advancePilotRoute(s,dt){
     const bf=window.BombardaBattlefields;
-    const route=bf && bf.level(1).routes.find(r=>r.id===s.routeId&&r.type===s.type);
+    const route=bf && state && bf.level(state.levelId).routes.find(r=>r.id===s.routeId&&r.type===s.type);
     if(!route)return false;
     let remaining=dt,iterations=0;
     while(remaining>0 && iterations++<20){
@@ -380,7 +380,7 @@
             const bf=window.BombardaBattlefields;
             const side=s.pilotSide || (s.x<W/2?'sinistro':'destro');
             s.pilotSide=side;
-            const edge=bf&&bf.innerCoverEdgeAt ? bf.innerCoverEdgeAt(1,side,s.y+a.lookAhead) : null;
+            const edge=bf&&bf.innerCoverEdgeAt ? bf.innerCoverEdgeAt(state.levelId,side,s.y+a.lookAhead) : null;
             if(edge!==null){
               const safeX=side==='sinistro'?edge+a.margin:edge-a.margin;
               const delta=side==='sinistro'?Math.max(0,safeX-s.x):Math.min(0,safeX-s.x);
@@ -592,7 +592,7 @@
     drawAimLine();
     // Livello 1: ingresso delle navi dalla foschia, piu in basso dell'orizzonte.
     // Il movimento resta invariato: soltanto il disegno e' mascherato.
-    if(levelId===1 && battlefield && battlefield.enabled(levelId)){
+    if(battlefield && battlefield.enabled(levelId) && battlefield.level(levelId).shipRevealY!=null){
       const scene=battlefield.level(levelId);
       const revealY=Math.max(0,Math.min(H,Number(scene.shipRevealY)||480));
       const fadeHeight=Math.max(1,Number(scene.shipRevealFade)||60);
