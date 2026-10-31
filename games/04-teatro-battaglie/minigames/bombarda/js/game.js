@@ -589,7 +589,28 @@
       else drawFrame();
       ctx.restore();return;
     }
-    drawAimLine();drawShips();
+    drawAimLine();
+    // Livello 1: ingresso delle navi dalla foschia, piu in basso dell'orizzonte.
+    // Il movimento resta invariato: soltanto il disegno e' mascherato.
+    if(levelId===1 && battlefield && battlefield.enabled(levelId)){
+      const scene=battlefield.level(levelId);
+      const revealY=Math.max(0,Math.min(H,Number(scene.shipRevealY)||480));
+      const fadeHeight=Math.max(1,Number(scene.shipRevealFade)||60);
+      // Fasce progressive: evita il bordo netto che appariva tagliando le vele.
+      const alphaSteps=[.10,.28,.52,.78,1];
+      for(let i=0;i<alphaSteps.length;i++){
+        const top=revealY+fadeHeight*i/(alphaSteps.length-1);
+        const bottom=i===alphaSteps.length-1?H:revealY+fadeHeight*(i+1)/(alphaSteps.length-1);
+        if(bottom<=top)continue;
+        ctx.save();
+        ctx.beginPath();ctx.rect(0,top,W,bottom-top);ctx.clip();
+        ctx.globalAlpha*=alphaSteps[i];
+        drawShips();
+        ctx.restore();
+      }
+    }else{
+      drawShips();
+    }
     if(battlefield && battlefield.drawFog) battlefield.drawFog(ctx,levelId,true);
     if(battlefield && battlefield.hasImage(levelId,'coverRight')) battlefield.drawLayer(ctx,levelId,'coverRight',W,H);
     else if(battlefield && battlefield.drawObstacles) battlefield.drawObstacles(ctx,levelId);

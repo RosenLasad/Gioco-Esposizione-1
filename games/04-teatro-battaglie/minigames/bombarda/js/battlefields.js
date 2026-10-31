@@ -55,7 +55,11 @@
   levels[1].forbidden=[];
   // D0.4: due promontori pilota. Coordinate del Canvas 720x1280.
   // Le sagome sono condivise da disegno e collisioni, evitando disallineamenti.
-  levels[1].fog={enabled:true,opacity:.84,y:435,height:158,driftSpeed:.03};
+  // La foschia e' centrata piu in basso: il bordo del mare resta nascosto.
+  levels[1].fog={enabled:true,opacity:.90,y:480,height:166,driftSpeed:.03};
+  // Ritardo puramente visivo, indipendente dai waypoint e dagli spawn.
+  levels[1].shipRevealY=480;
+  levels[1].shipRevealFade=60;
   levels[1].obstacles=[
     {id:'promontorio-destro',blocksShots:true,fill:'#405b55',edge:'#718778',
       // Maschera alpha per le cannonate. Il poligono guida solo le navi.
@@ -167,8 +171,12 @@
     const center=f.y+(front?42:20),half=f.height*(front?.62:.84);
     const opacity=f.opacity*(front?.78:.82);
 
+    // Estensione solo verso il cielo: posizione e bordo inferiore invariati.
+    const upperExtension=70;
+    const top=center-half-upperExtension;
+    const bottom=center+half;
     // Corpo principale della nebbia.
-    const gradient=ctx.createLinearGradient(0,center-half,0,center+half);
+    const gradient=ctx.createLinearGradient(0,top,0,bottom);
     gradient.addColorStop(0,'rgba(218,227,222,0)');
     gradient.addColorStop(.24,`rgba(214,224,220,${opacity*.24})`);
     gradient.addColorStop(.44,`rgba(219,228,224,${opacity*.72})`);
@@ -176,18 +184,20 @@
     gradient.addColorStop(.72,`rgba(219,228,224,${opacity*.62})`);
     gradient.addColorStop(1,'rgba(218,227,222,0)');
     ctx.fillStyle=gradient;
-    ctx.fillRect(0,center-half,720,half*2);
+    ctx.fillRect(0,top,720,bottom-top);
 
     // Seconda velatura piu morbida e larga per unire cielo e mare senza stacco netto.
     const outerHalf=half*1.22;
-    const outer=ctx.createLinearGradient(0,center-outerHalf,0,center+outerHalf);
+    const outerTop=center-outerHalf-upperExtension;
+    const outerBottom=center+outerHalf;
+    const outer=ctx.createLinearGradient(0,outerTop,0,outerBottom);
     outer.addColorStop(0,'rgba(224,231,227,0)');
     outer.addColorStop(.38,`rgba(224,231,227,${opacity*.16})`);
     outer.addColorStop(.50,`rgba(236,240,235,${opacity*.34})`);
     outer.addColorStop(.62,`rgba(224,231,227,${opacity*.16})`);
     outer.addColorStop(1,'rgba(224,231,227,0)');
     ctx.fillStyle=outer;
-    ctx.fillRect(0,center-outerHalf,720,outerHalf*2);
+    ctx.fillRect(0,outerTop,720,outerBottom-outerTop);
 
     // Addensamenti mobili della foschia.
     for(let i=0;i<9;i++){
