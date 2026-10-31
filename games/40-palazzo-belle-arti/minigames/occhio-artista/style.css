@@ -27,3 +27,6 @@
 #occhioArtista .oa-gallery{touch-action:pan-x pan-y;}
 #occhioArtista .oa-hitlayer{touch-action:pan-x pan-y;}
 #occhioArtista .oa-gallery.oa-gallery-zoom .oa-frame.oa-zoom{max-width:none;}
+
+/* v1.4: i dipinti 4:3 non vengono deformati nella cornice */
+#occhioArtista .oa-frame.oa-artwork-4x3{aspect-ratio:4/3;}

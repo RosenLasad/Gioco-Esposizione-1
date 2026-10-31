@@ -3,33 +3,16 @@ window.OcchioArtistaQuadri = [
   {
     "id": "pic1",
     "difficulty": "facile",
-    "title": "Quadro dimostrativo 01",
-    "original": "images/pic1.1.svg",
-    "modified": "images/pic1.2.svg",
+    "title": "La vocazione di San Matteo · Caravaggio",
+    "original": "images/pic1.1.png",
+    "modified": "images/pic1.2.png",
     "differences": [
-      {
-        "id": "d1",
-        "x": 22,
-        "y": 28,
-        "rx": 6,
-        "ry": 6
-      },
-      {
-        "id": "d2",
-        "x": 67,
-        "y": 24,
-        "rx": 6,
-        "ry": 6
-      },
-      {
-        "id": "d3",
-        "x": 52,
-        "y": 67,
-        "rx": 6,
-        "ry": 6
-      }
-    ],
-    "placeholder": true
+      {"id":"d1","x":27.7,"y":82.3,"rx":2.7,"ry":2.7},
+      {"id":"d2","x":45.0,"y":85.0,"rx":4.1,"ry":3.3},
+      {"id":"d3","x":22.8,"y":28.1,"rx":4.0,"ry":4.0},
+      {"id":"d4","x":64.0,"y":38.0,"rx":4.0,"ry":3.8},
+      {"id":"d5","x":54.2,"y":85.5,"rx":2.9,"ry":3.0}
+    ]
   },
   {
     "id": "pic2",
