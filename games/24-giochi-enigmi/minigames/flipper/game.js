@@ -15,7 +15,15 @@ function resizePlayfield(){
 if(typeof ResizeObserver!=='undefined')new ResizeObserver(resizePlayfield).observe(canvasBox);
 window.addEventListener('resize',resizePlayfield);
 
-const TABLE={gravity:620,restitution:.87,wall:17,ballRadius:8,bumper:[{x:125,y:205,r:26,score:100},{x:299,y:210,r:26,score:100},{x:211,y:315,r:29,score:150}],posts:[{x:83,y:660,r:12},{x:356,y:660,r:12}],targets:[{x:76,y:335,w:17,h:64,score:50},{x:348,y:335,w:17,h:64,score:50}],leftPivot:{x:112,y:765},rightPivot:{x:328,y:765},flipperLength:108};
+// Geometria importata dall'Editor Tavola 1, nelle stesse coordinate 440 x 840.
+// ID e dati sono mantenuti come nel JSON, compresi gli oggetti duplicati.
+const OBJECTS=[{"id":"B1","type":"bumper","label":"Bumper alto sinistra","x":125,"y":205,"r":26,"score":100},{"id":"B2","type":"bumper","label":"Bumper alto destra","x":299,"y":210,"r":26,"score":100},{"id":"B3","type":"bumper","label":"Bumper centrale","x":211.9,"y":335.1,"r":29,"score":150},{"id":"T1","type":"target","label":"Target sinistro","x":76,"y":335,"w":17,"h":64,"score":50},{"id":"T2","type":"target","label":"Target destro","x":348,"y":335,"w":17,"h":64,"score":50},{"id":"P1","type":"post","label":"Piolo sinistro","x":83,"y":660,"r":12},{"id":"P2","type":"post","label":"Piolo destro","x":356,"y":660,"r":12},{"id":"R1","type":"rail","label":"Tavola 1","x":78,"y":129.6,"x2":175.7,"y2":163.4},{"id":"R2","type":"rail","label":"Guida superiore destra","x":385.7,"y":147.9,"x2":347,"y2":98},{"id":"S1","type":"slingshot","label":"Slingshot sinistro","x":26,"y":680,"x2":112,"y2":766},{"id":"S2","type":"slingshot","label":"Slingshot destro","x":383.9,"y":681,"x2":328,"y2":766},{"id":"F1","type":"flipper","label":"Paletta sinistra","x":112,"y":765,"length":88.1,"angle":-0.4275806938920429,"side":"left"},{"id":"F2","type":"flipper","label":"Paletta destra","x":328,"y":765,"length":88.5,"angle":-2.7046226706966303,"side":"right"},{"id":"L1","type":"launcher","label":"Canale di lancio","x":385,"y":165,"x2":385,"y2":810},{"id":"R2_copia","type":"rail","label":"Guida superiore destra copia","x":385.7,"y":814.3,"x2":385.7,"y2":146.1},{"id":"B3_copia","type":"bumper","label":"Bumper centrale copia","x":214.6,"y":497.5,"r":29,"score":150}];
+const byType=type=>OBJECTS.filter(o=>o.type===type);
+const TABLE={gravity:620,restitution:.87,wall:17,ballRadius:8,
+ bumper:byType('bumper'),posts:byType('post'),targets:byType('target'),
+ rails:byType('rail'),slingshots:byType('slingshot'),launcher:byType('launcher')[0],
+ flippers:{left:OBJECTS.find(o=>o.type==='flipper'&&o.side==='left'),right:OBJECTS.find(o=>o.type==='flipper'&&o.side==='right')}};
+
 let phase='closed',score=0,remaining=3,ball=null,held={left:false,right:false},angles={left:0,right:0},last=0,raf=0,launchReady=false,hitTimes=new Map();
 const recordKey='esposizione-flipper-record-v1';
 // Salvataggio esclusivo del flipper: nessuna lettura o scrittura dei dati dell'Esposizione.
@@ -45,7 +53,7 @@ function drain(){remaining--;setHud();if(remaining<=0){overlay('Partita terminat
 function addPoints(n){score+=n;setHud()}
 function bump(x,y,r,scoreValue,id){const dx=ball.x-x,dy=ball.y-y,d=Math.hypot(dx,dy)||1,min=r+ball.r;if(d>=min)return;const nx=dx/d,ny=dy/d;ball.x=x+nx*(min+.3);ball.y=y+ny*(min+.3);let impact=ball.vx*nx+ball.vy*ny;ball.vx-=(1+TABLE.restitution)*Math.min(impact,0)*nx;ball.vy-=(1+TABLE.restitution)*Math.min(impact,0)*ny;const speed=Math.max(240,Math.hypot(ball.vx,ball.vy));ball.vx+=nx*speed*.32;ball.vy+=ny*speed*.32;const now=performance.now();if(scoreValue&&now-(hitTimes.get(id)||0)>170){addPoints(scoreValue);hitTimes.set(id,now)}}
 function segment(ax,ay,bx,by){let vx=bx-ax,vy=by-ay,t=Math.max(0,Math.min(1,((ball.x-ax)*vx+(ball.y-ay)*vy)/(vx*vx+vy*vy||1)));return {x:ax+vx*t,y:ay+vy*t}}
-function flipperGeometry(side){const pivot=side==='left'?TABLE.leftPivot:TABLE.rightPivot;const active=angles[side],a=side==='left'?(-.30-active*.63):(Math.PI+.30+active*.63);return {x:pivot.x,y:pivot.y,tipx:pivot.x+TABLE.flipperLength*Math.cos(a),tipy:pivot.y+TABLE.flipperLength*Math.sin(a)}}
+function flipperGeometry(side){const f=TABLE.flippers[side];const a=f.angle+(side==='left'?-1:1)*angles[side]*.63;return {x:f.x,y:f.y,tipx:f.x+f.length*Math.cos(a),tipy:f.y+f.length*Math.sin(a)}}
 function flipperPhysics(side){const f=flipperGeometry(side),point=segment(f.x,f.y,f.tipx,f.tipy),dx=ball.x-point.x,dy=ball.y-point.y,d=Math.hypot(dx,dy)||1,min=ball.r+11;if(d>=min)return;const nx=dx/d,ny=dy/d;ball.x+=nx*(min-d+.5);ball.y+=ny*(min-d+.5);const moving=angles[side]>.2&&held[side];ball.vy=-Math.max(moving?720:350,Math.abs(ball.vy)*.8);ball.vx+=(side==='left'?1:-1)*(moving?200:70);if(ball.y>f.y+15)ball.y=f.y-15}
 function update(dt){const smooth=Math.min(1,dt*19);for(const s of ['left','right'])angles[s]+=(Number(held[s])-angles[s])*smooth;
 if(!ball||launchReady)return;const steps=4,h=dt/steps;for(let i=0;i<steps;i++){
@@ -54,15 +62,15 @@ if(ball.y<32+ball.r){ball.y=32+ball.r;ball.vy=Math.abs(ball.vy)*.85}
 if(ball.x<26+ball.r){ball.x=26+ball.r;ball.vx=Math.abs(ball.vx)*.86}
 if(ball.x>414-ball.r){ball.x=414-ball.r;ball.vx=-Math.abs(ball.vx)*.86}
 // Deflettori superiori: due guide inclinate.
-for(const [ax,ay,bx,by] of [[26,145,95,98],[374,145,347,98],[26,680,112,766],[374,680,328,766]]){const p=segment(ax,ay,bx,by),dx=ball.x-p.x,dy=ball.y-p.y,d=Math.hypot(dx,dy)||1;if(d<ball.r+5){const nx=dx/d,ny=dy/d;ball.x+=nx*(ball.r+5-d);ball.y+=ny*(ball.r+5-d);const vn=ball.vx*nx+ball.vy*ny;if(vn<0){ball.vx-=vn*1.8*nx;ball.vy-=vn*1.8*ny}}}
-TABLE.bumper.forEach((b,j)=>bump(b.x,b.y,b.r,b.score,'bumper'+j));TABLE.posts.forEach((b,j)=>bump(b.x,b.y,b.r,0,'post'+j));
-TABLE.targets.forEach((t,j)=>{if(ball.x>t.x-ball.r&&ball.x<t.x+t.w+ball.r&&ball.y>t.y-ball.r&&ball.y<t.y+t.h+ball.r){ball.vx=(j===0?Math.abs(ball.vx):-Math.abs(ball.vx))*(.8)+ (j===0?170:-170);addTarget(j)}});
+for(const obj of [...TABLE.rails,...TABLE.slingshots]){if(ball.inLauncher&&obj.id==='R2_copia')continue;const p=segment(obj.x,obj.y,obj.x2,obj.y2),dx=ball.x-p.x,dy=ball.y-p.y,d=Math.hypot(dx,dy)||1;if(d<ball.r+5){const nx=dx/d,ny=dy/d;ball.x+=nx*(ball.r+5-d);ball.y+=ny*(ball.r+5-d);const vn=ball.vx*nx+ball.vy*ny;if(vn<0){ball.vx-=vn*1.8*nx;ball.vy-=vn*1.8*ny}}}
+TABLE.bumper.forEach(b=>bump(b.x,b.y,b.r,b.score,b.id));TABLE.posts.forEach(b=>bump(b.x,b.y,b.r,0,b.id));
+TABLE.targets.forEach((t,j)=>{if(ball.x>t.x-ball.r&&ball.x<t.x+t.w+ball.r&&ball.y>t.y-ball.r&&ball.y<t.y+t.h+ball.r){const dir=ball.x<t.x+t.w/2?-1:1;ball.vx=dir*(Math.abs(ball.vx)*.8+170);addTarget(j)}});
 flipperPhysics('left');flipperPhysics('right');
 if(ball.y>BOARD_H+10){drain();break}
 }
 if(ball)ball.trail.push({x:ball.x,y:ball.y});if(ball?.trail.length>9)ball.trail.shift();
 }
-function addTarget(i){const now=performance.now();if(now-(hitTimes.get('target'+i)||0)>300){addPoints(TABLE.targets[i].score);hitTimes.set('target'+i,now)}}
+function addTarget(i){const now=performance.now();if(now-(hitTimes.get(TABLE.targets[i].id)||0)>300){addPoints(TABLE.targets[i].score);hitTimes.set(TABLE.targets[i].id,now)}}
 function circle(x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=3;ctx.stroke()}}
 function draw(){const c=ctx;c.clearRect(0,0,BOARD_W,BOARD_H);let g=c.createLinearGradient(0,0,BOARD_W,BOARD_H);g.addColorStop(0,'#1b4e5e');g.addColorStop(.55,'#143544');g.addColorStop(1,'#0c1b29');c.fillStyle=g;c.fillRect(0,0,BOARD_W,BOARD_H);c.strokeStyle='#b88b44';c.lineWidth=10;c.strokeRect(15,14,410,812);c.strokeStyle='#d0a953';c.lineWidth=3;c.strokeRect(24,23,392,794);
 c.fillStyle='#ddb76c';c.font='bold 22px Georgia';c.textAlign='center';c.fillText('✦ COLOMBIADI 1892 ✦',220,67);c.font='13px Georgia';c.fillText('LE MACCHINE DELLE MERAVIGLIE',220,88);
@@ -70,9 +78,9 @@ for(let i=0;i<12;i++){const x=57+(i%6)*65,y=128+Math.floor(i/6)*510;circle(x,y,4
 for(const b of TABLE.bumper){circle(b.x,b.y,b.r+7,'#624d2b','#d2a752');circle(b.x,b.y,b.r,'#b77a31','#fce2a2');circle(b.x,b.y,b.r*.52,'#f6d27c');for(let k=0;k<8;k++){const a=k*Math.PI/4;circle(b.x+Math.cos(a)*b.r*.72,b.y+Math.sin(a)*b.r*.72,3,'#5f3f1d')}}
 for(const t of TABLE.targets){c.fillStyle='#b88c39';c.fillRect(t.x,t.y,t.w,t.h);c.fillStyle='#f2d181';c.fillRect(t.x+4,t.y+6,t.w-8,t.h-12)}
 for(const p of TABLE.posts){circle(p.x,p.y,p.r,'#bca36f','#f2d793')}
-c.strokeStyle='#b49a6c';c.lineWidth=8;c.lineCap='round';for(const [x,y,xx,yy] of [[26,145,95,98],[374,145,347,98],[26,680,112,766],[374,680,328,766]]){c.beginPath();c.moveTo(x,y);c.lineTo(xx,yy);c.stroke()}
+c.lineWidth=8;c.lineCap='round';for(const o of [...TABLE.rails,...TABLE.slingshots]){c.strokeStyle=o.type==='slingshot'?'#e0b574':'#b49a6c';c.beginPath();c.moveTo(o.x,o.y);c.lineTo(o.x2,o.y2);c.stroke()}
 // Canale di lancio sul lato destro.
-c.strokeStyle='#d2a75c';c.lineWidth=4;c.beginPath();c.moveTo(385,810);c.lineTo(385,165);c.stroke();c.fillStyle='#dfbc78';c.font='11px Georgia';c.save();c.translate(402,455);c.rotate(-Math.PI/2);c.fillText('LANCIO',0,0);c.restore();
+c.strokeStyle='#d2a75c';c.lineWidth=4;c.beginPath();c.moveTo(TABLE.launcher.x,TABLE.launcher.y);c.lineTo(TABLE.launcher.x2,TABLE.launcher.y2);c.stroke();c.fillStyle='#dfbc78';c.font='11px Georgia';c.save();c.translate(402,455);c.rotate(-Math.PI/2);c.fillText('LANCIO',0,0);c.restore();
 for(const side of ['left','right']){const f=flipperGeometry(side);c.strokeStyle='#4a251c';c.lineWidth=26;c.beginPath();c.moveTo(f.x,f.y);c.lineTo(f.tipx,f.tipy);c.stroke();c.strokeStyle='#e6a65b';c.lineWidth=18;c.beginPath();c.moveTo(f.x,f.y);c.lineTo(f.tipx,f.tipy);c.stroke();circle(f.x,f.y,11,'#edc985','#573b24')}
 c.fillStyle='#bd9658';c.font='12px Georgia';c.fillText('◀ PALETTE ▶',220,800);
 if(ball){for(let i=0;i<ball.trail.length;i++){const t=ball.trail[i];circle(t.x,t.y,2+i*.35,'rgba(220,228,211,'+(i/ball.trail.length*.25)+')')}const gr=c.createRadialGradient(ball.x-3,ball.y-4,1,ball.x,ball.y,ball.r);gr.addColorStop(0,'white');gr.addColorStop(.45,'#d6dce0');gr.addColorStop(1,'#596b76');circle(ball.x,ball.y,ball.r,gr,'#e8dbba')}
