@@ -220,9 +220,25 @@
   }
   function returnMenu(save){exitWarning.hidden=true;exitWarningPending=false;window.EsposizionePavilions?.close();window.EsposizioneInventory?.close();if(save)game.requestSave();editor.toggle(false);game.stop();screen.classList.remove('active');menu.classList.add('active');pauseOverlay.hidden=true;interactionOverlay.hidden=true;inspectorOverlay.hidden=true;frame.classList.remove('admin-mode','player-mode','layout-portrait','layout-landscape');updateMenu()}
 
-  $('#playerGameBtn').onclick=()=>showOrientationPicker(()=>{window.EsposizioneSave.clear();showGame(null,'player')});
-  $('#newGameBtn').onclick=()=>{window.EsposizioneSave.clear();showGame(null,'admin')};
-  $('#continueBtn').onclick=()=>showOrientationPicker(()=>showGame(window.EsposizioneSave.load(),'player'));
+  // Conferma preventiva: la posizione e l'inventario sono archivi separati.
+  // I progressi dei minigiochi rimangono nei rispettivi salvataggi indipendenti.
+  function confirmNewVisit(){
+    if(!window.EsposizioneSave.load())return true;
+    return window.confirm('Iniziare una nuova partita?\n\nHai gia una partita salvata. Iniziando una nuova partita perderai la posizione e i progressi dell’inventario della visita precedente.\n\nPremi OK per iniziare o Annulla per mantenere il salvataggio.');
+  }
+  $('#playerGameBtn').onclick=()=>{
+    if(!confirmNewVisit())return;
+    showOrientationPicker(()=>{window.EsposizioneSave.clear();showGame(null,'player')});
+  };
+  $('#newGameBtn').onclick=()=>{
+    if(!confirmNewVisit())return;
+    window.EsposizioneSave.clear();showGame(null,'admin');
+  };
+  $('#continueBtn').onclick=()=>showOrientationPicker(()=>{
+    const saved=window.EsposizioneSave.load();
+    if(!saved){updateMenu();return;}
+    showGame(saved,'player');
+  });
   const resetBtn=$('#resetPositionBtn');if(resetBtn)resetBtn.onclick=()=>{window.EsposizioneSave.clear();updateMenu();$('#saveInfo').textContent='Posizione ripristinata. Puoi iniziare una nuova visita.'};
   $('#guideBtn').onclick=()=>$('#guideDialog').showModal();$('#guideClose').onclick=()=>$('#guideDialog').close();
   $('#menuFullscreenBtn').onclick=toggleFullscreen;$('#playerFullscreenBtn').onclick=toggleFullscreen;$('#pauseFullscreenBtn').onclick=toggleFullscreen;
