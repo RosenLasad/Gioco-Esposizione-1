@@ -18,6 +18,36 @@ window.addEventListener('resize',resizePlayfield);
 // Geometria importata dall'Editor Tavola 1, nelle stesse coordinate 440 x 840.
 // ID e dati sono mantenuti come nel JSON, compresi gli oggetti duplicati.
 const OBJECTS=[{"id":"B1","type":"bumper","label":"Bumper alto sinistra","x":125,"y":205,"r":26,"score":100},{"id":"B2","type":"bumper","label":"Bumper alto destra","x":299,"y":210,"r":26,"score":100},{"id":"B3","type":"bumper","label":"Bumper centrale","x":211.9,"y":335.1,"r":29,"score":150},{"id":"T1","type":"target","label":"Target sinistro","x":76,"y":335,"w":17,"h":64,"score":50},{"id":"T2","type":"target","label":"Target destro","x":348,"y":335,"w":17,"h":64,"score":50},{"id":"P1","type":"post","label":"Piolo sinistro","x":83,"y":660,"r":12},{"id":"P2","type":"post","label":"Piolo destro","x":356,"y":660,"r":12},{"id":"R1","type":"rail","label":"Tavola 1","x":78,"y":129.6,"x2":175.7,"y2":163.4},{"id":"R2","type":"rail","label":"Guida superiore destra","x":385.7,"y":147.9,"x2":347,"y2":98},{"id":"S1","type":"slingshot","label":"Slingshot sinistro","x":26,"y":680,"x2":112,"y2":766},{"id":"S2","type":"slingshot","label":"Slingshot destro","x":383.9,"y":681,"x2":328,"y2":766},{"id":"F1","type":"flipper","label":"Paletta sinistra","x":112,"y":765,"length":88.1,"angle":-0.4275806938920429,"side":"left"},{"id":"F2","type":"flipper","label":"Paletta destra","x":328,"y":765,"length":88.5,"angle":-2.7046226706966303,"side":"right"},{"id":"L1","type":"launcher","label":"Canale di lancio","x":385,"y":165,"x2":385,"y2":810},{"id":"R2_copia","type":"rail","label":"Guida superiore destra copia","x":385.7,"y":814.3,"x2":385.7,"y2":146.1},{"id":"B3_copia","type":"bumper","label":"Bumper centrale copia","x":214.6,"y":497.5,"r":29,"score":150}];
+// Manifest immagini. JSON esterno caricato su HTTP; mappa incorporata per file:// offline.
+const assetRoot=new URL('./',document.currentScript?.src || location.href);
+const assetFallback={"format":"colombiadi-flipper-assets","version":1,"table":1,"theme":"bombardamento-genova-1684","board":{"width":440,"height":840},"assets":{"ball":"assets/common/ball/cannonball.svg","B1":"assets/tavola-01-1684/bumpers/bumper_ship_large_01.svg","B2":"assets/tavola-01-1684/bumpers/bumper_ship_large_02.svg","B3":"assets/tavola-01-1684/bumpers/bumper_ship_large_03.svg","B3_copia":"assets/tavola-01-1684/bumpers/bumper_ship_large_04.svg","T1":"assets/tavola-01-1684/targets/target_ship_small_left.svg","T2":"assets/tavola-01-1684/targets/target_ship_small_right.svg","P1":"assets/tavola-01-1684/posts/post_rock_left.svg","P2":"assets/tavola-01-1684/posts/post_rock_right.svg","R1":"assets/tavola-01-1684/rails/rail_rock_upper_left.svg","R2":"assets/tavola-01-1684/rails/rail_rock_upper_right.svg","R2_copia":"assets/tavola-01-1684/rails/rail_rock_vertical_right.svg","S1":"assets/tavola-01-1684/slingshots/slingshot_wall_left.svg","S2":"assets/tavola-01-1684/slingshots/slingshot_wall_right.svg","F1":"assets/tavola-01-1684/flippers/flipper_left_wood.svg","F2":"assets/tavola-01-1684/flippers/flipper_right_wood.svg","L1":"assets/tavola-01-1684/shooter-lane/shooter_lane_wood_right.svg","background":"assets/tavola-01-1684/background/table_background.svg","inlane_left":"assets/tavola-01-1684/inlanes/inlane_left_wood.svg","inlane_right":"assets/tavola-01-1684/inlanes/inlane_right_wood.svg","outlane_left":"assets/tavola-01-1684/outlanes/outlane_left_wood.svg","outlane_right":"assets/tavola-01-1684/outlanes/outlane_right_wood.svg"},"notes":"Indica i file .svg provvisori: il gioco cerca automaticamente prima il .png omonimo nella stessa cartella, poi ripiega sul .svg. Funziona anche offline con file://. Geometria e collisioni non cambiano."};
+const imageAssets=new Map();
+// Per ogni SVG provvisorio, cerca prima il PNG omonimo. Se manca, ripiega sull'SVG.
+// Funziona anche con file://: il test di disponibilita' avviene tramite Image, non fetch.
+function loadImageAsset(id,path){
+  if(typeof path!=='string'||!path||path.includes('..')||/^[a-z]+:/i.test(path))return;
+  const paths=/\.svg$/i.test(path)?[path.replace(/\.svg$/i,'.png'),path]:[path];
+  const entry={img:null,ready:false};
+  imageAssets.set(id,entry);
+  function tryPath(index){
+    if(imageAssets.get(id)!==entry)return; // ignora caricamenti precedenti al nuovo manifest
+    if(index>=paths.length){entry.ready=false;return;}
+    const img=new Image();
+    img.onload=()=>{
+      if(imageAssets.get(id)!==entry)return;
+      entry.img=img;entry.ready=true;
+      if(typeof draw==='function'&&phase!=='playing')draw();
+    };
+    img.onerror=()=>tryPath(index+1);
+    img.src=new URL(paths[index],assetRoot).href;
+  }
+  tryPath(0);
+}
+function applyAssetManifest(data){if(!data||data.format!=='colombiadi-flipper-assets'||data.table!==1||!data.assets)return;for(const [id,path] of Object.entries(data.assets))loadImageAsset(id,path);}
+applyAssetManifest(assetFallback);
+if(location.protocol!=='file:')fetch(new URL('manifest/tavola-01-assets.json',assetRoot)).then(r=>r.ok?r.json():null).then(v=>{if(v)applyAssetManifest(v)}).catch(()=>{});
+function imageCentered(id,x,y,w,h,rotation=0){const a=imageAssets.get(id);if(!a?.ready)return false;ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.drawImage(a.img,-w/2,-h/2,w,h);ctx.restore();return true;}
+function imageRail(o){const dx=o.x2-o.x,dy=o.y2-o.y,l=Math.hypot(dx,dy);return imageCentered(o.id,(o.x+o.x2)/2,(o.y+o.y2)/2,l+12,20,Math.atan2(dy,dx))}
 const byType=type=>OBJECTS.filter(o=>o.type===type);
 const TABLE={gravity:620,restitution:.87,wall:17,ballRadius:8,
  bumper:byType('bumper'),posts:byType('post'),targets:byType('target'),
@@ -75,15 +105,15 @@ function circle(x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ct
 function draw(){const c=ctx;c.clearRect(0,0,BOARD_W,BOARD_H);let g=c.createLinearGradient(0,0,BOARD_W,BOARD_H);g.addColorStop(0,'#1b4e5e');g.addColorStop(.55,'#143544');g.addColorStop(1,'#0c1b29');c.fillStyle=g;c.fillRect(0,0,BOARD_W,BOARD_H);c.strokeStyle='#b88b44';c.lineWidth=10;c.strokeRect(15,14,410,812);c.strokeStyle='#d0a953';c.lineWidth=3;c.strokeRect(24,23,392,794);
 c.fillStyle='#ddb76c';c.font='bold 22px Georgia';c.textAlign='center';c.fillText('✦ COLOMBIADI 1892 ✦',220,67);c.font='13px Georgia';c.fillText('LE MACCHINE DELLE MERAVIGLIE',220,88);
 for(let i=0;i<12;i++){const x=57+(i%6)*65,y=128+Math.floor(i/6)*510;circle(x,y,4,'#a17f4a')}
-for(const b of TABLE.bumper){circle(b.x,b.y,b.r+7,'#624d2b','#d2a752');circle(b.x,b.y,b.r,'#b77a31','#fce2a2');circle(b.x,b.y,b.r*.52,'#f6d27c');for(let k=0;k<8;k++){const a=k*Math.PI/4;circle(b.x+Math.cos(a)*b.r*.72,b.y+Math.sin(a)*b.r*.72,3,'#5f3f1d')}}
-for(const t of TABLE.targets){c.fillStyle='#b88c39';c.fillRect(t.x,t.y,t.w,t.h);c.fillStyle='#f2d181';c.fillRect(t.x+4,t.y+6,t.w-8,t.h-12)}
-for(const p of TABLE.posts){circle(p.x,p.y,p.r,'#bca36f','#f2d793')}
-c.lineWidth=8;c.lineCap='round';for(const o of [...TABLE.rails,...TABLE.slingshots]){c.strokeStyle=o.type==='slingshot'?'#e0b574':'#b49a6c';c.beginPath();c.moveTo(o.x,o.y);c.lineTo(o.x2,o.y2);c.stroke()}
+for(const b of TABLE.bumper){if(imageCentered(b.id,b.x,b.y,(b.r+7)*2,(b.r+7)*2))continue;circle(b.x,b.y,b.r+7,'#624d2b','#d2a752');circle(b.x,b.y,b.r,'#b77a31','#fce2a2');circle(b.x,b.y,b.r*.52,'#f6d27c');for(let k=0;k<8;k++){const a=k*Math.PI/4;circle(b.x+Math.cos(a)*b.r*.72,b.y+Math.sin(a)*b.r*.72,3,'#5f3f1d')}}
+for(const t of TABLE.targets){if(imageCentered(t.id,t.x+t.w/2,t.y+t.h/2,t.w,t.h))continue;c.fillStyle='#b88c39';c.fillRect(t.x,t.y,t.w,t.h);c.fillStyle='#f2d181';c.fillRect(t.x+4,t.y+6,t.w-8,t.h-12)}
+for(const p of TABLE.posts){if(!imageCentered(p.id,p.x,p.y,p.r*2,p.r*2))circle(p.x,p.y,p.r,'#bca36f','#f2d793')}
+c.lineWidth=8;c.lineCap='round';for(const o of [...TABLE.rails,...TABLE.slingshots]){if(imageRail(o))continue;c.strokeStyle=o.type==='slingshot'?'#e0b574':'#b49a6c';c.beginPath();c.moveTo(o.x,o.y);c.lineTo(o.x2,o.y2);c.stroke()}
 // Canale di lancio sul lato destro.
-c.strokeStyle='#d2a75c';c.lineWidth=4;c.beginPath();c.moveTo(TABLE.launcher.x,TABLE.launcher.y);c.lineTo(TABLE.launcher.x2,TABLE.launcher.y2);c.stroke();c.fillStyle='#dfbc78';c.font='11px Georgia';c.save();c.translate(402,455);c.rotate(-Math.PI/2);c.fillText('LANCIO',0,0);c.restore();
-for(const side of ['left','right']){const f=flipperGeometry(side);c.strokeStyle='#4a251c';c.lineWidth=26;c.beginPath();c.moveTo(f.x,f.y);c.lineTo(f.tipx,f.tipy);c.stroke();c.strokeStyle='#e6a65b';c.lineWidth=18;c.beginPath();c.moveTo(f.x,f.y);c.lineTo(f.tipx,f.tipy);c.stroke();circle(f.x,f.y,11,'#edc985','#573b24')}
+if(!imageRail(TABLE.launcher)){c.strokeStyle='#d2a75c';c.lineWidth=4;c.beginPath();c.moveTo(TABLE.launcher.x,TABLE.launcher.y);c.lineTo(TABLE.launcher.x2,TABLE.launcher.y2);c.stroke();}c.fillStyle='#dfbc78';c.font='11px Georgia';c.save();c.translate(402,455);c.rotate(-Math.PI/2);c.fillText('LANCIO',0,0);c.restore();
+for(const side of ['left','right']){const f=flipperGeometry(side);if(imageCentered(TABLE.flippers[side].id,(f.x+f.tipx)/2,(f.y+f.tipy)/2,TABLE.flippers[side].length+25,29,Math.atan2(f.tipy-f.y,f.tipx-f.x)))continue;c.strokeStyle='#4a251c';c.lineWidth=26;c.beginPath();c.moveTo(f.x,f.y);c.lineTo(f.tipx,f.tipy);c.stroke();c.strokeStyle='#e6a65b';c.lineWidth=18;c.beginPath();c.moveTo(f.x,f.y);c.lineTo(f.tipx,f.tipy);c.stroke();circle(f.x,f.y,11,'#edc985','#573b24')}
 c.fillStyle='#bd9658';c.font='12px Georgia';c.fillText('◀ PALETTE ▶',220,800);
-if(ball){for(let i=0;i<ball.trail.length;i++){const t=ball.trail[i];circle(t.x,t.y,2+i*.35,'rgba(220,228,211,'+(i/ball.trail.length*.25)+')')}const gr=c.createRadialGradient(ball.x-3,ball.y-4,1,ball.x,ball.y,ball.r);gr.addColorStop(0,'white');gr.addColorStop(.45,'#d6dce0');gr.addColorStop(1,'#596b76');circle(ball.x,ball.y,ball.r,gr,'#e8dbba')}
+if(ball){for(let i=0;i<ball.trail.length;i++){const t=ball.trail[i];circle(t.x,t.y,2+i*.35,'rgba(220,228,211,'+(i/ball.trail.length*.25)+')')}const gr=c.createRadialGradient(ball.x-3,ball.y-4,1,ball.x,ball.y,ball.r);gr.addColorStop(0,'white');gr.addColorStop(.45,'#d6dce0');gr.addColorStop(1,'#596b76');if(!imageCentered('ball',ball.x,ball.y,ball.r*2,ball.r*2))circle(ball.x,ball.y,ball.r,gr,'#e8dbba')}
 }
 function loop(now){raf=0;if(phase!=='playing')return;const dt=Math.min(.035,Math.max(0,(now-last)/1000));last=now;update(dt);draw();if(phase==='playing'){saveGame();raf=requestAnimationFrame(loop)}}
 $('flipperStart').addEventListener('click',start);$('flipperExit').addEventListener('click',close);$('flipperGameExit').addEventListener('click',()=>{pause();showMenu()});$('flipperPause').addEventListener('click',pause);$('flipperResume').addEventListener('click',resume);$('flipperRestart').addEventListener('click',start);$('flipperBackMenu').addEventListener('click',showMenu);$('flipperLaunch').addEventListener('click',launch);

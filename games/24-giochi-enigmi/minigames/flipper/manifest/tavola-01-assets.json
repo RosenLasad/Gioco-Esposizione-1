@@ -1,0 +1,35 @@
+{
+  "format": "colombiadi-flipper-assets",
+  "version": 1,
+  "table": 1,
+  "theme": "bombardamento-genova-1684",
+  "board": {
+    "width": 440,
+    "height": 840
+  },
+  "assets": {
+    "ball": "assets/common/ball/cannonball.svg",
+    "B1": "assets/tavola-01-1684/bumpers/bumper_ship_large_01.svg",
+    "B2": "assets/tavola-01-1684/bumpers/bumper_ship_large_02.svg",
+    "B3": "assets/tavola-01-1684/bumpers/bumper_ship_large_03.svg",
+    "B3_copia": "assets/tavola-01-1684/bumpers/bumper_ship_large_04.svg",
+    "T1": "assets/tavola-01-1684/targets/target_ship_small_left.svg",
+    "T2": "assets/tavola-01-1684/targets/target_ship_small_right.svg",
+    "P1": "assets/tavola-01-1684/posts/post_rock_left.svg",
+    "P2": "assets/tavola-01-1684/posts/post_rock_right.svg",
+    "R1": "assets/tavola-01-1684/rails/rail_rock_upper_left.svg",
+    "R2": "assets/tavola-01-1684/rails/rail_rock_upper_right.svg",
+    "R2_copia": "assets/tavola-01-1684/rails/rail_rock_vertical_right.svg",
+    "S1": "assets/tavola-01-1684/slingshots/slingshot_wall_left.svg",
+    "S2": "assets/tavola-01-1684/slingshots/slingshot_wall_right.svg",
+    "F1": "assets/tavola-01-1684/flippers/flipper_left_wood.svg",
+    "F2": "assets/tavola-01-1684/flippers/flipper_right_wood.svg",
+    "L1": "assets/tavola-01-1684/shooter-lane/shooter_lane_wood_right.svg",
+    "background": "assets/tavola-01-1684/background/table_background.svg",
+    "inlane_left": "assets/tavola-01-1684/inlanes/inlane_left_wood.svg",
+    "inlane_right": "assets/tavola-01-1684/inlanes/inlane_right_wood.svg",
+    "outlane_left": "assets/tavola-01-1684/outlanes/outlane_left_wood.svg",
+    "outlane_right": "assets/tavola-01-1684/outlanes/outlane_right_wood.svg"
+  },
+  "notes": "Indica i file .svg provvisori: il gioco cerca automaticamente prima il .png omonimo nella stessa cartella, poi ripiega sul .svg. Funziona anche offline con file://. Geometria e collisioni non cambiano."
+}

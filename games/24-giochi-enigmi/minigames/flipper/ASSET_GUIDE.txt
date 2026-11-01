@@ -1,0 +1,26 @@
+TAVOLA 1 - Asset provvisori / struttura grafica
+
+Il flipper legge manifest/tavola-01-assets.json tramite HTTP(S).
+Aprendo direttamente index.html con file://, usa una copia dei percorsi
+in game.js per garantire la compatibilita offline.
+
+Per sostituire i placeholder con file PNG mantenendo i nomi SVG, non rinominare PNG in SVG: cambiare il percorso nel manifest e nella mappa assetFallback di game.js, oppure mantenere il nome e il formato SVG.
+
+Gli asset sono decorazioni: la geometria fisica continua a essere definita
+dagli oggetti nel motore, non dalla dimensione dei file immagine.
+
+I file inlanes, outlanes, background sono riservati: non sono ancora
+disegnati nella tavola (per non introdurre nuovi elementi fisici o grafici).
+Le cartelle common/ui, common/effects e overlays sono predisposte.
+
+Le immagini SVG qui sono placeholder provvisori; lo stile definitivo
+(navi, scogli, mura, tavole di legno) sara progettato successivamente.
+
+CARICAMENTO AUTOMATICO PNG -> SVG (v8)
+Inserisci nella cartella dell'SVG un PNG con lo stesso nome, es.:
+  bumpers/bumper_ship_large_01.png
+Lascia al suo posto bumper_ship_large_01.svg come riserva.
+Il gioco preferisce il PNG se disponibile; altrimenti usa l'SVG.
+Funziona sia con index.html aperto offline sia nel gioco integrato.
+Per evitare vecchie immagini in cache, ricarica completamente la pagina.
+Non occorre modificare game.js o il manifest quando sostituisci i placeholder.
