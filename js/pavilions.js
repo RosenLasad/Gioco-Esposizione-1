@@ -337,7 +337,14 @@
     const hadGameEntry = ownedEntry && gameHistoryActive && !!window.history.state?.esposizioneGameLayer;
     pavilionHistoryToken = null;
     gameHistoryActive = false;
-    minigames.closeAll();
+    // Chiudere solo i minigiochi effettivamente aperti: alcuni (es. Occhio
+    // dell'Artista) creano la loro schermata soltanto al primo avvio.
+    // closeAll() invoca anche close() di giochi mai inizializzati, interrompendo
+    // l'uscita dal padiglione con un errore JavaScript.
+    for(const id of ['occhio-artista','bombarda','battleship','telegrafo','bussolotti','macchinista']){
+      const game = minigames.get(id);
+      if(game?.isOpen()) game.close();
+    }
     activity.hidden = true;
     selected = null;
     returnFocus = null;
@@ -396,7 +403,7 @@
   });
   function isOpen(){ return !!active; }
 
-  document.getElementById('pavilionExit').addEventListener('click', close);
+  document.getElementById('pavilionExit').addEventListener('click', () => close(false));
   document.getElementById('pavilionInventory').addEventListener('click', ()=>{
     if(!activity.hidden)hideActivity();
     if(!minigames.anyOpen())window.EsposizioneInventory?.open();
