@@ -363,6 +363,24 @@
               <div id="navalResultOverlay" class="naval-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="navalResultTitle"><section class="naval-dialog"><h2 id="navalResultTitle">Battaglia conclusa</h2><p id="navalResultText"></p><div class="naval-scoreboard"><strong id="navalResultScore">0 / 1000 punti</strong><div id="navalResultStars" class="naval-result-stars" aria-label="0 stelle su 3">☆☆☆</div><p id="navalResultDetails"></p><p id="navalResultRecord" class="naval-record-note"></p></div><div class="naval-result-buttons"><button type="button" id="navalAgain">Rigioca</button><button type="button" id="navalResultMenu">Menu</button><button type="button" id="navalResultExit">Torna al padiglione</button></div></section></div>
             </div>
           </div>
+          <div id="pavilionFlipper" class="flipper-root" hidden role="dialog" aria-modal="true" aria-label="Flipper meccanico">
+            <section id="flipperMenu" class="flipper-panel">
+              <div class="flipper-crest">✦ COLOMBIADI 1892 ✦</div>
+              <h2>Rompicapi Meccanici</h2>
+              <p>Il Flipper dell'Esposizione</p>
+              <p>Lancia la sfera e colpisci i bersagli: 3 palline per ottenere il punteggio migliore.</p>
+              <div class="flipper-menu-actions"><button id="flipperStart">Inizia partita</button><button id="flipperExit">Torna al padiglione</button></div>
+              <p class="flipper-help">PC: ← / → palette · Spazio lancio · P pausa. Smartphone: pulsanti in basso.</p>
+              <small id="flipperRecord"></small>
+            </section>
+            <section id="flipperPlay" class="flipper-play" hidden>
+              <header class="flipper-hud"><div><strong>FLIPPER MECCANICO</strong><small>Ingranaggi e Ottone · Tavola 1</small></div><div class="flipper-score">PUNTI <b id="flipperScore">0</b><small id="flipperBalls">Palline: 3</small></div><button id="flipperPause">Pausa</button><button id="flipperGameExit">Esci</button></header>
+              <div class="flipper-canvas-wrap"><canvas id="flipperCanvas" width="440" height="680" aria-label="Tavola di gioco del flipper"></canvas></div>
+              <div class="flipper-controls"><button id="flipperLeft" aria-label="Paletta sinistra">◀ SINISTRA</button><button id="flipperLaunch">LANCIA</button><button id="flipperRight" aria-label="Paletta destra">DESTRA ▶</button></div>
+              <p id="flipperStatus" role="status">Premi LANCIA o Spazio per iniziare.</p>
+            </section>
+            <div id="flipperOverlay" class="flipper-overlay" hidden><div class="flipper-modal"><h3 id="flipperOverlayTitle"></h3><p id="flipperOverlayText"></p><button id="flipperResume">Riprendi</button><button id="flipperRestart">Nuova partita</button><button id="flipperBackMenu">Menu del flipper</button></div></div>
+          </div>
           <div id="pavilionShellGame" class="pavilion-shellgame" hidden>
             <div id="shellMenu" class="shellgame-card shellgame-menu" role="dialog" aria-modal="true" aria-label="Menu dei Bussolotti">
               <header class="shellgame-head"><h2>Il Gioco dei Bussolotti</h2><button type="button" id="shellGameClose">✕ Esci</button></header>
@@ -655,6 +673,8 @@
   <link rel="stylesheet" href="games/40-palazzo-belle-arti/minigames/occhio-artista/style.css">
   <script src="games/40-palazzo-belle-arti/minigames/occhio-artista/quadri.js"></script>
   <script src="games/40-palazzo-belle-arti/minigames/occhio-artista/game.js"></script>
+  <link rel="stylesheet" href="games/24-giochi-enigmi/minigames/flipper/style.css">
+  <script src="games/24-giochi-enigmi/minigames/flipper/game.js"></script>
   <script src="js/pavilions.js"></script>
   <script src="js/main.js"></script>
   <script src="js/inventory.js"></script>

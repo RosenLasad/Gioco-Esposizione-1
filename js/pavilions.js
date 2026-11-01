@@ -341,7 +341,7 @@
     // dell'Artista) creano la loro schermata soltanto al primo avvio.
     // closeAll() invoca anche close() di giochi mai inizializzati, interrompendo
     // l'uscita dal padiglione con un errore JavaScript.
-    for(const id of ['occhio-artista','bombarda','battleship','telegrafo','bussolotti','macchinista']){
+    for(const id of ['flipper','occhio-artista','bombarda','battleship','telegrafo','bussolotti','macchinista']){
       const game = minigames.get(id);
       if(game?.isOpen()) game.close();
     }
@@ -379,7 +379,7 @@
     if(active && window.history.state?.esposizioneGameLayer)window.history.back();
   }
   function backInMinigame(){
-    for(const id of ['occhio-artista','bombarda','battleship','telegrafo','bussolotti','macchinista']){
+    for(const id of ['flipper','occhio-artista','bombarda','battleship','telegrafo','bussolotti','macchinista']){
       const game=minigames.get(id);
       if(game?.isOpen()){
         if(game.back)game.back();else game.close();

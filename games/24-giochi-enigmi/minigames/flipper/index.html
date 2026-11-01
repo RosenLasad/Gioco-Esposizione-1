@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rompicapi Meccanici | Flipper - Colombiadi 1892</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    html,body {margin:0;min-height:100%;background:#070d16;}
+  </style>
+</head>
+<body>
+  <div id="pavilionFlipper" class="flipper-root" hidden role="dialog" aria-modal="true" aria-label="Flipper meccanico">
+    <section id="flipperMenu" class="flipper-panel">
+      <div class="flipper-crest">✦ COLOMBIADI 1892 ✦</div>
+      <h2>Rompicapi Meccanici</h2>
+      <p>Il Flipper dell'Esposizione</p>
+      <p>Lancia la sfera e colpisci i bersagli: 3 palline per ottenere il punteggio migliore.</p>
+      <div class="flipper-menu-actions"><button type="button" id="flipperStart">Inizia partita</button><button type="button" id="flipperExit">Torna al menu</button></div>
+      <p class="flipper-help">PC: ← / → palette · Spazio lancio · P pausa. Smartphone: pulsanti in basso.</p>
+      <small id="flipperRecord"></small>
+    </section>
+    <section id="flipperPlay" class="flipper-play" hidden>
+      <header class="flipper-hud"><div><strong>FLIPPER MECCANICO</strong><small>Ingranaggi e Ottone · Tavola 1</small></div><div class="flipper-score">PUNTI <b id="flipperScore">0</b><small id="flipperBalls">Palline: 3</small></div><button type="button" id="flipperPause">Pausa</button><button type="button" id="flipperGameExit">Esci</button></header>
+      <div class="flipper-canvas-wrap"><canvas id="flipperCanvas" width="440" height="680" aria-label="Tavola di gioco del flipper"></canvas></div>
+      <div class="flipper-controls"><button type="button" id="flipperLeft" aria-label="Paletta sinistra">◀ SINISTRA</button><button type="button" id="flipperLaunch">LANCIA</button><button type="button" id="flipperRight" aria-label="Paletta destra">DESTRA ▶</button></div>
+      <p id="flipperStatus" role="status">Premi LANCIA o Spazio per iniziare.</p>
+    </section>
+    <div id="flipperOverlay" class="flipper-overlay" hidden><div class="flipper-modal"><h3 id="flipperOverlayTitle"></h3><p id="flipperOverlayText"></p><button type="button" id="flipperResume">Riprendi</button><button type="button" id="flipperRestart">Nuova partita</button><button type="button" id="flipperBackMenu">Menu del flipper</button></div></div>
+  </div>
+  <script>
+    // Adattatore per avvio standalone: il motore game.js rimane condiviso con l'Esposizione.
+    window.EsposizioneMinigames = {
+      register: function (name, game) {
+        if (name !== 'flipper') return;
+        game.start();
+        // Nel gioco standalone non esiste il padiglione: il comando di uscita
+        // rimane nel menu del flipper, invece di nascondere tutta la pagina.
+        document.getElementById('flipperExit').addEventListener('click', function (event) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          game.start();
+        }, true);
+      }
+    };
+  </script>
+  <script src="game.js"></script>
+</body>
+</html>
