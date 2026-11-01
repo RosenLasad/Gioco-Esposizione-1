@@ -1,0 +1,27 @@
+FLIPPER - TAVOLA 1: BOMBARDAMENTO DI GENOVA (1684)
+
+Copia qui i tuoi file con QUESTI NOMI ESATTI:
+
+  audio/tavola-01/music/battaglia_1684.mp3   musica della partita, ripetuta in loop
+  audio/tavola-01/sfx/lancio.mp3           effetto lancio pallina
+  audio/tavola-01/sfx/bumper.mp3           effetto urto contro ogni bumper
+  audio/tavola-01/sfx/target.mp3           effetto urto contro ogni target
+
+I file audio originali non sono inclusi in questo ZIP, poiche' non sono stati forniti.
+
+FORMATO: MP4 con traccia audio AAC e possibilmente senza traccia video.
+Attenzione: alcuni browser non supportano tutti i codec audio all'interno di MP4.
+In caso di silenzio, controlla codec/compatibilita'; e' possibile convertire
+in un formato audio piu' standard come M4A (AAC), aggiornando i quattro percorsi
+in game.js, oppure aggiungere supporto multiformato in una successiva revisione.
+
+COMPORTAMENTO:
+- Musica in loop solo mentre giochi; in pausa/menu si ferma, riprende dal punto interrotto.
+- SFX del lancio, bumper e target; gli urti ravvicinati hanno un piccolo limite anti-ripetizione.
+- Menu principale e pausa: Musica e Suoni si attivano/disattivano separatamente.
+- Impostazioni memorizzate in localStorage nella chiave esclusiva del flipper:
+  colombiadi1892.flipper.audio.preferences.v1
+- Se mancano i file audio, il gioco rimane giocabile senza suono.
+
+Per prove offline apri il solito index.html del flipper; questa patch NON modifica
+il gioco Esposizione, i file index.html ne' il sistema di salvataggio.

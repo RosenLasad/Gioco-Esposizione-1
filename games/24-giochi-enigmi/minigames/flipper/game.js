@@ -54,6 +54,58 @@ const TABLE={gravity:620,restitution:.87,wall:17,ballRadius:8,
  rails:byType('rail'),slingshots:byType('slingshot'),launcher:byType('launcher')[0],
  flippers:{left:OBJECTS.find(o=>o.type==='flipper'&&o.side==='left'),right:OBJECTS.find(o=>o.type==='flipper'&&o.side==='right')}};
 
+// Audio esclusivo di Tavola 1. MP4 con traccia AAC, se supportato dal browser.
+const audioFiles={music:'audio/tavola-01/music/battaglia_1684.mp3',launch:'audio/tavola-01/sfx/lancio.mp3',bumper:'audio/tavola-01/sfx/bumper.mp3',target:'audio/tavola-01/sfx/target.mp3'};
+const audioSettingsKey='colombiadi1892.flipper.audio.preferences.v1';
+let audioSettings={music:true,sfx:true};
+try{const v=JSON.parse(localStorage.getItem(audioSettingsKey)||'null');if(v&&typeof v.music==='boolean'&&typeof v.sfx==='boolean')audioSettings={music:v.music,sfx:v.sfx};}catch(e){}
+const audioUrl=name=>new URL(audioFiles[name],assetRoot).href;
+const backgroundMusic=new Audio(audioUrl('music'));
+backgroundMusic.loop=true;backgroundMusic.preload='none';backgroundMusic.volume=.38;
+const sfxPlayers=new Map();
+let lastAudioHit={bumper:0,target:0};
+function playSound(kind){
+  if(!audioSettings.sfx||phase!=='playing')return;
+  const now=performance.now(),gap=kind==='launch'?0:85;
+  if(gap&&now-(lastAudioHit[kind]||0)<gap)return;
+  lastAudioHit[kind]=now;
+  // Piccolo pool per riprodurre urti ravvicinati senza interrompere il precedente.
+  let pool=sfxPlayers.get(kind);
+  if(!pool){pool=Array.from({length:3},()=>{const a=new Audio(audioUrl(kind));a.preload='none';a.volume=.65;return a});sfxPlayers.set(kind,pool)}
+  const player=pool.find(a=>a.paused||a.ended)||pool[0];
+  try{player.pause();player.currentTime=0;const result=player.play();if(result?.catch)result.catch(()=>{});}catch(e){}
+}
+function syncMusic(){
+  if(phase==='playing'&&audioSettings.music){
+    const result=backgroundMusic.play();if(result?.catch)result.catch(()=>{});
+  }else backgroundMusic.pause();
+}
+function setupAudioControls(){
+  const targets=[[$('flipperMenu'),'menu'],[$('flipperOverlay')?.querySelector('.flipper-modal'),'pause']];
+  for(const [container,section] of targets){
+    if(!container||container.querySelector('.flipper-audio-options'))continue;
+    const group=document.createElement('div');group.className='flipper-audio-options';
+    for(const [key,label] of [['music','Musica'],['sfx','Suoni']]){
+      const item=document.createElement('label');item.className='flipper-audio-toggle';
+      const input=document.createElement('input');input.type='checkbox';input.checked=audioSettings[key];input.dataset.audio=key;
+      const text=document.createElement('span');text.textContent=label;
+      input.addEventListener('change',()=>{
+        audioSettings[key]=input.checked;
+        try{localStorage.setItem(audioSettingsKey,JSON.stringify(audioSettings))}catch(e){}
+        root.querySelectorAll('.flipper-audio-options input[data-audio="'+key+'"]').forEach(other=>other.checked=input.checked);
+        syncMusic();
+      });
+      item.append(input,text);group.appendChild(item);
+    }
+    if(section==='menu'){
+      const anchor=$('flipperRecord');anchor?.parentElement?.insertBefore(group,anchor.nextSibling);
+      if(!group.isConnected)container.appendChild(group);
+    }else{
+      const anchor=$('flipperResume');container.insertBefore(group,anchor);
+    }
+  }
+}
+setupAudioControls();
 let phase='closed',score=0,remaining=3,ball=null,held={left:false,right:false},angles={left:0,right:0},last=0,raf=0,launchReady=false,hitTimes=new Map();
 const recordKey='esposizione-flipper-record-v1';
 // Salvataggio esclusivo del flipper: nessuna lettura o scrittura dei dati dell'Esposizione.
@@ -63,7 +115,7 @@ function readSave(){try{const v=JSON.parse(localStorage.getItem(saveKey)||'null'
 function clearSave(){try{localStorage.removeItem(saveKey)}catch(e){}}
 function saveGame(force=false){if(!['playing','paused'].includes(phase)||!ball)return;const now=performance.now();if(!force&&now-lastSaveAt<1000)return;lastSaveAt=now;try{localStorage.setItem(saveKey,JSON.stringify({version:1,table:1,score,remaining,ballState:launchReady?'ready':'active',boardHeight:BOARD_H,ball:{x:ball.x,y:ball.y,vx:ball.vx,vy:ball.vy,inLauncher:!!ball.inLauncher},savedAt:Date.now()}))}catch(e){}}
 function updateContinueButton(){const btn=$('flipperContinue');if(btn)btn.hidden=!readSave()}
-function continueGame(){const saved=readSave();if(!saved)return;score=Math.max(0,Math.floor(saved.score));remaining=saved.remaining;angles={left:0,right:0};held.left=held.right=false;hitTimes.clear();ball={x:saved.ball.x,y:Math.min(saved.boardHeight===BOARD_H?saved.ball.y:(saved.ball.y<=400?saved.ball.y:400+(saved.ball.y-400)*(BOARD_H-400)/360),BOARD_H-5),vx:saved.ball.vx,vy:saved.ball.vy,r:TABLE.ballRadius,trail:[],inLauncher:!!saved.ball.inLauncher};launchReady=saved.ballState==='ready';$('flipperMenu').hidden=true;$('flipperPlay').hidden=false;$('flipperOverlay').hidden=true;resizePlayfield();setHud();setStatus(launchReady?'Premi LANCIA o Spazio per lanciare.':'Partita ripresa: colpisci i bersagli!');phase='playing';last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+function continueGame(){const saved=readSave();if(!saved)return;score=Math.max(0,Math.floor(saved.score));remaining=saved.remaining;angles={left:0,right:0};held.left=held.right=false;hitTimes.clear();ball={x:saved.ball.x,y:Math.min(saved.boardHeight===BOARD_H?saved.ball.y:(saved.ball.y<=400?saved.ball.y:400+(saved.ball.y-400)*(BOARD_H-400)/360),BOARD_H-5),vx:saved.ball.vx,vy:saved.ball.vy,r:TABLE.ballRadius,trail:[],inLauncher:!!saved.ball.inLauncher};launchReady=saved.ballState==='ready';$('flipperMenu').hidden=true;$('flipperPlay').hidden=false;$('flipperOverlay').hidden=true;resizePlayfield();setHud();setStatus(launchReady?'Premi LANCIA o Spazio per lanciare.':'Partita ripresa: colpisci i bersagli!');phase='playing';syncMusic();last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
 function ensureContinueButton(){if($('flipperContinue'))return;const startButton=$('flipperStart');const button=document.createElement('button');button.type='button';button.id='flipperContinue';button.textContent='Continua partita';button.hidden=true;startButton.parentNode.insertBefore(button,startButton);button.addEventListener('click',continueGame)}
 ensureContinueButton();
 function record(){try{return Number(localStorage.getItem(recordKey))||0}catch(e){return 0}}
@@ -71,17 +123,17 @@ function saveRecord(){try{if(score>record())localStorage.setItem(recordKey,Strin
 function setStatus(t){$('flipperStatus').textContent=t}
 function setHud(){$('flipperScore').textContent=score.toLocaleString('it-IT');$('flipperBalls').textContent='Palline: '+remaining}
 function open(){root.hidden=false;phase='menu';showMenu();resizePlayfield()}
-function showMenu(){saveGame(true);cancelAnimationFrame(raf);raf=0;phase='menu';$('flipperPlay').hidden=true;$('flipperMenu').hidden=false;$('flipperOverlay').hidden=true;$('flipperRecord').textContent='Record: '+record().toLocaleString('it-IT')+' punti';held.left=held.right=false;updateContinueButton()}
-function close(){saveGame(true);cancelAnimationFrame(raf);raf=0;phase='closed';root.hidden=true;held.left=held.right=false;$('flipperOverlay').hidden=true}
+function showMenu(){backgroundMusic.pause();saveGame(true);cancelAnimationFrame(raf);raf=0;phase='menu';$('flipperPlay').hidden=true;$('flipperMenu').hidden=false;$('flipperOverlay').hidden=true;$('flipperRecord').textContent='Record: '+record().toLocaleString('it-IT')+' punti';held.left=held.right=false;updateContinueButton()}
+function close(){backgroundMusic.pause();saveGame(true);cancelAnimationFrame(raf);raf=0;phase='closed';root.hidden=true;held.left=held.right=false;$('flipperOverlay').hidden=true}
 function newBall(){ball={x:405,y:748,vx:0,vy:0,r:TABLE.ballRadius,trail:[],inLauncher:true};launchReady=true;setStatus('Premi LANCIA o Spazio per lanciare.')}
-function start(){if(readSave()&&!confirm('Iniziare una nuova partita di flipper? Il salvataggio della partita precedente verrà sostituito. Il record personale rimarrà.'))return;clearSave();score=0;remaining=3;angles={left:0,right:0};hitTimes.clear();$('flipperMenu').hidden=true;$('flipperPlay').hidden=false;$('flipperOverlay').hidden=true;resizePlayfield();phase='playing';newBall();setHud();last=performance.now();cancelAnimationFrame(raf);saveGame(true);raf=requestAnimationFrame(loop)}
-function launch(){if(phase==='playing'&&launchReady){launchReady=false;ball.vx=0;ball.vy=-950;setStatus('Colpisci i bersagli e salva la sfera!');saveGame(true)}}
-function overlay(title,text,finished=false){$('flipperOverlayTitle').textContent=title;$('flipperOverlayText').textContent=text;$('flipperResume').hidden=finished;$('flipperOverlay').hidden=false;phase=finished?'over':'paused';held.left=held.right=false;if(finished){saveRecord();clearSave()}else saveGame(true)}
+function start(){if(readSave()&&!confirm('Iniziare una nuova partita di flipper? Il salvataggio della partita precedente verrà sostituito. Il record personale rimarrà.'))return;clearSave();score=0;remaining=3;angles={left:0,right:0};hitTimes.clear();$('flipperMenu').hidden=true;$('flipperPlay').hidden=false;$('flipperOverlay').hidden=true;resizePlayfield();phase='playing';syncMusic();newBall();setHud();last=performance.now();cancelAnimationFrame(raf);saveGame(true);raf=requestAnimationFrame(loop)}
+function launch(){if(phase==='playing'&&launchReady){launchReady=false;ball.vx=0;ball.vy=-950;playSound('launch');setStatus('Colpisci i bersagli e salva la sfera!');saveGame(true)}}
+function overlay(title,text,finished=false){$('flipperOverlayTitle').textContent=title;$('flipperOverlayText').textContent=text;$('flipperResume').hidden=finished;$('flipperOverlay').hidden=false;phase=finished?'over':'paused';syncMusic();held.left=held.right=false;if(finished){saveRecord();clearSave()}else saveGame(true)}
 function pause(){if(phase==='playing')overlay('Partita in pausa','Puoi riprendere in qualsiasi momento.');else if(phase==='paused')resume()}
-function resume(){if(phase!=='paused')return;phase='playing';$('flipperOverlay').hidden=true;last=performance.now();saveGame(true);if(!raf)raf=requestAnimationFrame(loop)}
+function resume(){if(phase!=='paused')return;phase='playing';syncMusic();$('flipperOverlay').hidden=true;last=performance.now();saveGame(true);if(!raf)raf=requestAnimationFrame(loop)}
 function drain(){remaining--;setHud();if(remaining<=0){overlay('Partita terminata','Punteggio: '+score.toLocaleString('it-IT')+' · Record: '+Math.max(score,record()).toLocaleString('it-IT'),true);return}newBall();saveGame(true)}
 function addPoints(n){score+=n;setHud()}
-function bump(x,y,r,scoreValue,id){const dx=ball.x-x,dy=ball.y-y,d=Math.hypot(dx,dy)||1,min=r+ball.r;if(d>=min)return;const nx=dx/d,ny=dy/d;ball.x=x+nx*(min+.3);ball.y=y+ny*(min+.3);let impact=ball.vx*nx+ball.vy*ny;ball.vx-=(1+TABLE.restitution)*Math.min(impact,0)*nx;ball.vy-=(1+TABLE.restitution)*Math.min(impact,0)*ny;const speed=Math.max(240,Math.hypot(ball.vx,ball.vy));ball.vx+=nx*speed*.32;ball.vy+=ny*speed*.32;const now=performance.now();if(scoreValue&&now-(hitTimes.get(id)||0)>170){addPoints(scoreValue);hitTimes.set(id,now)}}
+function bump(x,y,r,scoreValue,id){const dx=ball.x-x,dy=ball.y-y,d=Math.hypot(dx,dy)||1,min=r+ball.r;if(d>=min)return;const nx=dx/d,ny=dy/d;ball.x=x+nx*(min+.3);ball.y=y+ny*(min+.3);let impact=ball.vx*nx+ball.vy*ny;ball.vx-=(1+TABLE.restitution)*Math.min(impact,0)*nx;ball.vy-=(1+TABLE.restitution)*Math.min(impact,0)*ny;const speed=Math.max(240,Math.hypot(ball.vx,ball.vy));ball.vx+=nx*speed*.32;ball.vy+=ny*speed*.32;const now=performance.now();if(scoreValue&&now-(hitTimes.get(id)||0)>170){addPoints(scoreValue);playSound('bumper');hitTimes.set(id,now)}}
 function segment(ax,ay,bx,by){let vx=bx-ax,vy=by-ay,t=Math.max(0,Math.min(1,((ball.x-ax)*vx+(ball.y-ay)*vy)/(vx*vx+vy*vy||1)));return {x:ax+vx*t,y:ay+vy*t}}
 function flipperGeometry(side){const f=TABLE.flippers[side];const a=f.angle+(side==='left'?-1:1)*angles[side]*.63;return {x:f.x,y:f.y,tipx:f.x+f.length*Math.cos(a),tipy:f.y+f.length*Math.sin(a)}}
 function flipperPhysics(side){const f=flipperGeometry(side),point=segment(f.x,f.y,f.tipx,f.tipy),dx=ball.x-point.x,dy=ball.y-point.y,d=Math.hypot(dx,dy)||1,min=ball.r+11;if(d>=min)return;const nx=dx/d,ny=dy/d;ball.x+=nx*(min-d+.5);ball.y+=ny*(min-d+.5);const moving=angles[side]>.2&&held[side];ball.vy=-Math.max(moving?720:350,Math.abs(ball.vy)*.8);ball.vx+=(side==='left'?1:-1)*(moving?200:70);if(ball.y>f.y+15)ball.y=f.y-15}
@@ -100,7 +152,7 @@ if(ball.y>BOARD_H+10){drain();break}
 }
 if(ball)ball.trail.push({x:ball.x,y:ball.y});if(ball?.trail.length>9)ball.trail.shift();
 }
-function addTarget(i){const now=performance.now();if(now-(hitTimes.get(TABLE.targets[i].id)||0)>300){addPoints(TABLE.targets[i].score);hitTimes.set(TABLE.targets[i].id,now)}}
+function addTarget(i){const now=performance.now();if(now-(hitTimes.get(TABLE.targets[i].id)||0)>300){addPoints(TABLE.targets[i].score);playSound('target');hitTimes.set(TABLE.targets[i].id,now)}}
 function circle(x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=3;ctx.stroke()}}
 function draw(){const c=ctx;c.clearRect(0,0,BOARD_W,BOARD_H);let g=c.createLinearGradient(0,0,BOARD_W,BOARD_H);g.addColorStop(0,'#1b4e5e');g.addColorStop(.55,'#143544');g.addColorStop(1,'#0c1b29');c.fillStyle=g;c.fillRect(0,0,BOARD_W,BOARD_H);c.strokeStyle='#b88b44';c.lineWidth=10;c.strokeRect(15,14,410,812);c.strokeStyle='#d0a953';c.lineWidth=3;c.strokeRect(24,23,392,794);
 c.fillStyle='#ddb76c';c.font='bold 22px Georgia';c.textAlign='center';c.fillText('✦ COLOMBIADI 1892 ✦',220,67);c.font='13px Georgia';c.fillText('LE MACCHINE DELLE MERAVIGLIE',220,88);
