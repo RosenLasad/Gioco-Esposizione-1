@@ -239,7 +239,6 @@
     if(!saved){updateMenu();return;}
     showGame(saved,'player');
   });
-  const resetBtn=$('#resetPositionBtn');if(resetBtn)resetBtn.onclick=()=>{window.EsposizioneSave.clear();updateMenu();$('#saveInfo').textContent='Posizione ripristinata. Puoi iniziare una nuova visita.'};
   $('#guideBtn').onclick=()=>$('#guideDialog').showModal();$('#guideClose').onclick=()=>$('#guideDialog').close();
   $('#menuFullscreenBtn').onclick=toggleFullscreen;$('#playerFullscreenBtn').onclick=toggleFullscreen;$('#pauseFullscreenBtn').onclick=toggleFullscreen;
   $('#playerMenuBtn').onclick=ui.onPause;
