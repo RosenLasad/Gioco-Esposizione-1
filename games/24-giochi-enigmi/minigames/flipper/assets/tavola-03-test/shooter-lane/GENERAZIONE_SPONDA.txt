@@ -1,0 +1,10 @@
+Sponda shooter lane - 7 novembre 2026
+Strumento: image_gen integrato, sfondo trasparente.
+Originale conservato: shooter_lane_wood_right-original.png
+Nuovo asset: shooter_lane_wood_right.png
+Preparazione: ritaglio dei soli margini trasparenti, senza ridimensionamento dei pixel.
+Disegno sulla tavola: asse verticale, centro (385, 487.5), 10 x 645 coordinate tavola.
+Fisica e collisioni invariate.
+
+Prompt completo:
+Use case: precise-object-edit. Edit the reference shooter-lane asset into ONLY the thin wooden divider rail separating the pinball launch lane from the playfield. Preserve the reference hand-painted historical game sprite style, warm honey oak wood grain, aged brass end caps and small metal rivets. Strict orthographic TOP-DOWN view perpendicular to the tabletop, no perspective, no visible upright side walls. One perfectly straight extremely slender vertical wooden strip with constant width, gently rounded capped ends, evenly spaced tiny rivets and subtle narrow brass edging. Single solid beam, NOT a channel, NOT a panel, no hollow center. Target visible silhouette aspect ratio 1:55 (a very long thin rail); center it vertically in a tall portrait transparent canvas, full object visible. No ball, no plunger, no rocks, no words, no lettering, no LANCIO sign, no crossing braces, no extra objects, no ground, no cast shadow. Actual transparent background. Detailed wood texture readable as a game sprite at 12 pixels wide by 660 pixels tall. The rail should occupy almost the entire canvas height. Reference image is style source and edit target; retain its warm wood/brass craftsmanship while replacing the broad assembly with the single slender divider.

@@ -1,0 +1,12 @@
+Cannone di lancio - 7 novembre 2026
+Strumento: image_gen integrato, sfondo trasparente.
+Asset finale: launcher_cannon.png.
+Preparazione: ritaglio margini trasparenti, pixel non deformati.
+Disegno: larghezza 22, altezza proporzionale al PNG, centro corsia x421, bordo alto y740.
+Effetti: rinculo fino a 5 coordinate in 0,22 s; lampo 0,07 s; fumo fino a 0,65 s; vibrazione fino a circa 1,4 pixel in 0,14 s.
+Movimento ridotto: rinculo e vibrazione disattivati seguendo la preferenza del dispositivo.
+Pausa, menu, uscita e nuova pallina azzerano gli effetti.
+Velocita e traiettoria della pallina invariate. Il cannone e' decorativo e non aggiunge collisioni.
+
+Prompt finale:
+Create a COMPACT STUBBY naval cannon sprite, viewed directly from overhead, transparent background. Cannon points straight UP. IMPORTANT SHAPE: entire object visible silhouette width-to-height exactly approximately 1:3 (NOT a long thin pipe or long wooden rail). Barrel is short, thick, with only TWO brass reinforcing bands. Short oak gun carriage, wide enough to cradle thick bronze cannon barrel, rounded breech at bottom. Cannon has round dark open muzzle at very top, gold bronze rim, dark iron/bronze barrel, warm oak carriage, four small silver studs. No wheels, no protruding axle, no cannonball, no smoke, no flame, no text, no scenery, no shadow outside object. Hand-painted historical illustrated game asset, warm golden highlights from upper left, visible texture and crisp edges. Orthographic overhead, no perspective rotation. Single centered object, complete uncropped. Keep silhouette compact and broad: visible width about 280 pixels for a visible height about 840 pixels, generous blank transparent space outside. Designed to be seen as cannon at just 22x66 pixels. Do not make barrel longer than three times the entire carriage width.
