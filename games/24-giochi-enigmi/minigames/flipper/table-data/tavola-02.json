@@ -1,0 +1,163 @@
+{
+  "format": "colombiadi-flipper-table-editor",
+  "version": 1,
+  "board": {
+    "width": 440,
+    "height": 840,
+    "playfield": {
+      "left": 8,
+      "right": 432,
+      "top": 8,
+      "bottom": 832
+    }
+  },
+  "table": 2,
+  "objects": [
+    {
+      "id": "B1",
+      "type": "bumper",
+      "label": "Bumper alto sinistra",
+      "x": 125,
+      "y": 205,
+      "r": 26,
+      "score": 100
+    },
+    {
+      "id": "B2",
+      "type": "bumper",
+      "label": "Bumper alto destra",
+      "x": 299,
+      "y": 210,
+      "r": 26,
+      "score": 100
+    },
+    {
+      "id": "B3",
+      "type": "bumper",
+      "label": "Bumper centrale",
+      "x": 211.9,
+      "y": 335.1,
+      "r": 29,
+      "score": 150
+    },
+    {
+      "id": "T1",
+      "type": "target",
+      "label": "Target sinistro",
+      "x": 76,
+      "y": 335,
+      "w": 17,
+      "h": 64,
+      "score": 50
+    },
+    {
+      "id": "T2",
+      "type": "target",
+      "label": "Target destro",
+      "x": 348,
+      "y": 335,
+      "w": 17,
+      "h": 64,
+      "score": 50
+    },
+    {
+      "id": "P1",
+      "type": "post",
+      "label": "Piolo sinistro",
+      "x": 83,
+      "y": 660,
+      "r": 12
+    },
+    {
+      "id": "P2",
+      "type": "post",
+      "label": "Piolo destro",
+      "x": 356,
+      "y": 660,
+      "r": 12
+    },
+    {
+      "id": "R1",
+      "type": "rail",
+      "label": "Tavola 1",
+      "x": 78,
+      "y": 129.6,
+      "x2": 175.7,
+      "y2": 163.4
+    },
+    {
+      "id": "R2",
+      "type": "rail",
+      "label": "Guida superiore destra",
+      "x": 401.7,
+      "y": 147.9,
+      "x2": 363,
+      "y2": 98
+    },
+    {
+      "id": "S1",
+      "type": "slingshot",
+      "label": "Slingshot sinistro",
+      "x": 8,
+      "y": 680,
+      "x2": 112,
+      "y2": 766
+    },
+    {
+      "id": "S2",
+      "type": "slingshot",
+      "label": "Slingshot destro",
+      "x": 399.9,
+      "y": 681,
+      "x2": 328,
+      "y2": 766
+    },
+    {
+      "id": "F1",
+      "type": "flipper",
+      "label": "Paletta sinistra",
+      "x": 112,
+      "y": 765,
+      "length": 80,
+      "angle": 0.3141592653589793,
+      "side": "left"
+    },
+    {
+      "id": "F2",
+      "type": "flipper",
+      "label": "Paletta destra",
+      "x": 328,
+      "y": 765,
+      "length": 80,
+      "angle": 2.827433388230814,
+      "side": "right"
+    },
+    {
+      "id": "L1",
+      "type": "launcher",
+      "label": "Canale di lancio",
+      "x": 401,
+      "y": 165,
+      "x2": 401,
+      "y2": 810
+    },
+    {
+      "id": "R2_copia",
+      "type": "rail",
+      "label": "Guida superiore destra copia",
+      "x": 401.7,
+      "y": 814.3,
+      "x2": 401.7,
+      "y2": 146.1
+    },
+    {
+      "id": "B3_copia",
+      "type": "bumper",
+      "label": "Bumper centrale copia",
+      "x": 214.6,
+      "y": 497.5,
+      "r": 29,
+      "score": 150
+    }
+  ]
+}

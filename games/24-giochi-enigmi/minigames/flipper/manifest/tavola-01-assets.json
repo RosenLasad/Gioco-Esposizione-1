@@ -29,7 +29,8 @@
     "inlane_left": "assets/tavola-01-1684/inlanes/inlane_left_wood.svg",
     "inlane_right": "assets/tavola-01-1684/inlanes/inlane_right_wood.svg",
     "outlane_left": "assets/tavola-01-1684/outlanes/outlane_left_wood.svg",
-    "outlane_right": "assets/tavola-01-1684/outlanes/outlane_right_wood.svg"
+    "outlane_right": "assets/tavola-01-1684/outlanes/outlane_right_wood.svg",
+    "launcherCannon": "assets/tavola-01-1684/shooter-lane/launcher_cannon.png"
   },
   "notes": "Indica i file .svg provvisori: il gioco cerca automaticamente prima il .png omonimo nella stessa cartella, poi ripiega sul .svg. Funziona anche offline con file://. Geometria e collisioni non cambiano."
 }

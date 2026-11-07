@@ -1,0 +1,25 @@
+TRE TAVOLE DEL FLIPPER - 7 novembre 2026
+
+Menu: Tavola 1684, Tavola Test 2, Tavola Test 3.
+Le due tavole Test sono copie della configurazione e delle risorse attuali della 1684.
+
+RISORSE SEPARATE
+1: assets/tavola-01-1684; audio/tavola-01; manifest/tavola-01-assets.json; table-data/tavola-01.json.
+2: assets/tavola-02-test; audio/tavola-02; manifest/tavola-02-assets.json; table-data/tavola-02.json.
+3: assets/tavola-03-test; audio/tavola-03; manifest/tavola-03-assets.json; table-data/tavola-03.json.
+La pallina della 1684 resta in assets/common/ball; le copie ne hanno una versione nella propria cartella common/ball.
+
+MOTORE E CONFIGURAZIONE
+game.js e style.css sono condivisi: le modifiche alla logica comune interessano tutte le tavole.
+La configurazione incorporata della tavola 1 resta in game.js (OBJECTS, assetFallback e impostazioni iniziali).
+extra-tables.js contiene configurazioni autonome delle tavole 2 e 3: oggetti, grafica, audio, limiti e parametri fisici.
+Queste configurazioni funzionano anche offline con file://.
+Quando si cambiano dati o percorsi, sincronizzare le copie incorporate con i rispettivi JSON.
+Il menu carica i manifest JSON anche su HTTP(S), ignorando risposte di altre tavole.
+
+PARTITE E RECORD
+Ogni tavola ha partita e record separati. Il salvataggio e il record preesistenti restano assegnati alla 1684.
+La tavola scelta viene ricordata. Le preferenze generali audio sono condivise.
+Per cambiare tavola, tornare al menu del flipper; la partita precedente resta salvata.
+
+Le tavole Test sono copie modificabili, non un archivio immutabile del codice del motore.

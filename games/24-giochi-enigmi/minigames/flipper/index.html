@@ -15,13 +15,16 @@
       <div class="flipper-crest">✦ COLOMBIADI 1892 ✦</div>
       <h2>Rompicapi Meccanici</h2>
       <p>Il Flipper dell'Esposizione</p>
+      <label class="flipper-table-picker" for="flipperTableSelect">Scegli la tavola
+        <select id="flipperTableSelect"><option value="1">Tavola 1684</option><option value="2">Tavola Test 2</option><option value="3">Tavola Test 3</option></select>
+      </label>
       <p>Lancia la sfera e colpisci i bersagli: 3 palline per ottenere il punteggio migliore.</p>
       <div class="flipper-menu-actions"><button type="button" id="flipperStart">Inizia partita</button><button type="button" id="flipperExit">Torna al menu</button></div>
-      <p class="flipper-help">PC: ← / → palette · Spazio lancio · P pausa. Smartphone: pulsanti in basso.</p>
+      <p class="flipper-help">PC: A / D oppure ← / → palette · Spazio lancio · P pausa. Smartphone: pulsanti in basso.</p>
       <small id="flipperRecord"></small>
     </section>
     <section id="flipperPlay" class="flipper-play" hidden>
-      <header class="flipper-hud"><div><strong>FLIPPER MECCANICO</strong><small>Ingranaggi e Ottone · Tavola 1</small></div><div class="flipper-score">PUNTI <b id="flipperScore">0</b><small id="flipperBalls">Palline: 3</small></div><button type="button" id="flipperPause">Pausa</button><button type="button" id="flipperGameExit">Esci</button></header>
+      <header class="flipper-hud"><div><strong>FLIPPER MECCANICO</strong><small id="flipperTableName">Ingranaggi e Ottone · Tavola 1684</small></div><div class="flipper-score">PUNTI <b id="flipperScore">0</b><small id="flipperBalls">Palline: 3</small></div><button type="button" id="flipperPause">Pausa</button><button type="button" id="flipperGameExit">Esci</button></header>
       <div class="flipper-canvas-wrap"><canvas id="flipperCanvas" width="440" height="680" aria-label="Tavola di gioco del flipper"></canvas></div>
       <div class="flipper-controls"><button type="button" id="flipperLeft" aria-label="Paletta sinistra">◀ SINISTRA</button><button type="button" id="flipperLaunch">LANCIA</button><button type="button" id="flipperRight" aria-label="Paletta destra">DESTRA ▶</button></div>
       <p id="flipperStatus" role="status">Premi LANCIA o Spazio per iniziare.</p>
@@ -44,6 +47,7 @@
       }
     };
   </script>
+  <script src="extra-tables.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

@@ -3,7 +3,13 @@
   "version": 1,
   "board": {
     "width": 440,
-    "height": 840
+    "height": 840,
+    "playfield": {
+      "left": 8,
+      "right": 432,
+      "top": 8,
+      "bottom": 832
+    }
   },
   "table": 1,
   "objects": [
@@ -83,16 +89,16 @@
       "id": "R2",
       "type": "rail",
       "label": "Guida superiore destra",
-      "x": 385.7,
+      "x": 401.7,
       "y": 147.9,
-      "x2": 347,
+      "x2": 363,
       "y2": 98
     },
     {
       "id": "S1",
       "type": "slingshot",
       "label": "Slingshot sinistro",
-      "x": 26,
+      "x": 8,
       "y": 680,
       "x2": 112,
       "y2": 766
@@ -101,7 +107,7 @@
       "id": "S2",
       "type": "slingshot",
       "label": "Slingshot destro",
-      "x": 383.9,
+      "x": 399.9,
       "y": 681,
       "x2": 328,
       "y2": 766
@@ -112,8 +118,8 @@
       "label": "Paletta sinistra",
       "x": 112,
       "y": 765,
-      "length": 88.1,
-      "angle": -0.4275806938920429,
+      "length": 80,
+      "angle": 0.3141592653589793,
       "side": "left"
     },
     {
@@ -122,26 +128,26 @@
       "label": "Paletta destra",
       "x": 328,
       "y": 765,
-      "length": 88.5,
-      "angle": -2.7046226706966303,
+      "length": 80,
+      "angle": 2.827433388230814,
       "side": "right"
     },
     {
       "id": "L1",
       "type": "launcher",
       "label": "Canale di lancio",
-      "x": 385,
+      "x": 401,
       "y": 165,
-      "x2": 385,
+      "x2": 401,
       "y2": 810
     },
     {
       "id": "R2_copia",
       "type": "rail",
       "label": "Guida superiore destra copia",
-      "x": 385.7,
+      "x": 401.7,
       "y": 814.3,
-      "x2": 385.7,
+      "x2": 401.7,
       "y2": 146.1
     },
     {
